@@ -847,6 +847,20 @@ def main() -> int:
     omega_fit = 0.0
     t_start = time.perf_counter()
 
+    # --- FIX 1: sign normalisation ---
+    sign_decided = False
+    sign = 1.0
+    sign_buffer = []
+
+    # --- FIX 2: target-lost detection ---
+    target_lost = False
+    target_lost_since = 0.0
+    TARGET_LOST_THRESHOLD = 0.30
+
+    # --- FIX 3: periodic re-locate ---
+    last_relocate = t_start
+    RELOCATE_PERIOD = 0.50
+
     csv_path = os.path.join(args.outdir, f"live_{stamp}.csv")
     csv_fh = open(csv_path, "w", newline="", encoding="utf-8")
     writer = csv.writer(csv_fh)
@@ -927,6 +941,22 @@ def main() -> int:
                     slope = np.linalg.lstsq(A, un, rcond=None)[0][0]
                     omega_fit = math.degrees(float(slope))
 
+            # ---- FIX 1: sign normalisation ----
+            # Decide rotation direction once from the first ~0.5 s of confident frames.
+            # Rotation is one-directional; the correlation peak sign is arbitrary.
+            if not sign_decided and good and abs(omega_fit) > 20.0:
+                sign_buffer.append(omega_fit)
+                if len(sign_buffer) >= 15:  # ~0.5 s at 30 Hz
+                    median_fit = float(np.median(sign_buffer))
+                    sign = 1.0 if median_fit > 0 else -1.0
+                    sign_decided = True
+                    print(f"[sign] rotation direction locked: {'CW' if sign > 0 else 'CCW'} (median {median_fit:.1f} deg/s)")
+            if sign_decided:
+                omega_fit *= sign
+                omega_inst *= sign
+                dtheta *= sign
+                angle = (angle + dtheta) % 360.0  # re-apply with correct sign
+
             # ---- occupancy / gaps ---------------------------------------- #
             # Build the sky test ONCE on the small ROI, then remap the 1-channel
             # mask. Remapping a 3-channel image here costs 3x for no benefit.
@@ -941,6 +971,28 @@ def main() -> int:
             obs = runs_of(occ, MIN_RUN_DEG, MAX_OBJ_DEG)
             gaps = gaps_of(occ, MIN_RUN_DEG)
             widest = max(gaps, key=lambda g: g[1]) if gaps else (0.0, 0.0)
+
+            # ---- FIX 2: target-lost detection ----
+            # We are "tracking" only if we see >= 8 knives (obstacles) AND
+            # the sky annulus around the target centre is still >35% sky.
+            # If not, we're blind - don't log zeros as data.
+            sky_now = sky_annulus_frac(frame, cxl, cyl, r)
+            tracking_ok = (len(obs) >= 8 and sky_now >= 0.35)
+
+            if tracking_ok:
+                target_lost = False
+                target_lost_since = 0.0
+            else:
+                if not target_lost:
+                    target_lost = True
+                    target_lost_since = t_now
+                elif t_now - target_lost_since > TARGET_LOST_THRESHOLD:
+                    # Blind for > 0.3 s - force re-locate on next cycle
+                    print(f"[lost] target lost for {t_now - target_lost_since:.1f}s (obs={len(obs)}, sky={100*sky_now:.0f}%) -> re-locating")
+                    # The periodic re-locate logic will catch this, but we can
+                    # also force it immediately by setting last_relocate = 0
+                    last_relocate = 0.0
+
             t_e = time.perf_counter()
 
             # ---- corridor motion ----------------------------------------- #
@@ -952,6 +1004,36 @@ def main() -> int:
             else:
                 corridor = 0.0
 
+            # ---- FIX 3: periodic re-locate (every 0.5 s) ----
+            if t_now - last_relocate >= RELOCATE_PERIOD:
+                last_relocate = t_now
+                # Verify the target is still where we think it is by checking
+                # the sky annulus on the CURRENT frame (in ROI coords).
+                sky_now = sky_annulus_frac(frame, cxl, cyl, r)
+                if sky_now < 0.35:
+                    print(f"[relocate] sky annulus dropped to {100*sky_now:.0f}% -> re-locating")
+                    full = np.array(sct.grab(mon))[:, :, :3].copy()
+                    got = find_target(full)
+                    if got:
+                        cx, cy, r = got
+                        bbox = roi_for(cx, cy, r, sw, sh,
+                                       args.pad_x, args.pad_up, args.pad_down)
+                        x0, y0 = bbox["left"], bbox["top"]
+                        cxl, cyl = cx - x0, cy - y0
+                        geo = build_geometry(cxl, cyl, r)
+                        mx_tex, my_tex = geo["tex"]
+                        mx_pro, my_pro = geo["pro"]
+                        cor_y0 = int(cyl + r * 1.02)
+                        cor_y1 = int(min(bbox["height"], cyl + r * 1.95))
+                        cor_x0 = int(max(0, cxl - 0.22 * r))
+                        cor_x1 = int(min(bbox["width"], cxl + 0.22 * r))
+                        prev_tex = prev_pro = None
+                        angle_hist.clear()
+                        sign_decided = False
+                        sign_buffer = []
+                        target_lost = False
+                        print(f"[relocate] recalibrated ({cx:.1f}, {cy:.1f}) r={r:.1f}")
+
             ring.append(frame.copy())
 
             fps_n += 1
@@ -960,14 +1042,21 @@ def main() -> int:
                 fps_n = 0
                 fps_t0 = t_now
 
-            rows.append((round(t_now - t_start, 4), round(dt * 1000.0, 2),
-                         round(fps_shown, 1), round(polar_to_game(angle), 2),
-                         round(dtheta, 3), round(omega_inst, 1),
-                         round(omega_fit, 1), round(conf_tex, 3),
-                         round(sharp_tex, 3), round(conf_pro, 3), len(obs),
-                         round(widest[1], 2),
-                         round(polar_to_game(widest[0] + widest[1] / 2.0), 2),
-                         round(corridor, 4)))
+            # Only log real tracking data. When target_lost, write a marker
+            # row with n_obstacles=-1 so analysis can filter it out.
+            if target_lost:
+                rows.append((round(t_now - t_start, 4), round(dt * 1000.0, 2),
+                              round(fps_shown, 1), -1.0, 0.0, 0.0, 0.0,
+                              0.0, 0.0, 0.0, -1, 0.0, 0.0, round(corridor, 4)))
+            else:
+                rows.append((round(t_now - t_start, 4), round(dt * 1000.0, 2),
+                              round(fps_shown, 1), round(polar_to_game(angle), 2),
+                              round(dtheta, 3), round(omega_inst, 1),
+                              round(omega_fit, 1), round(conf_tex, 3),
+                              round(sharp_tex, 3), round(conf_pro, 3), len(obs),
+                              round(widest[1], 2),
+                              round(polar_to_game(widest[0] + widest[1] / 2.0), 2),
+                              round(corridor, 4)))
             if len(rows) >= 60:
                 writer.writerows(rows)
                 csv_fh.flush()
