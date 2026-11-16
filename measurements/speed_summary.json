@@ -1,0 +1,41 @@
+{
+  "video": "D:\\random works by gs\\KN helper\\gameplay1.mp4",
+  "width": 1916,
+  "height": 868,
+  "fps": 30.0,
+  "frames_total": 1409,
+  "frames_analysed": 44,
+  "target": {
+    "cx": 958.3318942119025,
+    "cy": 247.46678805249394,
+    "r_wood": 121.79708026531864,
+    "r_in": 66.98839414592526,
+    "r_out": 112.05331384409315
+  },
+  "detection": {
+    "samples": 21,
+    "cx_spread_px": 5.8307065574408625,
+    "cy_spread_px": 6.80545452427009,
+    "r_spread_px": 0.2831202408002724
+  },
+  "valid_frames": 44,
+  "speed_deg_s": {
+    "min": 194.9115720828066,
+    "median": 195.0622140127291,
+    "mean": 195.27258425213378,
+    "max": 201.97297074482586
+  },
+  "tiers": [
+    {
+      "centre_deg_s": 197.41332086391765,
+      "count": 30,
+      "mean_deg_s": 195.27258425213378,
+      "min_deg_s": 194.9115720828066,
+      "max_deg_s": 201.97297074482586,
+      "std_deg_s": 1.2477237625618818,
+      "share": 1.0,
+      "coverage": 1.0
+    }
+  ],
+  "reversals": 0
+}
