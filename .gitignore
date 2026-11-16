@@ -1,0 +1,43 @@
+# Python
+__pycache__/
+*.py[cod]
+*.so
+.pytest_cache/
+.coverage
+.mypy_cache/
+*.egg-info/
+
+# Local caches (all redirected to D: via run.cmd / env vars)
+.cache/
+*.cache/
+
+# Recordings - keep but they're large
+recordings/live_*.csv
+
+# Temp artifacts
+temp/*.png
+temp/*.mp4
+temp/*.jpg
+temp/*.jpeg
+temp/shots/
+
+# Video source (43 MB - keep locally, don't push)
+gameplay1.mp4
+
+# IDE / OS
+.vscode/
+.idea/
+*.swp
+*.swo
+.DS_Store
+Thumbs.db
+
+# Environment
+.env
+.env.local
+*.log
+
+# Large data files
+*.npy
+*.npz
+*.pkl
