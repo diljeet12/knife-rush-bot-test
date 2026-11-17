@@ -14,12 +14,8 @@ __pycache__/
 # Recordings - keep but they're large
 recordings/live_*.csv
 
-# Temp artifacts
-temp/*.png
-temp/*.mp4
-temp/*.jpg
-temp/*.jpeg
-temp/shots/
+# Temp artifacts — whole scratch dir (32 MB of throwaway screenshots/logs)
+temp/
 
 # Video source (43 MB - keep locally, don't push)
 gameplay1.mp4
