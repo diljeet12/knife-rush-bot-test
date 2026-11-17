@@ -293,9 +293,9 @@ code with four regression bugs in two small regions (§3.1–3.4).
 
 | # | Trap | Truth |
 |---|---|---|
-| T1 | "The plan says 16–17 knives to 2.00x." | **Unproven.** Two ladders conflict: screenshot series `1.00, 1.01, 1.03, 1.06, 1.10` (+.01,+.02,+.03,+.04 → 2.05 at knife 14) vs video series `1.01, 1.03, 1.10, 1.19, 1.24, 1.30, 1.35, 1.42, 1.48, 1.56` (irregular → ~21–23 knives). **Measure it first.** |
+| T1 | "The plan says 14 / 16–17 / 21–23 knives to 2.00x." | **MEASURED 2026-11-17: 17 throws.** Ladder is `1.01 1.03 1.06 1.10 1.15 / 1.19 1.24 1.30 1.35 1.42 / 1.48 1.56 1.65 1.75 1.85 / 1.98 2.12 2.28 2.47 2.70`. Throw 16 = 1.98 (short), throw 17 = 2.12. Full table + probabilities: `measurements/ladder.md`. |
 | T2 | "Impact is exactly 180°, it says so in the code." | The *game rule* is 180°. The *pixel measurement* contradicts itself: 175.7° vs 181.3°. Unresolved. |
-| T3 | "Rotation is one-directional, so lock the sign once." | Video shows two flips at t≈39 s. Unknown whether that is a reversal or a restart. **Do not lock.** |
+| T3 | "Rotation is one-directional, so lock the sign once." | **MEASURED, and it is false.** A 60 s run on 2026-11-17 produced **9 clean sign runs, 4 CW and 5 CCW**, lasting 0.3–9.1 s each. The log reverses direction several times per minute. Locking a sign inverts every downstream prediction after each flip. **Never lock.** Also: whole-run monotonicity is an invalid acceptance test for this reason. |
 | T4 | "`DEFAULT_FLIGHT_T = 0.150` is the flight time." | It is a **guess** used only to draw a ghost marker. Never measured. Flight time cannot be measured from 30 fps (proven three ways — see `KNIFE_TIMING_AND_GEOMETRY.md` §1). |
 | T5 | "The three fixes are working." | They are the regression. §3.1–3.4. |
 | T6 | "Apples don't matter." | Unproven. They are 20–25° wide and counted as obstacles — which is **conservative**, so leave it. |
@@ -305,10 +305,14 @@ code with four regression bugs in two small regions (§3.1–3.4).
 | T10 | "We can measure flight time from the video." | Proven impossible three different ways. Do not retry. |
 | T11 | "Use `cv2.imshow`." | Not available in this OpenCV build. |
 | T12 | "Put the preview anywhere." | If it overlaps the ROI, MSS captures the preview inside the capture → feedback loop. |
-| T13 | "The multiplier ladder is linear." | It is not. Steps are irregular in the video and paged in the UI (5 slots visible, `<` `>` arrows). |
-| T14 | "10 knives per level." | The knife-stack UI in the screenshots shows **~12 slots**. Video ladder showed 10 values. Unresolved. |
+| T13 | "The multiplier ladder is linear / unknown." | It is **measured and non-linear**. Exact 20-value table in `measurements/ladder.md`. Steps run 0.02 → 0.23 and are **not monotone** (0.05 → 0.04 at index 6), so it is a hand-authored table, not a formula. |
+| T14 | "10 knives per level." | Still **unresolved**. The video's 10 values actually spanned 12 ladder positions (indexes 3 and 5 were dropped), so "10 values" never proved 10 knives. The knife-slot count in the UI is unverified. |
 | T15 | "Just `pip install` what you need." | Installs land on **C:**. Forbidden. Vendor to D: or venv on D:. |
 | T16 | "`pydirectinput` is required because it's a game." | It is a **browser canvas**, receiving normal Win32 messages. Test the simplest option first. |
+| T17 | "`--no-preview` turns the preview off." | **It does not exist.** Preview is opt-in via `--preview` and is already off by default. argparse exits with code 2 on `--no-preview`. |
+| T18 | "The command lines in this plan are runnable as written." | They were not. 7 lines carried the non-existent `--no-preview` flag and were corrected on 2026-11-17. Run `python live_track.py -h` before copying any command. |
+| T19 | "`omega_fit` hit 500–600 °/s, so the estimator is still broken." | The first ~1 s after acquisition is a transient while the lstsq window fills. It produced fit values up to **602** against a physical cap of 343.5. `WARMUP_S = 1.0` now suppresses it, and every sample above 400 in the 2026-11-17 run was inside that window. Check the `t` column before blaming the estimator. |
+| T20 | "The target's big number is the current multiplier." | It is the **NEXT** multiplier. Proven arithmetically: bet 105, cashout 108.15 → current 1.03, while the target label read 1.06. The **gold knife** in the paged ladder is the current one. |
 
 ---
 
@@ -322,15 +326,21 @@ Each phase: **goal → steps → acceptance → rollback**. Do not skip acceptan
 
 These block every downstream estimate. Total cost: ~15 minutes.
 
-### 0.1 Read the full multiplier ladder
-1. Open the game in the browser, demo mode, level start.
-2. Click the **`>`** arrow under the target repeatedly; screenshot each page.
-3. Write every value in order to `measurements/ladder.md`.
-4. Record: value at each knife index, where the ladder resets (if it does), and which index
-   first reaches **≥ 2.00**.
+### 0.1 Read the full multiplier ladder — ✅ DONE 2026-11-17
+Result recorded in `measurements/ladder.md`. Complete 20-value table read from 4 live
+screenshots; independently confirmed against the 2026-11-16 video (10 shared points agree
+exactly, proving the ladder is deterministic across runs).
 
-**Acceptance:** a complete ordered list from 1.00 to ≥2.00, and a stated knife count.
-**Why:** kills T1. Changes the probability budget and the number of level transitions.
+```
+1.01  1.03  1.06  1.10  1.15
+1.19  1.24  1.30  1.35  1.42
+1.48  1.56  1.65  1.75  1.85
+1.98  2.12  2.28  2.47  2.70
+```
+
+**Answer: 17 throws to reach ≥ 2.00x** (throw 16 = 1.98, throw 17 = 2.12).
+**Still open:** whether a page 5 exists beyond 2.70, and whether the ladder resets at a
+level transition. The reset question decides the throw count and is asked in 0.3.
 
 ### 0.2 Confirm demo mode
 1. Record the account balance / stake UI state.
@@ -347,7 +357,7 @@ loop, **stop the project** — an auto-clicker on a real-money wagering product 
 
 ---
 
-## PHASE 1 — Restore correct rotation measurement (BLOCKING EVERYTHING)
+## PHASE 1 — Restore correct rotation measurement — ✅ PASSED 2026-11-17
 
 Nothing else matters until ω is right. This is a 3-edit change.
 
@@ -377,12 +387,26 @@ restart, a locked sign silently inverts every prediction for the rest of the run
 - Rationale: 205–260 °/s is the documented unstable ramp band; anything above 400 is
   physically impossible and means the measurement is corrupt.
 
-### 1.5 Acceptance test — MANDATORY
+### 1.5 Acceptance test — MANDATORY — ✅ PASSED 2026-11-17
+Result: `recordings/live_20261117_155446.csv`, 60 s, 1987 rows, 714 tracked.
+C1 p50 **195.9** (+0.7 % vs 194.5) · C2 **0 of 714** above 400 · C3 **78.9 %** slow ·
+C4 **18.9 %** fast · C5 **98.7 %** local direction. **VERDICT: PASS.**
+
+Two additions were required to reach this, both now in the code:
+- `WARMUP_S = 1.0` — no measurement is published until 1 s of unbroken confident
+  frames, because the first ~0.85 s after acquisition produced fit values up to 602 °/s.
+- C5 was rewritten. Whole-run monotonicity is impossible: the log reverses direction
+  (9 sign runs in 60 s, 4 CW / 5 CCW). C5 now measures local consistency.
+
 Run one live session, target visible, 60 seconds:
 ```
-python live_track.py --duration 60 --no-preview
+python live_track.py --duration 60
+python analyze_run.py
 ```
-Then:
+`analyze_run.py` implements every check below and exits non-zero on failure. It was
+validated against two known recordings: `live_20261116_110920.csv` → PASS (p50 194.9,
+0 of 809 above 400) and `live_20261116_112711.csv` → FAIL (p50 394.1, 613 of 1589 above
+400), reproducing the previously established figures exactly.
 
 | Check | Pass condition |
 |---|---|
@@ -390,7 +414,14 @@ Then:
 | Count of samples with `abs(omega_fit) > 400` | **0** |
 | Count in slow tier (150–240) | > 50 % of tracked samples |
 | Count in fast tier (280–360) | 5–40 % of tracked samples |
-| `angle_polar_deg` monotonicity | monotone over ≥ 95 % of consecutive tracked frames |
+| C5 `angle_polar_deg` local direction consistency | ≥ 95 % of frames agree with the local (rolling ±15 frame) median direction |
+
+**Known confound, state it before judging a failure:** the Phase 2 health gate is still
+the broken one, so 40–65 % of frames are marked lost and excluded. That does **not**
+corrupt the ω math (lost rows are written as `n_obstacles=-1`, filtered out), but a
+*bad* re-locate can move `cxl,cyl,r` to the wrong object and then ω is wrong for a
+different reason. Before declaring the fix failed, check the stdout log for
+`[relocate] recalibrated` lines whose centre differs from the startup centre.
 
 **If any check fails: do not proceed. Report the numbers. Rollback:**
 
@@ -418,7 +449,7 @@ Do not design a new threshold from intuition. Add these columns to the CSV
 
 ### 2.2 One diagnostic run
 ```
-python live_track.py --duration 120 --no-preview
+python live_track.py --duration 120
 ```
 Play normally, including one level transition if possible.
 
@@ -528,7 +559,7 @@ From a 60 s session with `T_total` still a placeholder:
 
 ### 5.1 Capture
 ```
-python live_track.py --duration 60 --no-preview
+python live_track.py --duration 60
 ```
 Throw manually, deliberately, five times with a wide gap. Log the frames.
 
@@ -680,8 +711,8 @@ Paste the results into the commit message. No exceptions.
 
 ```
 python -m py_compile live_track.py
-python live_track.py --bench 5 --no-preview
-python live_track.py --duration 60 --no-preview
+python live_track.py --bench 5
+python live_track.py --duration 60
 ```
 
 | # | Metric | Pre-fix baseline | Pass |
@@ -707,10 +738,10 @@ cd "D:\random works by gs\KN helper"
 python live_track.py
 
 # observer, no preview window, 60 s, logs CSV
-python live_track.py --duration 60 --no-preview
+python live_track.py --duration 60
 
 # timing benchmark only
-python live_track.py --bench 5 --no-preview
+python live_track.py --bench 5
 
 # manual calibration (from a screenshot you measured yourself)
 python live_track.py --cx 960 --cy 400 --r 126

@@ -25,11 +25,23 @@ equipped knife skin. It does not affect the values.
 
 ---
 
+## 1a. How the display works (confirmed live, 2026-11-17)
+
+- The ladder has an index **0** entry, **x1.00**, shown before the first throw.
+- The **gold knife** in the paged ladder marks the **CURRENT** multiplier.
+- The **big label on the target** shows the **NEXT** multiplier — what the next
+  successful throw will pay.
+- `CASHOUT = BET × current`. Verified numerically: bet 105, cashout 108.15 = 105 × 1.03.
+- Consequence: after `n` hits, **cashout = ladder[n]** and **target label = ladder[n+1]**.
+- A level has **11 knife slots** (11 circles + a crossed-swords badge).
+- Level counter reads **1/3** — a run is three levels.
+
 ## 2. The ladder
 
 | # | Multiplier | Δ step | Δ % |
 |---|-----------|--------|-----|
-| 1 | 1.01 | — | — |
+| 0 | 1.00 | — | (shown before any throw) |
+| 1 | 1.01 | +0.01 | +1.00 % |
 | 2 | 1.03 | +0.02 | +1.98 % |
 | 3 | 1.06 | +0.03 | +2.91 % |
 | 4 | 1.10 | +0.04 | +3.77 % |
@@ -58,10 +70,13 @@ and must be treated as literal data.
 
 ## 3. Headline number
 
-**2.00x is reached on throw 17 — not 14.**
+**2.00x is reached on the 17th hit — not 14.**
 
-- Throw 16 → **x1.98** (short by 0.02)
-- Throw 17 → **x2.12** ✅
+- Hit 16 → cashout **x1.98** (short by 0.02) while the target label already reads 2.12
+- Hit 17 → cashout **x2.12** ✅
+
+Careful: the number on the target is the *next* multiplier, so it shows 2.12 one hit
+before the payout actually reaches 2.12. The payout is what must cross 2.00.
 
 The "14 knives" estimate came from assuming a clean triangular series
 (+0.01, +0.02, +0.03, +0.04, …). That series breaks at index 5/6
@@ -138,9 +153,10 @@ Inverted — the per-throw hit rate required to hit a target success rate:
    levels and the ladder restarts at 1.01 each level, then 2.00x may be
    unreachable inside one level and the throw count changes entirely.
    **This is the single most important remaining question.**
-3. **What is displayed at a fresh run, before any throw?** The user reported
-   "1.1x", but the ladder's first value is 1.01 and 1.10 is index 4. Needs
-   resolving — possibly the gold highlight marks a mid-run position.
+3. **✅ RESOLVED — what is displayed at a fresh run?** `x1.01`. Confirmed from a live
+   screen capture at level start (2026-11-17): the bullseye carries a darker label reading
+   **x1.01**. This is ladder index 1. The earlier "1.1x" report was a misread of `x1.01`,
+   and 1.10 is index 4 — it was never the base.
 4. Values beyond 2.70.
 
 ---

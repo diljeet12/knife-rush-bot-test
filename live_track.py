@@ -93,6 +93,19 @@ MIN_RUN_DEG = 3.0
 MAX_OBJ_DEG = 60.0
 MIN_CONF = 0.30
 MIN_SHARP = 0.04
+# Minimum obstacle count meaning "the log is on screen".
+# Data (2026-11-17, 120 s run, 3147 frames): obstacle counts are bimodal.
+#   0-6  -> 31 frames total      (log absent)
+#   7    -> 245 frames           (log present, only 7 detections)
+#   8-16 -> 2115 frames          (log present)
+# The 6/7 boundary is a clean valley, so 7 is the correct cut. The old
+# value of 8 silently discarded all 245 frames sitting exactly on 7.
+MIN_OBSTACLES = 7
+# A fresh acquisition needs this many seconds of CONTINUOUS confident frames
+# before omega_fit is trusted. Measured 2026-11-17: the first ~0.85 s after
+# acquisition produced fit values up to 602 deg/s while the lstsq window was
+# still filling, although the log is physically capped near 343 deg/s.
+WARMUP_S = 1.0
 
 IMPACT_GAME_DEG = 180.0           # the knife always arrives here (0 = up, clockwise)
 DEFAULT_FLIGHT_T = 0.150          # assumed click->stick time for the ghost lead
@@ -828,6 +841,13 @@ def main() -> int:
     cor_x0 = int(max(0, cxl - 0.22 * r))
     cor_x1 = int(min(bbox["width"], cxl + 0.22 * r))
 
+    # Waiting-knife slot, below the log. Used for flight timing: the slot is
+    # occupied between throws and empty while the knife is in the air.
+    slot_y0 = int(cyl + 2.00 * r)
+    slot_y1 = int(min(bbox["height"], cyl + 2.80 * r))
+    slot_x0 = int(max(0, cxl - 0.25 * r))
+    slot_x1 = int(min(bbox["width"], cxl + 0.25 * r))
+
     # ---- state ----------------------------------------------------------- #
     prev_tex = prev_pro = None
     angle = 0.0
@@ -845,12 +865,18 @@ def main() -> int:
     hk = {}
     hud_period = 1.0 / max(1.0, args.hud_fps)
     omega_fit = 0.0
+    # Stability flag (EXECUTION_PLAN 1.4). False until the fit lands in a
+    # physically plausible band. Nothing fires while this is False.
+    omega_stable = False
+    # Warmup latch: earned once, cleared only by an explicit re-locate.
+    warm = False
+    warm_since = None
     t_start = time.perf_counter()
 
-    # --- FIX 1: sign normalisation ---
-    sign_decided = False
-    sign = 1.0
-    sign_buffer = []
+    # There is deliberately NO sign lock here. The measured sign is kept as-is
+    # and logged (it is the sign of omega_fit / dtheta). A locked sign inverts
+    # every downstream prediction the moment the log reverses, which the
+    # 2026-11-16 video shows happening. See EXECUTION_PLAN 3.3.
 
     # --- FIX 2: target-lost detection ---
     target_lost = False
@@ -867,7 +893,9 @@ def main() -> int:
     writer.writerow(["t", "dt_ms", "fps", "angle_polar_deg", "dtheta_deg",
                      "omega_inst_dps", "omega_fit_dps", "conf_tex", "sharp_tex",
                      "conf_pro", "n_obstacles", "widest_gap_deg",
-                     "widest_gap_game_deg", "corridor_motion"])
+                     "widest_gap_game_deg", "corridor_motion",
+                     "sky_now", "r", "cx", "cy", "omega_stable",
+                     "tracking_ok", "lost_reason", "slot_frac"])
 
     timings = collections.defaultdict(list)
     _where = ("overlay on the game" if hud.ok else "headless")
@@ -919,6 +947,16 @@ def main() -> int:
 
             good = (conf_tex >= MIN_CONF and sharp_tex >= MIN_SHARP
                     and abs(dtheta) < 90.0)
+            # Warmup LATCHES once earned. It must NOT be re-earned after every
+            # single bad frame: measured 2026-11-17, requiring an unbroken
+            # chain rejected 448 frames (14 % of the run) while the log was
+            # present with >= 8 obstacles. Only a re-locate resets it, because
+            # only a re-locate empties angle_hist and refills the fit window.
+            if good and not warm:
+                if warm_since is None:
+                    warm_since = t_now
+                elif t_now - warm_since >= WARMUP_S:
+                    warm = True
             if not good:
                 dtheta = 0.0            # never integrate garbage into the angle
             angle = (angle + dtheta) % 360.0
@@ -941,21 +979,13 @@ def main() -> int:
                     slope = np.linalg.lstsq(A, un, rcond=None)[0][0]
                     omega_fit = math.degrees(float(slope))
 
-            # ---- FIX 1: sign normalisation ----
-            # Decide rotation direction once from the first ~0.5 s of confident frames.
-            # Rotation is one-directional; the correlation peak sign is arbitrary.
-            if not sign_decided and good and abs(omega_fit) > 20.0:
-                sign_buffer.append(omega_fit)
-                if len(sign_buffer) >= 15:  # ~0.5 s at 30 Hz
-                    median_fit = float(np.median(sign_buffer))
-                    sign = 1.0 if median_fit > 0 else -1.0
-                    sign_decided = True
-                    print(f"[sign] rotation direction locked: {'CW' if sign > 0 else 'CCW'} (median {median_fit:.1f} deg/s)")
-            if sign_decided:
-                omega_fit *= sign
-                omega_inst *= sign
-                dtheta *= sign
-                angle = (angle + dtheta) % 360.0  # re-apply with correct sign
+            # ---- stability gate (EXECUTION_PLAN 1.4) --------------------- #
+            # |omega| < 60  -> fit has not converged yet (or target is idle)
+            # |omega| > 400 -> physically impossible, so the fit is corrupt.
+            # Measured truth: two tiers at 194.5 and 321.2 deg/s, absolute
+            # observed maximum 343.5. Anything above 400 is an artefact.
+            # Phase 4 prediction must refuse to fire while this is False.
+            omega_stable = (warm and 60.0 <= abs(omega_fit) <= 400.0)
 
             # ---- occupancy / gaps ---------------------------------------- #
             # Build the sky test ONCE on the small ROI, then remap the 1-channel
@@ -977,7 +1007,21 @@ def main() -> int:
             # the sky annulus around the target centre is still >35% sky.
             # If not, we're blind - don't log zeros as data.
             sky_now = sky_annulus_frac(frame, cxl, cyl, r)
-            tracking_ok = (len(obs) >= 8 and sky_now >= 0.35)
+            tracking_ok = (warm and len(obs) >= MIN_OBSTACLES and sky_now >= 0.35)
+
+            # Phase 2 instrumentation: lost_reason for offline analysis ONLY.
+            # 0 = none, 1 = too few obstacles, 2 = sky low, 3 = both.
+            # We LOG this but DO NOT CHANGE the tracking_ok logic yet.
+            lost_reason = 0
+            if not tracking_ok:
+                if not warm:
+                    lost_reason = 0  # warmup, not a real loss
+                elif len(obs) < MIN_OBSTACLES and sky_now < 0.35:
+                    lost_reason = 3
+                elif len(obs) < MIN_OBSTACLES:
+                    lost_reason = 1
+                elif sky_now < 0.35:
+                    lost_reason = 2
 
             if tracking_ok:
                 target_lost = False
@@ -1004,6 +1048,18 @@ def main() -> int:
             else:
                 corridor = 0.0
 
+            # ---- waiting-knife slot (flight timing) ----------------------- #
+            # Non-sky fraction of a fixed box below the log. The box holds the
+            # loaded knife between throws and is empty while a knife is in the
+            # air, so this signal brackets every throw without new geometry.
+            sl = frame[slot_y0:slot_y1, slot_x0:slot_x1]
+            if sl.size:
+                sb = sl[:, :, 0].astype(np.int16)
+                sr = sl[:, :, 2].astype(np.int16)
+                slot_frac = float((~((sb > sr + 25) & (sb > 90))).mean())
+            else:
+                slot_frac = 0.0
+
             # ---- FIX 3: periodic re-locate (every 0.5 s) ----
             if t_now - last_relocate >= RELOCATE_PERIOD:
                 last_relocate = t_now
@@ -1027,10 +1083,14 @@ def main() -> int:
                         cor_y1 = int(min(bbox["height"], cyl + r * 1.95))
                         cor_x0 = int(max(0, cxl - 0.22 * r))
                         cor_x1 = int(min(bbox["width"], cxl + 0.22 * r))
+                        slot_y0 = int(cyl + 2.00 * r)
+                        slot_y1 = int(min(bbox["height"], cyl + 2.80 * r))
+                        slot_x0 = int(max(0, cxl - 0.25 * r))
+                        slot_x1 = int(min(bbox["width"], cxl + 0.25 * r))
                         prev_tex = prev_pro = None
                         angle_hist.clear()
-                        sign_decided = False
-                        sign_buffer = []
+                        warm = False
+                        warm_since = None
                         target_lost = False
                         print(f"[relocate] recalibrated ({cx:.1f}, {cy:.1f}) r={r:.1f}")
 
@@ -1042,21 +1102,22 @@ def main() -> int:
                 fps_n = 0
                 fps_t0 = t_now
 
-            # Only log real tracking data. When target_lost, write a marker
-            # row with n_obstacles=-1 so analysis can filter it out.
-            if target_lost:
-                rows.append((round(t_now - t_start, 4), round(dt * 1000.0, 2),
-                              round(fps_shown, 1), -1.0, 0.0, 0.0, 0.0,
-                              0.0, 0.0, 0.0, -1, 0.0, 0.0, round(corridor, 4)))
-            else:
-                rows.append((round(t_now - t_start, 4), round(dt * 1000.0, 2),
-                              round(fps_shown, 1), round(polar_to_game(angle), 2),
-                              round(dtheta, 3), round(omega_inst, 1),
-                              round(omega_fit, 1), round(conf_tex, 3),
-                              round(sharp_tex, 3), round(conf_pro, 3), len(obs),
-                              round(widest[1], 2),
-                              round(polar_to_game(widest[0] + widest[1] / 2.0), 2),
-                              round(corridor, 4)))
+            # Phase 2: EVERY row carries its real measurements. `tracking_ok`
+            # marks whether the OLD gate accepted the frame; nothing is
+            # discarded, so false positives can be counted offline.
+            rows.append((round(t_now - t_start, 4), round(dt * 1000.0, 2),
+                         round(fps_shown, 1), round(polar_to_game(angle), 2),
+                         round(dtheta, 3), round(omega_inst, 1),
+                         round(omega_fit, 1), round(conf_tex, 3),
+                         round(sharp_tex, 3), round(conf_pro, 3), len(obs),
+                         round(widest[1], 2),
+                         round(polar_to_game(widest[0] + widest[1] / 2.0), 2),
+                         round(corridor, 4),
+                         round(sky_now, 4), round(r, 1),
+                         round(cx, 1), round(cy, 1),
+                         int(omega_stable),
+                         1 if tracking_ok else 0, lost_reason,
+                         round(slot_frac, 4)))
             if len(rows) >= 60:
                 writer.writerows(rows)
                 csv_fh.flush()
@@ -1201,8 +1262,14 @@ def main() -> int:
                         cor_y1 = int(min(bbox["height"], cyl + r * 1.95))
                         cor_x0 = int(max(0, cxl - 0.22 * r))
                         cor_x1 = int(min(bbox["width"], cxl + 0.22 * r))
+                        slot_y0 = int(cyl + 2.00 * r)
+                        slot_y1 = int(min(bbox["height"], cyl + 2.80 * r))
+                        slot_x0 = int(max(0, cxl - 0.25 * r))
+                        slot_x1 = int(min(bbox["width"], cxl + 0.25 * r))
                         prev_tex = prev_pro = None
                         angle_hist.clear()
+                        warm = False
+                        warm_since = None
                         print(f"[locate] recalibrated ({cx:.1f}, {cy:.1f}) r={r:.1f}")
                 elif key == "r":
                     angle_hist.clear()
