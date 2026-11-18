@@ -272,29 +272,44 @@ def refine_circle(full: np.ndarray, cx: float, cy: float, r0: float,
     well as the radius.
     """
     h, w = full.shape[:2]
-    b = full[:, :, 0].astype(np.int16)
-    rc = full[:, :, 2].astype(np.int16)
-    sky = (b > rc + 25) & (b > 90)
 
     lo = int(max(4, r0 * 0.55))
     hi = int(min(min(w, h) * 0.5, r0 * 1.70))
     if hi <= lo:
         return float(cx), float(cy), float(r0)
 
-    pts, radii = [], []
-    for k in range(n_rays):
-        a = k * (2.0 * math.pi / n_rays)
-        ca, sa = math.cos(a), math.sin(a)
-        for d in range(lo, hi):
-            px, py = int(cx + d * ca), int(cy + d * sa)
-            if px < 1 or py < 1 or px >= w - 1 or py >= h - 1:
-                break
-            if sky[py, px]:
-                radii.append(d)
-                pts.append((px, py))
-                break
-    if len(radii) < 120:
+    # Build the sky mask on the box that is actually sampled, not on the whole
+    # frame. Rays never travel further than `hi`, so this is exact -- but on a
+    # 1920x1080 grab it is ~16x less work (~130k px instead of 2.07M).
+    bx0 = int(max(0, cx - hi - 2))
+    bx1 = int(min(w, cx + hi + 3))
+    by0 = int(max(0, cy - hi - 2))
+    by1 = int(min(h, cy + hi + 3))
+    sub = full[by0:by1, bx0:bx1]
+    sb = sub[:, :, 0].astype(np.int16)
+    sr = sub[:, :, 2].astype(np.int16)
+    sky = (sb > sr + 25) & (sb > 90)
+    sh, sw = sky.shape
+
+    # Vectorised ray scan. The original walked every ray one integer at a time
+    # in Python: 720 rays x ~120 steps = ~86 000 interpreter steps, measured at
+    # 23-32 ms per call. Identical arithmetic, done as array work instead.
+    ds = np.arange(lo, hi, dtype=np.float64)
+    ang = np.arange(n_rays, dtype=np.float64) * (2.0 * math.pi / n_rays)
+    xs = (cx + ds[:, None] * np.cos(ang)[None, :]).astype(np.int32)
+    ys = (cy + ds[:, None] * np.sin(ang)[None, :]).astype(np.int32)
+    inb = (xs >= 1) & (ys >= 1) & (xs < w - 1) & (ys < h - 1)
+    lx, ly = xs - bx0, ys - by0
+    ok = inb & (lx >= 0) & (lx < sw) & (ly >= 0) & (ly < sh)
+    hit = np.zeros(xs.shape, dtype=bool)
+    hit[ok] = sky[ly[ok], lx[ok]]
+    found = hit.any(axis=0)
+    if int(found.sum()) < 120:
         return float(cx), float(cy), float(r0)
+    sel = np.where(found)[0]
+    first = hit.argmax(axis=0)[sel]
+    radii = ds[first].tolist()
+    pts = list(zip(xs[first, sel].tolist(), ys[first, sel].tolist()))
 
     rr = float(np.median(radii))
     keep = [p for p, d in zip(pts, radii) if abs(d - rr) < 0.10 * rr]
@@ -337,9 +352,27 @@ def sky_annulus_frac(full: np.ndarray, cx: float, cy: float,
     return float((((b > rc + 25) & (b > 90))).mean())
 
 
-def screen_sky_frac(full: np.ndarray) -> float:
-    b = full[:, :, 0].astype(np.int16)
-    rc = full[:, :, 2].astype(np.int16)
+def screen_sky_frac(full: np.ndarray, downscale: int = 1) -> float:
+    """Fraction of the whole screen that is sky-coloured.
+
+    `downscale` exists because this is used as a cheap "is the game even on
+    screen?" pre-check. Measured on saved 1920x1080 shots (2026-11-17):
+
+        full 1/1  12.60 ms      1/2  2.76 ms
+        1/4        0.78 ms      1/8  0.14 ms
+
+    and the VALUE is unchanged by downscaling -- gameplay reads 58.2 % at 1/1
+    and 58.5 % at 1/4; menus read 5.4 % and 4.7 %. The separation survives, so
+    there is no reason to pay 12.6 ms for it.
+    """
+    img = full
+    if downscale > 1:
+        img = cv2.resize(full,
+                         (max(1, full.shape[1] // downscale),
+                          max(1, full.shape[0] // downscale)),
+                         interpolation=cv2.INTER_AREA)
+    b = img[:, :, 0].astype(np.int16)
+    rc = img[:, :, 2].astype(np.int16)
     return float(((b > rc + 25) & (b > 90)).mean())
 
 
@@ -380,7 +413,18 @@ def auto_locate_candidates(full: np.ndarray) -> list:
 
 def find_target(full: np.ndarray, verbose: bool = True):
     """Locate the target and refuse anything that is not floating on sky."""
-    total_sky = screen_sky_frac(full)
+    # Cheap gate first. Measured on saved screenshots: the game reads
+    # 58.1-58.5 % sky, while menus / anything else read 4.7-5.4 %. Nothing
+    # was ever observed in between. Below 20 % there is nothing to find, so
+    # the 94 ms Hough + blob + refine pipeline is skipped outright.
+    # This is the difference between a failed relocate costing ~95 ms and
+    # ~1 ms, and it cannot reject the game: 20 % is 38 points below gameplay.
+    total_sky = screen_sky_frac(full, downscale=4)
+    if total_sky < 0.20:
+        if verbose:
+            print(f"[locate] screen is {100 * total_sky:.1f}% sky -- not the "
+                  f"game, skipping search")
+        return None
     rejected = []
     for name, finder in (("hough", hough_candidates),
                          ("blob", auto_locate_candidates)):
@@ -454,9 +498,10 @@ class Hud:
     BAD = "#ff3b3b"
 
     def __init__(self, sw: int, sh: int, enabled: bool = True,
-                 use_wda: bool = True):
+                 use_wda: bool = True, geometry: bool = False):
         self.ok = False
         self.closed = False
+        self.geometry = geometry
         if not enabled:
             self.closed = True
             return
@@ -540,6 +585,23 @@ class Hud:
 
             c.create_rectangle(x0, y0, x1, y1, outline=ink, width=2)
             c.create_oval(cx - r, cy - r, cx + r, cy + r, outline=ink, width=2)
+
+            if self.geometry:
+                # The measurement bands, drawn so the operator can see on the
+                # real game that the geometry lands where the code thinks.
+                #
+                # Coloured with INK on purpose. INK is blue-dominant
+                # (B > R + 25 and B > 90), so the sky mask classifies it as
+                # background. Even if WDA_EXCLUDEFROMCAPTURE fails and these
+                # lines are photographed, they can never be read as a knife.
+                for mult in (0.55, 0.92, 0.95, 1.42):
+                    c.create_oval(cx - mult * r, cy - mult * r,
+                                  cx + mult * r, cy + mult * r,
+                                  outline=ink, width=1)
+                # waiting-knife slot: 2.00R..2.80R below centre, +-0.25R wide
+                c.create_rectangle(cx - 0.25 * r, cy + 2.00 * r,
+                                   cx + 0.25 * r, cy + 2.80 * r,
+                                   outline=ink, width=1)
 
             for a, _w in d["obs"]:
                 pa = math.radians(a)
@@ -722,6 +784,10 @@ def main() -> int:
     ap.add_argument("--no-wda", action="store_true",
                     help="do not hide the overlay from screen capture "
                          "(needed to screenshot-check the overlay geometry)")
+    ap.add_argument("--geometry", action="store_true",
+                    help="also draw the measurement bands (0.55R, 0.92R, "
+                         "0.95R, 1.42R) and the knife slot. Drawn in "
+                         "sky-coloured ink so it can never be read as a knife.")
     ap.add_argument("--hud-fps", type=float, default=30.0,
                     help="overlay redraw rate (default 30)")
     ap.add_argument("--bench", type=float, default=None,
@@ -827,7 +893,8 @@ def main() -> int:
     preview = Preview(args.preview_scale,
                       place_preview(bbox, sw, sh, args.preview_scale),
                       enabled=not args.no_preview)
-    hud = Hud(sw, sh, enabled=not args.no_hud, use_wda=not args.no_wda)
+    hud = Hud(sw, sh, enabled=not args.no_hud, use_wda=not args.no_wda,
+              geometry=args.geometry)
     hud.verify(sct, mon)
 
     cxl, cyl = cx - x0, cy - y0
@@ -886,6 +953,10 @@ def main() -> int:
     # --- FIX 3: periodic re-locate ---
     last_relocate = t_start
     RELOCATE_PERIOD = 0.50
+    RELOCATE_PERIOD_MAX = 4.0
+    # Backoff state for a failed relocate. See the else-branch below.
+    relocate_wait = RELOCATE_PERIOD
+    relocate_fails = 0
 
     csv_path = os.path.join(args.outdir, f"live_{stamp}.csv")
     csv_fh = open(csv_path, "w", newline="", encoding="utf-8")
@@ -1061,7 +1132,7 @@ def main() -> int:
                 slot_frac = 0.0
 
             # ---- FIX 3: periodic re-locate (every 0.5 s) ----
-            if t_now - last_relocate >= RELOCATE_PERIOD:
+            if t_now - last_relocate >= relocate_wait:
                 last_relocate = t_now
                 # Verify the target is still where we think it is by checking
                 # the sky annulus on the CURRENT frame (in ROI coords).
@@ -1093,6 +1164,19 @@ def main() -> int:
                         warm_since = None
                         target_lost = False
                         print(f"[relocate] recalibrated ({cx:.1f}, {cy:.1f}) r={r:.1f}")
+                        relocate_wait = RELOCATE_PERIOD
+                        relocate_fails = 0
+                    else:
+                        # The search found nothing. Measured 2026-11-17: a 20 s
+                        # menu screen produced 40 failed full-screen searches
+                        # and 19.6 s of frozen frames. Back off instead of
+                        # hammering twice a second.
+                        relocate_fails += 1
+                        relocate_wait = min(RELOCATE_PERIOD_MAX,
+                                            RELOCATE_PERIOD * (2 ** relocate_fails))
+                else:
+                    relocate_wait = RELOCATE_PERIOD
+                    relocate_fails = 0
 
             ring.append(frame.copy())
 

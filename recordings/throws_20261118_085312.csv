@@ -1,0 +1,14 @@
+t,event,aim_deg,omega,gap_w,slack,t_total,slot,n_obs,detail
+1.103,throw,245.7,-175.4,72.6,4.4,0.23,0.1521,9,now fast pred=205.3 dry
+2.27,no_launch_seen,245.7,-201.7,72.6,4.4,0.23,0.1571,9,hit=0 obs 9->9 slot_base=0.15714285714285714
+2.967,throw,244.9,-195.9,72.6,9.9,0.23,0.1552,10,now fast pred=199.9 dry
+4.088,no_launch_seen,244.9,-191.4,72.6,9.9,0.23,0.1521,10,hit=0 obs 10->10 slot_base=0.15714285714285714
+4.828,throw,240.9,-190.9,72.6,12.8,0.23,0.0,10,now fast pred=197.0 dry
+5.135,landed,240.9,-131.8,72.6,12.8,0.23,0.1516,7,press_to_launch_ms=65.8 slot_empty_ms=216.3 press_to_reload_ms=282.0 pred_land=197.0 hit=0 obs 10->7
+5.368,throw,149.1,146.1,43.1,12.3,0.23,0.1521,7,now fast pred=182.7 dry
+6.501,no_launch_seen,149.1,193.8,43.1,12.3,0.23,0.1552,7,hit=0 obs 7->7 slot_base=0.15714285714285714
+6.701,throw,131.6,197.0,73.1,26.9,0.23,0.1521,7,now fast pred=176.9 dry
+10.003,no_launch_seen,131.6,192.9,73.1,26.9,0.23,0.1571,7,hit=0 obs 7->7 slot_base=0.15714285714285714
+10.119,throw,156.5,71.6,42.8,7.9,0.23,0.1552,7,now slow pred=173.0 dry
+11.335,no_launch_seen,156.5,201.4,42.8,7.9,0.23,0.1584,7,hit=0 obs 7->7 slot_base=0.15714285714285714
+11.569,throw,123.0,197.9,28.7,,0.23,0.0641,8,sched fast pred=nan dry

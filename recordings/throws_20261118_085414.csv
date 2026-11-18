@@ -1,0 +1,9 @@
+t,event,aim_deg,omega,gap_w,slack,t_total,slot,n_obs,detail
+2.932,throw,127.2,193.6,62.2,16.3,0.23,0.1644,13,now fast pred=171.7 dry
+4.081,no_launch_seen,127.2,194.2,62.2,16.3,0.23,0.1614,13,hit=0 obs 13->13 slot_base=0.1614018544711614
+4.773,throw,127.9,174.3,62.2,12.6,0.23,0.1614,14,now fast pred=168.0 dry
+5.849,landed,127.9,175.3,62.2,12.6,0.23,0.1323,14,press_to_launch_ms=954.8 slot_empty_ms=94.9 press_to_reload_ms=1049.7 pred_land=168.0 hit=0 obs 14->14
+6.604,throw,125.4,192.5,62.2,14.3,0.23,0.1674,14,now fast pred=169.7 dry
+7.951,landed,125.4,-11.3,62.2,14.3,0.23,0.0863,2,press_to_launch_ms=565.9 slot_empty_ms=749.6 press_to_reload_ms=1315.5 pred_land=169.7 hit=0 obs 14->2
+8.508,throw,170.0,2.4,44.6,5.8,0.23,0.1609,7,now slow pred=170.0 dry
+8.508,relocate,,,,,,0.1609,7,"(105,221,r24)"

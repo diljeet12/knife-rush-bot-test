@@ -1,0 +1,835 @@
+t,event,aim_deg,omega,gap_w,slack,t_total,slot,n_obs,detail
+1.418,throw,240.7,-190.9,73.1,8.5,0.205,0.1586,7,now fast pred=201.5
+1.64,round_dead,,,,,,0.1586,0,slot stayed empty; state released
+1.892,throw,225.4,-169.4,61.7,13.7,0.205,0.1581,8,now fast pred=190.7
+2.005,round_dead,,,,,,0.1586,0,slot stayed empty; state released
+2.12,throw,241.3,-221.9,61.7,8.6,0.205,0.1586,8,now fast pred=195.8
+2.225,round_dead,,,,,,0.1616,0,slot stayed empty; state released
+2.264,throw,214.8,-205.1,61.7,17.1,0.205,0.1581,8,now fast pred=172.8
+2.739,round_dead,,,,,,0.0,0,slot stayed empty; state released
+2.853,throw,228.1,-189.5,24.2,,0.205,0.0,9,sched fast pred=nan
+3.034,landed,228.1,-154.9,24.2,nan,0.205,0.0928,9,press_to_launch_ms=8.7 slot_empty_ms=123.7 press_to_reload_ms=132.4 pred_land=nan hit=0 obs 9->9
+4.254,throw,130.6,200.1,31.2,,0.205,0.1635,7,sched fast pred=nan
+4.52,round_dead,,,,,,0.1648,0,slot stayed empty; state released
+4.554,throw,131.2,198.3,73.3,22.0,0.205,0.1648,7,now fast pred=171.8
+4.66,round_dead,,,,,,0.1648,0,slot stayed empty; state released
+4.688,throw,157.5,193.9,73.6,13.0,0.205,0.1648,7,now fast pred=197.3
+4.955,landed,157.5,193.9,73.6,13.0,0.205,0.1257,8,press_to_launch_ms=203.3 slot_empty_ms=20.5 press_to_reload_ms=223.7 pred_land=197.3 hit=1 obs 7->8
+4.989,throw,129.9,193.9,34.0,,0.205,0.1528,8,sched fast pred=nan
+5.272,round_dead,,,,,,0.1586,0,slot stayed empty; state released
+5.316,throw,131.1,193.3,73.1,20.7,0.205,0.1616,8,now fast pred=170.7
+5.455,landed,131.1,192.0,73.1,20.7,0.205,0.1064,9,press_to_launch_ms=66.2 slot_empty_ms=53.1 press_to_reload_ms=119.3 pred_land=170.7 hit=1 obs 8->9
+5.455,throw,155.8,192.0,59.5,8.1,0.205,0.1064,9,now fast pred=195.1
+5.646,round_dead,,,,,,0.1586,0,slot stayed empty; state released
+5.707,throw,136.2,124.7,61.7,6.1,0.205,0.1586,9,now slow pred=161.8
+5.978,round_dead,,,,,,0.1581,0,slot stayed empty; state released
+6.12,throw,134.5,194.6,31.0,,0.205,0.1586,10,sched fast pred=nan
+6.259,round_dead,,,,,,0.1586,0,slot stayed empty; state released
+6.352,throw,133.5,198.2,50.6,12.9,0.205,0.1616,10,now fast pred=174.1
+6.397,round_dead,,,,,,0.1616,0,slot stayed empty; state released
+6.418,throw,143.3,196.2,50.6,15.3,0.205,0.1616,10,now fast pred=183.5
+6.471,round_dead,,,,,,0.1081,0,slot stayed empty; state released
+6.851,throw,130.3,193.3,35.8,,0.205,0.1586,11,sched fast pred=nan
+7.136,round_dead,,,,,,0.1635,0,slot stayed empty; state released
+7.17,throw,129.4,203.5,61.7,15.5,0.205,0.1635,11,now fast pred=171.1
+7.25,round_dead,,,,,,0.1581,0,slot stayed empty; state released
+7.282,throw,149.1,186.3,61.7,17.1,0.205,0.0733,11,now fast pred=187.3
+7.371,landed,149.1,177.0,61.7,17.1,0.205,0.129,12,press_to_launch_ms=6.2 slot_empty_ms=61.5 press_to_reload_ms=67.6 pred_land=187.3 hit=1 obs 11->12
+7.677,throw,148.6,176.6,39.0,8.2,0.205,0.0463,13,now fast pred=184.8
+7.869,round_dead,,,,,,0.1586,0,slot stayed empty; state released
+7.96,throw,131.9,200.2,31.0,,0.205,0.1586,13,sched fast pred=nan
+8.235,round_dead,,,,,,0.1586,0,slot stayed empty; state released
+8.263,throw,138.4,193.4,39.3,11.2,0.205,0.1586,13,now fast pred=178.0
+8.322,round_dead,,,,,,0.1586,0,slot stayed empty; state released
+8.724,throw,138.1,199.9,33.8,9.5,0.205,0.1472,14,now fast pred=179.1
+8.985,round_dead,,,,,,0.1586,0,slot stayed empty; state released
+9.055,throw,131.2,191.6,50.6,9.3,0.205,0.1616,14,now fast pred=170.5
+9.096,round_dead,,,,,,0.1616,0,slot stayed empty; state released
+9.12,throw,144.3,196.5,50.6,14.2,0.205,0.1616,14,now fast pred=184.6
+9.435,round_dead,,,,,,0.1586,0,slot stayed empty; state released
+9.454,throw,136.2,196.5,39.0,9.5,0.205,0.1586,15,now fast pred=176.5
+9.672,round_dead,,,,,,0.0,0,slot stayed empty; state released
+11.474,throw,153.7,190.9,62.0,11.6,0.205,0.1635,7,now fast pred=192.9
+11.637,round_dead,,,,,,0.1648,0,slot stayed empty; state released
+11.669,throw,125.1,197.7,61.7,10.0,0.205,0.1648,7,now fast pred=165.7
+11.876,landed,125.1,71.3,61.7,10.0,0.205,0.1099,8,press_to_launch_ms=107.5 slot_empty_ms=66.7 press_to_reload_ms=174.2 pred_land=165.7 hit=1 obs 7->8
+12.872,throw,130.1,196.5,54.4,11.0,0.205,0.1648,8,now fast pred=170.3
+13.141,round_dead,,,,,,0.1648,0,slot stayed empty; state released
+13.169,throw,124.9,196.5,61.7,9.5,0.205,0.1635,8,now fast pred=165.2
+13.214,round_dead,,,,,,0.1635,0,slot stayed empty; state released
+13.253,throw,141.4,195.5,62.0,23.0,0.205,0.1581,8,now fast pred=181.5
+13.386,landed,141.4,203.6,62.0,23.0,0.205,0.1279,9,press_to_launch_ms=37.1 slot_empty_ms=63.2 press_to_reload_ms=100.4 pred_land=181.5 hit=1 obs 8->9
+13.605,throw,136.6,172.1,50.4,10.6,0.205,0.1586,9,now fast pred=171.9
+13.79,landed,136.6,183.3,50.4,10.6,0.205,0.096,10,press_to_launch_ms=101.0 slot_empty_ms=55.1 press_to_reload_ms=156.2 pred_land=171.9 hit=1 obs 9->10
+13.919,throw,130.8,162.7,73.6,14.4,0.205,0.1586,10,now fast pred=164.2
+14.237,round_dead,,,,,,0.1581,0,slot stayed empty; state released
+14.273,throw,139.6,193.2,34.3,9.9,0.205,0.1003,10,now fast pred=179.2
+14.309,round_dead,,,,,,0.0,0,slot stayed empty; state released
+14.746,throw,134.8,172.5,50.9,9.1,0.205,0.1444,12,now fast pred=170.2
+14.989,round_dead,,,,,,0.1586,0,slot stayed empty; state released
+15.101,throw,133.2,192.5,50.6,11.5,0.205,0.1616,12,now fast pred=172.7
+15.13,round_dead,,,,,,0.1616,0,slot stayed empty; state released
+15.155,throw,146.4,192.8,50.4,12.7,0.205,0.1616,12,now fast pred=186.0
+15.686,round_dead,,,,,,0.1616,0,slot stayed empty; state released
+15.719,throw,127.3,198.7,62.0,12.5,0.205,0.1616,13,now fast pred=168.0
+15.937,round_dead,,,,,,0.1635,0,slot stayed empty; state released
+16.125,throw,140.4,195.8,33.8,9.8,0.205,0.0463,14,now fast pred=180.5
+16.161,round_dead,,,,,,0.096,0,slot stayed empty; state released
+16.986,throw,138.1,170.5,38.8,,0.205,0.1586,13,sched fast pred=nan
+17.202,round_dead,,,,,,0.1635,0,slot stayed empty; state released
+17.303,throw,134.2,197.4,39.0,,0.205,0.1635,14,sched fast pred=nan
+17.706,round_dead,,,,,,0.1586,0,slot stayed empty; state released
+17.767,throw,127.7,246.5,34.0,8.7,0.205,0.1586,15,now fast pred=178.2
+18.025,round_dead,,,,,,0.1616,0,slot stayed empty; state released
+19.78,throw,201.6,-126.9,47.9,13.0,0.205,0.1616,7,now slow pred=175.6
+19.871,round_dead,,,,,,0.1635,0,slot stayed empty; state released
+20.142,throw,226.7,-192.2,40.6,,0.205,0.1648,7,sched fast pred=nan
+20.203,round_dead,,,,,,0.0,0,slot stayed empty; state released
+20.562,throw,219.5,-130.6,49.9,5.7,0.205,0.0,8,now slow pred=192.7
+20.969,round_dead,,,,,,0.0,0,slot stayed empty; state released
+21.252,throw,211.8,-124.2,62.2,18.2,0.205,0.1586,9,now slow pred=186.4
+21.355,round_dead,,,,,,0.1586,0,slot stayed empty; state released
+21.487,throw,227.2,-194.9,48.1,10.3,0.205,0.1616,9,now fast pred=187.2
+21.705,landed,227.2,-191.7,48.1,10.3,0.205,0.0928,10,press_to_launch_ms=127.5 slot_empty_ms=53.5 press_to_reload_ms=181.0 pred_land=187.2 hit=1 obs 9->10
+21.985,throw,224.4,-129.9,50.6,1.0,0.205,0.1586,11,now slow pred=197.8
+22.053,round_dead,,,,,,0.1586,0,slot stayed empty; state released
+22.286,throw,235.7,-202.1,61.7,10.0,0.205,0.1635,10,now fast pred=194.3
+22.286,relocate,,,,,,0.1635,10,"(957,400,r122)"
+22.816,round_dead,,,,,,0.134,0,slot stayed empty; state released
+23.786,throw,229.3,-202.7,50.9,11.2,0.205,0.1392,11,now fast pred=187.8
+23.908,round_dead,,,,,,0.1392,0,slot stayed empty; state released
+24.259,throw,216.8,-198.7,50.6,14.9,0.205,0.134,11,now fast pred=176.1
+24.32,round_dead,,,,,,0.216,0,slot stayed empty; state released
+25.055,throw,203.5,-123.2,35.5,9.5,0.205,0.1392,12,now slow pred=178.2
+25.302,round_dead,,,,,,0.1407,0,slot stayed empty; state released
+26.167,throw,198.8,-122.6,35.8,5.1,0.205,0.1407,13,now slow pred=173.7
+26.429,round_dead,,,,,,0.1407,0,slot stayed empty; state released
+26.836,throw,208.3,-171.0,50.6,12.0,0.205,0.134,14,now fast pred=173.2
+26.901,round_dead,,,,,,0.134,0,slot stayed empty; state released
+27.015,throw,228.4,-183.6,62.7,14.1,0.205,0.1372,14,now fast pred=190.8
+27.185,round_dead,,,,,,0.0047,0,slot stayed empty; state released
+27.778,throw,218.6,-156.0,28.0,,0.205,0.1372,15,sched fast pred=nan
+27.912,round_dead,,,,,,0.1392,0,slot stayed empty; state released
+29.419,throw,234.5,-176.2,74.3,12.3,0.205,0.134,7,now fast pred=198.4
+29.419,relocate,,,,,,0.134,7,"(960,401,r126)"
+29.633,round_dead,,,,,,0.1635,0,slot stayed empty; state released
+30.685,throw,205.0,-195.1,73.3,15.2,0.205,0.1635,7,now fast pred=165.0
+30.935,round_dead,,,,,,0.1648,0,slot stayed empty; state released
+31.01,throw,213.1,-197.0,61.7,17.0,0.205,0.1581,7,now fast pred=172.7
+31.069,round_dead,,,,,,0.0,0,slot stayed empty; state released
+31.268,throw,237.8,-186.5,73.3,10.6,0.205,0.1586,9,now fast pred=199.5
+31.484,round_dead,,,,,,0.1016,0,slot stayed empty; state released
+31.785,throw,224.5,-174.8,26.2,,0.205,0.1586,10,sched fast pred=nan
+32.218,round_dead,,,,,,0.1016,0,slot stayed empty; state released
+32.368,throw,237.1,-196.3,73.1,13.1,0.205,0.1586,11,now fast pred=196.9
+32.399,round_dead,,,,,,0.1586,0,slot stayed empty; state released
+32.421,throw,224.0,-191.9,73.1,25.3,0.205,0.1586,11,now fast pred=184.7
+32.568,round_dead,,,,,,0.1586,0,slot stayed empty; state released
+32.842,throw,220.4,-195.6,49.6,18.0,0.205,0.1559,12,now fast pred=180.3
+32.903,round_dead,,,,,,0.1586,0,slot stayed empty; state released
+33.162,throw,232.7,-186.5,62.2,10.1,0.205,0.1616,11,now fast pred=194.5
+33.368,round_dead,,,,,,0.096,0,slot stayed empty; state released
+33.834,throw,230.8,-193.3,24.7,,0.205,0.1616,13,sched fast pred=nan
+34.053,round_dead,,,,,,0.1648,0,slot stayed empty; state released
+34.737,throw,210.8,-193.6,50.6,9.9,0.205,0.1616,14,now fast pred=171.1
+34.783,round_dead,,,,,,0.1616,0,slot stayed empty; state released
+35.073,throw,224.7,-198.8,50.6,14.9,0.205,0.1648,14,now fast pred=183.9
+35.174,round_dead,,,,,,0.0,0,slot stayed empty; state released
+35.434,throw,223.5,-166.9,25.2,,0.205,0.0647,13,sched fast pred=nan
+35.771,round_dead,,,,,,0.0,0,slot stayed empty; state released
+35.937,throw,257.9,-339.4,50.1,10.2,0.205,0.0,13,now fast pred=188.3
+36.004,round_dead,,,,,,0.0658,0,slot stayed empty; state released
+36.118,throw,223.8,-198.2,34.3,,0.205,0.1581,7,sched fast pred=nan
+36.177,round_dead,,,,,,0.1586,0,slot stayed empty; state released
+36.809,throw,131.2,177.2,61.2,11.6,0.205,0.1586,7,now fast pred=167.5
+37.176,round_dead,,,,,,0.0463,0,slot stayed empty; state released
+37.202,throw,137.7,198.3,70.8,27.3,0.205,0.1099,8,now fast pred=178.4
+37.202,relocate,,,,,,0.1099,8,"(960,406,r126)"
+37.415,round_dead,,,,,,0.1708,0,slot stayed empty; state released
+38.435,throw,148.4,194.1,52.4,11.5,0.205,0.1767,9,now fast pred=188.2
+38.545,round_dead,,,,,,0.1767,0,slot stayed empty; state released
+38.639,throw,133.8,199.6,51.9,14.2,0.205,0.1767,9,now fast pred=174.8
+38.838,landed,133.8,186.4,51.9,14.2,0.205,0.136,10,press_to_launch_ms=87.0 slot_empty_ms=80.6 press_to_reload_ms=167.6 pred_land=174.8 hit=1 obs 9->10
+38.988,throw,128.5,179.4,63.5,10.5,0.205,0.1708,10,now fast pred=165.3
+39.027,round_dead,,,,,,0.1708,0,slot stayed empty; state released
+39.052,throw,142.1,180.4,63.5,24.4,0.205,0.1708,10,now fast pred=179.1
+39.052,relocate,,,,,,0.1708,10,"(960,401,r126)"
+39.351,round_dead,,,,,,0.0,0,slot stayed empty; state released
+40.503,throw,133.5,192.5,39.0,,0.205,0.1622,11,sched fast pred=nan
+40.72,round_dead,,,,,,0.1609,0,slot stayed empty; state released
+40.888,throw,146.2,193.4,50.4,12.8,0.205,0.0,12,now fast pred=185.8
+40.946,round_dead,,,,,,1.0,0,slot stayed empty; state released
+42.069,throw,138.1,160.5,22.7,,0.205,0.1561,7,sched fast pred=nan
+42.238,round_dead,,,,,,0.159,0,slot stayed empty; state released
+42.27,throw,128.8,196.3,62.0,13.5,0.205,0.159,7,now fast pred=169.0
+42.635,round_dead,,,,,,0.1622,0,slot stayed empty; state released
+42.655,throw,130.4,192.3,73.3,20.0,0.205,0.1622,7,now fast pred=169.8
+42.812,landed,130.4,191.5,73.3,20.0,0.205,0.1047,8,press_to_launch_ms=60.4 slot_empty_ms=61.5 press_to_reload_ms=121.9 pred_land=169.8 hit=1 obs 7->8
+42.812,throw,155.1,191.5,59.2,8.7,0.205,0.1047,8,now fast pred=194.4
+42.97,round_dead,,,,,,0.1561,0,slot stayed empty; state released
+43.003,throw,125.8,198.2,62.0,10.9,0.205,0.1561,8,now fast pred=166.4
+43.152,round_dead,,,,,,0.1556,0,slot stayed empty; state released
+43.273,throw,129.8,192.9,24.7,,0.205,0.0885,9,sched fast pred=nan
+43.572,round_dead,,,,,,0.1561,0,slot stayed empty; state released
+43.706,throw,134.0,195.2,27.0,,0.205,0.0732,9,sched fast pred=nan
+44.083,round_dead,,,,,,0.0,0,slot stayed empty; state released
+44.107,throw,126.3,193.7,62.0,10.5,0.205,0.0456,10,now fast pred=166.0
+44.479,round_dead,,,,,,0.0,0,slot stayed empty; state released
+44.506,throw,125.5,194.0,61.5,9.5,0.205,0.0456,11,now fast pred=165.3
+44.582,round_dead,,,,,,0.144,0,slot stayed empty; state released
+44.64,throw,151.8,149.8,61.7,21.8,0.205,0.1561,11,now fast pred=182.5
+44.979,round_dead,,,,,,0.1421,0,slot stayed empty; state released
+45.044,throw,151.3,149.8,39.0,11.0,0.205,0.1561,12,now fast pred=182.0
+45.08,round_dead,,,,,,0.1561,0,slot stayed empty; state released
+45.111,throw,125.5,214.9,25.7,,0.205,0.1561,12,sched fast pred=nan
+45.236,round_dead,,,,,,0.1561,0,slot stayed empty; state released
+45.369,throw,131.6,202.0,27.7,,0.205,0.1169,12,sched fast pred=nan
+45.48,landed,131.6,179.2,27.7,nan,0.205,0.1237,12,press_to_launch_ms=6.3 slot_empty_ms=69.9 press_to_reload_ms=76.2 pred_land=nan hit=0 obs 12->12
+45.619,throw,141.0,170.7,39.0,9.0,0.205,0.1561,13,now fast pred=176.0
+45.866,round_dead,,,,,,0.1504,0,slot stayed empty; state released
+46.027,throw,145.9,197.3,50.4,12.3,0.205,0.1561,13,now fast pred=186.4
+46.268,round_dead,,,,,,0.159,0,slot stayed empty; state released
+46.366,throw,131.8,196.9,50.4,10.9,0.205,0.1609,14,now fast pred=172.2
+46.435,round_dead,,,,,,0.1556,0,slot stayed empty; state released
+46.818,throw,138.7,197.2,39.0,12.2,0.205,0.1561,15,now fast pred=179.2
+46.865,round_dead,,,,,,0.1561,0,slot stayed empty; state released
+48.939,throw,205.6,-194.3,72.6,15.6,0.205,0.159,7,now fast pred=165.8
+49.335,round_dead,,,,,,0.0,0,slot stayed empty; state released
+49.518,throw,235.7,-192.6,61.7,8.1,0.205,0.1561,8,now fast pred=196.3
+49.736,round_dead,,,,,,0.1561,0,slot stayed empty; state released
+49.843,throw,231.6,-196.3,47.9,,0.205,0.0,8,sched fast pred=nan
+49.976,round_dead,,,,,,0.1556,0,slot stayed empty; state released
+50.274,throw,232.8,-188.9,61.5,10.1,0.205,0.0456,9,now fast pred=194.1
+50.335,round_dead,,,,,,0.144,0,slot stayed empty; state released
+50.367,throw,216.7,-174.1,59.0,21.9,0.205,0.1534,9,now fast pred=181.0
+50.738,round_dead,,,,,,0.1259,0,slot stayed empty; state released
+50.779,throw,207.6,-199.3,71.0,15.8,0.205,0.1534,10,now fast pred=166.8
+50.835,round_dead,,,,,,0.1561,0,slot stayed empty; state released
+51.053,throw,219.2,-176.5,25.7,,0.205,0.1561,10,sched fast pred=nan
+51.145,round_dead,,,,,,0.159,0,slot stayed empty; state released
+51.336,throw,225.9,-194.4,38.5,,0.205,0.1504,11,sched fast pred=nan
+51.587,round_dead,,,,,,0.1561,0,slot stayed empty; state released
+52.202,throw,210.0,-127.8,50.1,14.7,0.205,0.0,11,now slow pred=183.8
+52.543,round_dead,,,,,,0.0456,0,slot stayed empty; state released
+53.186,throw,130.7,198.6,73.3,21.5,0.205,0.1609,7,now fast pred=171.4
+53.526,round_dead,,,,,,0.1622,0,slot stayed empty; state released
+53.56,throw,129.0,195.3,62.0,13.6,0.205,0.1622,7,now fast pred=169.1
+53.802,landed,129.0,194.0,62.0,13.6,0.205,0.1047,8,press_to_launch_ms=156.6 slot_empty_ms=50.8 press_to_reload_ms=207.4 pred_land=169.1 hit=1 obs 7->8
+53.938,throw,130.6,194.7,73.6,20.7,0.205,0.1561,8,now fast pred=170.5
+54.118,round_dead,,,,,,0.1561,0,slot stayed empty; state released
+54.286,throw,139.6,198.1,33.8,10.1,0.205,0.0926,8,now fast pred=180.2
+54.5,round_dead,,,,,,0.1561,0,slot stayed empty; state released
+54.656,throw,140.5,201.6,40.1,11.7,0.205,0.0,10,now fast pred=181.8
+54.722,landed,140.5,193.0,40.1,11.7,0.205,0.1081,10,press_to_launch_ms=6.1 slot_empty_ms=23.1 press_to_reload_ms=29.2 pred_land=181.8 hit=0 obs 10->10
+55.043,throw,131.4,167.6,73.3,15.9,0.205,0.0456,10,now fast pred=165.8
+55.131,round_dead,,,,,,0.1504,0,slot stayed empty; state released
+55.193,throw,151.7,143.1,54.9,19.9,0.205,0.1561,11,now fast pred=181.1
+55.362,round_dead,,,,,,0.1556,0,slot stayed empty; state released
+55.488,throw,136.4,190.7,37.8,,0.205,0.1237,11,sched fast pred=nan
+55.766,round_dead,,,,,,0.1561,0,slot stayed empty; state released
+55.79,throw,137.0,190.7,62.2,20.7,0.205,0.1561,11,now fast pred=176.1
+55.954,round_dead,,,,,,0.1215,0,slot stayed empty; state released
+56.169,throw,146.9,137.4,33.8,5.5,0.205,0.1561,12,now slow pred=175.1
+56.386,round_dead,,,,,,0.159,0,slot stayed empty; state released
+56.502,throw,136.0,199.0,50.6,15.6,0.205,0.1609,12,now fast pred=176.8
+56.713,landed,136.0,178.3,50.6,15.6,0.205,0.1259,13,press_to_launch_ms=69.4 slot_empty_ms=109.1 press_to_reload_ms=178.5 pred_land=176.8 hit=1 obs 12->13
+56.885,throw,137.7,148.4,61.7,12.5,0.205,0.1561,13,now fast pred=168.2
+57.22,round_dead,,,,,,0.1609,0,slot stayed empty; state released
+57.328,throw,132.2,187.8,39.0,,0.205,0.1556,13,sched fast pred=nan
+57.453,landed,132.2,188.7,39.0,nan,0.205,0.1215,14,press_to_launch_ms=6.4 slot_empty_ms=68.8 press_to_reload_ms=75.1 pred_land=nan hit=1 obs 13->14
+57.635,throw,132.2,200.7,50.6,12.2,0.205,0.1561,14,now fast pred=173.3
+57.811,round_dead,,,,,,0.0456,0,slot stayed empty; state released
+57.936,throw,131.3,191.1,33.8,,0.205,0.1561,15,sched fast pred=nan
+58.033,round_dead,,,,,,0.1561,0,slot stayed empty; state released
+60.212,throw,132.7,194.2,47.6,9.8,0.205,0.1609,7,now fast pred=172.5
+60.7,landed,132.7,199.4,47.6,9.8,0.205,0.0945,8,press_to_launch_ms=396.2 slot_empty_ms=65.6 press_to_reload_ms=461.8 pred_land=172.5 hit=1 obs 7->8
+60.844,throw,128.0,178.2,62.0,9.0,0.205,0.1561,8,now fast pred=164.6
+61.015,round_dead,,,,,,0.1561,0,slot stayed empty; state released
+61.151,throw,132.1,191.8,35.8,,0.205,0.1556,8,sched fast pred=nan
+61.232,round_dead,,,,,,0.0456,0,slot stayed empty; state released
+61.422,throw,145.4,145.0,25.7,,0.205,0.1561,9,sched fast pred=nan
+61.535,round_dead,,,,,,0.0,0,slot stayed empty; state released
+61.601,throw,132.8,191.9,60.5,15.9,0.205,0.0885,10,now fast pred=172.2
+61.956,round_dead,,,,,,0.0,0,slot stayed empty; state released
+62.062,throw,134.1,191.9,46.9,10.4,0.205,0.1556,11,now fast pred=173.4
+62.594,round_dead,,,,,,0.1028,0,slot stayed empty; state released
+62.71,throw,137.7,174.1,50.6,12.2,0.205,0.1561,12,now fast pred=173.4
+62.852,round_dead,,,,,,0.1561,0,slot stayed empty; state released
+62.986,throw,133.0,199.6,35.5,,0.205,0.159,12,sched fast pred=nan
+63.053,round_dead,,,,,,0.159,0,slot stayed empty; state released
+63.899,throw,131.1,192.2,47.9,,0.205,0.1609,13,sched fast pred=nan
+64.135,round_dead,,,,,,0.1622,0,slot stayed empty; state released
+64.285,throw,137.4,196.7,39.3,10.8,0.205,0.1622,13,now fast pred=177.7
+64.437,round_dead,,,,,,0.0,0,slot stayed empty; state released
+64.506,throw,130.4,195.1,49.1,8.5,0.205,0.1259,14,now fast pred=170.4
+64.544,round_dead,,,,,,0.1504,0,slot stayed empty; state released
+64.587,throw,145.0,189.2,50.6,15.0,0.205,0.1561,14,now fast pred=183.8
+64.716,round_dead,,,,,,0.1561,0,slot stayed empty; state released
+64.851,throw,127.9,196.9,23.9,,0.205,0.1561,14,sched fast pred=nan
+65.136,landed,127.9,184.3,23.9,nan,0.205,0.1237,15,press_to_launch_ms=158.3 slot_empty_ms=66.8 press_to_reload_ms=225.1 pred_land=nan hit=1 obs 14->15
+65.286,throw,135.2,174.2,50.6,9.7,0.205,0.1561,15,now fast pred=170.9
+65.363,round_dead,,,,,,0.1561,0,slot stayed empty; state released
+65.745,throw,131.7,197.9,47.6,9.5,0.205,0.0871,15,now fast pred=172.3
+65.817,round_dead,,,,,,0.072,0,slot stayed empty; state released
+66.152,throw,135.7,178.0,28.0,,0.205,0.1561,16,sched fast pred=nan
+66.283,round_dead,,,,,,0.1556,0,slot stayed empty; state released
+68.049,throw,138.1,154.1,73.1,19.7,0.205,0.159,7,now fast pred=169.7
+68.049,relocate,,,,,,0.159,7,"(962,401,r122)"
+68.334,round_dead,,,,,,0.1337,0,slot stayed empty; state released
+69.333,throw,150.3,120.1,21.9,,0.205,0.1407,8,sched slow pred=nan
+69.433,round_dead,,,,,,0.1407,0,slot stayed empty; state released
+69.499,throw,134.5,120.3,62.7,4.0,0.205,0.1407,8,now slow pred=159.1
+69.763,round_dead,,,,,,0.056,0,slot stayed empty; state released
+69.878,throw,141.8,123.4,62.2,11.7,0.205,0.134,9,now slow pred=167.1
+70.184,round_dead,,,,,,0.1372,0,slot stayed empty; state released
+70.212,throw,127.9,174.4,62.2,8.3,0.205,0.1372,9,now fast pred=163.7
+70.586,round_dead,,,,,,0.134,0,slot stayed empty; state released
+70.982,throw,148.4,137.5,28.2,4.2,0.205,0.1392,10,now slow pred=176.6
+71.101,round_dead,,,,,,0.1407,0,slot stayed empty; state released
+71.717,throw,139.3,126.2,62.2,9.7,0.205,0.134,11,now slow pred=165.1
+72.018,round_dead,,,,,,0.1392,0,slot stayed empty; state released
+72.102,throw,132.8,179.4,50.9,8.5,0.205,0.1407,11,now fast pred=169.6
+72.217,round_dead,,,,,,0.2002,0,slot stayed empty; state released
+72.402,throw,145.3,130.0,31.0,0.9,0.205,0.134,12,now slow pred=171.9
+72.634,round_dead,,,,,,0.134,0,slot stayed empty; state released
+73.365,throw,151.8,138.2,28.0,7.3,0.205,0.1392,13,now slow pred=180.2
+73.481,round_dead,,,,,,0.1392,0,slot stayed empty; state released
+73.535,throw,139.5,166.2,62.2,18.2,0.205,0.1407,13,now fast pred=173.6
+73.574,round_dead,,,,,,0.1407,0,slot stayed empty; state released
+73.601,throw,152.0,162.8,62.0,19.1,0.205,0.1407,13,now fast pred=185.3
+73.8,landed,152.0,178.4,62.0,19.1,0.205,0.0764,14,press_to_launch_ms=112.5 slot_empty_ms=66.6 press_to_reload_ms=179.1 pred_land=185.3 hit=1 obs 13->14
+74.368,throw,114.3,272.0,28.5,,0.205,0.1392,14,sched fast pred=nan
+74.644,round_dead,,,,,,0.1407,0,slot stayed empty; state released
+74.937,throw,133.6,209.6,39.3,9.7,0.205,0.134,15,now fast pred=176.6
+74.973,round_dead,,,,,,0.134,0,slot stayed empty; state released
+75.068,throw,131.4,230.9,31.0,,0.205,0.134,15,sched fast pred=nan
+75.205,round_dead,,,,,,0.1372,0,slot stayed empty; state released
+75.244,throw,114.4,281.6,28.7,,0.205,0.1372,15,sched fast pred=nan
+75.277,round_dead,,,,,,0.1372,0,slot stayed empty; state released
+75.507,throw,136.0,195.1,28.5,,0.205,0.134,16,sched fast pred=nan
+75.937,round_dead,,,,,,1.0,0,slot stayed empty; state released
+76.601,throw,133.8,179.5,28.7,,0.205,0.0,16,sched fast pred=nan
+76.745,round_dead,,,,,,0.0301,0,slot stayed empty; state released
+77.533,throw,239.4,-195.0,72.1,10.1,0.205,0.1407,7,now fast pred=199.4
+78.086,round_dead,,,,,,0.1337,0,slot stayed empty; state released
+78.254,throw,226.3,-189.0,39.8,,0.205,0.1313,8,sched fast pred=nan
+78.485,round_dead,,,,,,0.134,0,slot stayed empty; state released
+78.697,throw,227.3,-199.7,60.0,17.1,0.205,0.1285,7,now fast pred=186.4
+78.697,relocate,,,,,,0.1285,7,"(959,400,r126)"
+79.068,round_dead,,,,,,0.0,0,slot stayed empty; state released
+80.083,throw,231.1,-195.0,39.3,,0.205,0.1595,8,sched fast pred=nan
+80.352,round_dead,,,,,,0.1595,0,slot stayed empty; state released
+80.522,throw,227.7,-197.1,50.1,11.3,0.205,0.0,9,now fast pred=187.3
+80.705,round_dead,,,,,,0.1534,0,slot stayed empty; state released
+80.87,throw,232.5,-199.7,61.7,12.8,0.205,0.1534,9,now fast pred=191.5
+80.989,round_dead,,,,,,0.2024,0,slot stayed empty; state released
+81.022,throw,206.3,-191.3,55.2,8.1,0.205,0.0335,9,now fast pred=167.1
+81.022,relocate,,,,,,0.0335,9,"(959,407,r126)"
+81.371,round_dead,,,,,,0.0,0,slot stayed empty; state released
+82.373,throw,228.8,-194.5,51.9,10.5,0.205,0.1799,11,now fast pred=188.9
+82.527,round_dead,,,,,,0.1799,0,slot stayed empty; state released
+82.79,throw,226.2,-207.8,51.6,15.7,0.205,0.1787,11,now fast pred=183.6
+82.822,round_dead,,,,,,0.1787,0,slot stayed empty; state released
+82.855,throw,212.7,-202.4,52.4,10.9,0.205,0.177,11,now fast pred=171.2
+82.918,round_dead,,,,,,0.0,0,slot stayed empty; state released
+83.157,throw,227.6,-176.5,63.5,13.9,0.205,0.1741,12,now fast pred=191.4
+83.157,relocate,,,,,,0.1741,12,"(960,401,r126)"
+83.619,round_dead,,,,,,0.1598,0,slot stayed empty; state released
+84.681,throw,249.3,-326.7,39.0,10.6,0.205,0.1645,13,now fast pred=182.4
+85.074,landed,249.3,-328.0,39.0,10.6,0.205,0.1068,14,press_to_launch_ms=306.5 slot_empty_ms=57.5 press_to_reload_ms=364.0 pred_land=182.4 hit=1 obs 13->14
+85.074,throw,244.4,-328.0,49.9,15.6,0.205,0.1068,14,now fast pred=177.2
+85.232,round_dead,,,,,,0.1598,0,slot stayed empty; state released
+85.252,throw,270.0,-349.5,39.0,,0.205,0.1598,14,sched fast pred=nan
+85.368,round_dead,,,,,,0.1598,0,slot stayed empty; state released
+85.485,throw,265.6,-326.9,50.4,,0.205,0.0,14,sched fast pred=nan
+85.485,relocate,,,,,,0.0,14,"(983,427,r129)"
+85.968,landed,265.6,0.0,50.4,nan,0.205,0.1987,2,press_to_launch_ms=264.2 slot_empty_ms=162.0 press_to_reload_ms=426.2 pred_land=nan hit=0 obs 14->2
+88.406,throw,142.1,177.7,92.2,38.2,0.205,0.1834,6,now fast pred=178.6
+88.735,round_dead,,,,,,0.1834,0,slot stayed empty; state released
+89.865,throw,136.9,122.7,79.1,15.0,0.205,0.1815,7,now slow pred=162.0
+90.219,round_dead,,,,,,0.1849,0,slot stayed empty; state released
+90.247,throw,139.3,183.7,92.5,36.6,0.205,0.1098,7,now fast pred=176.9
+90.271,round_dead,,,,,,0.0,0,slot stayed empty; state released
+90.349,throw,149.8,161.5,87.9,34.5,0.205,0.1956,7,now fast pred=182.9
+90.349,relocate,,,,,,0.1956,7,"(959,406,r125)"
+90.544,round_dead,,,,,,0.1824,0,slot stayed empty; state released
+91.651,throw,126.5,195.4,63.0,11.6,0.205,0.1741,10,now fast pred=166.6
+91.695,round_dead,,,,,,0.1741,0,slot stayed empty; state released
+91.718,throw,139.9,196.2,63.5,25.1,0.205,0.1741,10,now fast pred=180.1
+91.971,round_dead,,,,,,0.1729,0,slot stayed empty; state released
+92.054,throw,131.7,194.7,51.6,10.9,0.205,0.087,10,now fast pred=171.6
+92.107,round_dead,,,,,,1.0,0,slot stayed empty; state released
+92.249,throw,166.0,127.1,51.6,7.3,0.205,0.0,10,now slow pred=192.0
+92.249,relocate,,,,,,0.0,10,"(955,404,r126)"
+92.795,round_dead,,,,,,0.0,0,slot stayed empty; state released
+93.574,throw,131.8,204.5,28.7,,0.205,0.1686,7,sched fast pred=nan
+93.823,round_dead,,,,,,0.1699,0,slot stayed empty; state released
+93.852,throw,130.6,200.5,73.1,21.7,0.205,0.1699,7,now fast pred=171.7
+94.169,round_dead,,,,,,0.0956,0,slot stayed empty; state released
+94.201,throw,127.0,185.3,59.5,8.2,0.205,0.1446,8,now fast pred=165.0
+94.543,round_dead,,,,,,0.1741,0,slot stayed empty; state released
+94.575,throw,129.4,200.3,61.2,14.6,0.205,0.0,8,now fast pred=170.5
+94.575,relocate,,,,,,0.0,8,"(960,401,r126)"
+94.947,round_dead,,,,,,0.0456,0,slot stayed empty; state released
+95.839,throw,136.6,194.7,27.7,,0.205,0.1622,10,sched fast pred=nan
+95.959,round_dead,,,,,,0.1622,0,slot stayed empty; state released
+96.05,throw,130.4,194.0,50.6,9.0,0.205,0.1622,10,now fast pred=170.2
+96.262,landed,130.4,200.5,50.6,9.0,0.205,0.1215,11,press_to_launch_ms=117.8 slot_empty_ms=77.3 press_to_reload_ms=195.1 pred_land=170.2 hit=1 obs 10->11
+96.399,throw,131.1,197.1,50.4,10.2,0.205,0.1561,11,now fast pred=171.5
+96.459,round_dead,,,,,,0.1561,0,slot stayed empty; state released
+96.897,throw,138.0,165.6,48.6,9.7,0.205,0.1561,12,now fast pred=171.9
+97.129,round_dead,,,,,,0.1561,0,slot stayed empty; state released
+97.255,throw,132.3,205.1,28.7,,0.205,0.1169,12,sched fast pred=nan
+97.355,landed,132.3,201.7,28.7,nan,0.205,0.1215,13,press_to_launch_ms=5.3 slot_empty_ms=67.4 press_to_reload_ms=72.6 pred_land=nan hit=1 obs 12->13
+97.464,throw,131.3,194.0,39.3,,0.205,0.1561,13,sched fast pred=nan
+97.516,round_dead,,,,,,0.1561,0,slot stayed empty; state released
+97.667,throw,134.1,195.5,27.7,,0.205,0.1561,13,sched fast pred=nan
+97.822,round_dead,,,,,,1.0,0,slot stayed empty; state released
+99.447,throw,209.2,-194.9,62.0,13.7,0.205,0.1622,7,now fast pred=169.2
+99.868,round_dead,,,,,,0.1622,0,slot stayed empty; state released
+100.017,throw,239.6,-192.0,72.6,9.5,0.205,0.0,7,now fast pred=200.3
+100.085,landed,239.6,-190.7,72.6,9.5,0.205,0.1421,7,press_to_launch_ms=5.4 slot_empty_ms=45.9 press_to_reload_ms=51.2 pred_land=200.3 hit=0 obs 7->7
+100.085,throw,224.0,-190.7,66.5,21.8,0.205,0.1421,7,now fast pred=184.9
+100.236,round_dead,,,,,,0.1561,0,slot stayed empty; state released
+100.516,throw,230.4,-197.6,30.5,,0.205,0.1561,8,sched fast pred=nan
+100.572,round_dead,,,,,,0.1561,0,slot stayed empty; state released
+100.765,throw,239.4,-191.9,73.1,10.0,0.205,0.1561,8,now fast pred=200.1
+101.135,round_dead,,,,,,0.1561,0,slot stayed empty; state released
+101.177,throw,231.5,-191.9,61.7,12.2,0.205,0.1561,9,now fast pred=192.1
+101.329,round_dead,,,,,,0.1561,0,slot stayed empty; state released
+101.488,throw,225.9,-196.1,39.0,,0.205,0.0,10,sched fast pred=nan
+101.556,landed,225.9,-199.4,39.0,nan,0.205,0.0885,10,press_to_launch_ms=5.1 slot_empty_ms=34.2 press_to_reload_ms=39.4 pred_land=nan hit=0 obs 10->10
+101.833,throw,228.6,-186.3,39.3,,0.205,0.1561,10,sched fast pred=nan
+101.951,landed,228.6,-192.6,39.3,nan,0.205,0.0965,11,press_to_launch_ms=4.9 slot_empty_ms=57.6 press_to_reload_ms=62.6 pred_land=nan hit=1 obs 10->11
+102.02,throw,228.8,-198.3,27.7,,0.205,0.1556,11,sched fast pred=nan
+102.322,round_dead,,,,,,0.1237,0,slot stayed empty; state released
+102.693,throw,228.1,-192.2,62.0,15.8,0.205,0.159,12,now fast pred=188.6
+102.819,round_dead,,,,,,0.1609,0,slot stayed empty; state released
+103.015,throw,222.5,-187.7,39.3,9.1,0.205,0.1922,12,now fast pred=184.0
+103.121,landed,222.5,-190.9,39.3,9.1,0.205,0.1287,13,press_to_launch_ms=5.6 slot_empty_ms=72.7 press_to_reload_ms=78.3 pred_land=184.0 hit=1 obs 12->13
+103.318,throw,231.7,-201.2,39.0,,0.205,0.1561,13,sched fast pred=nan
+103.466,landed,231.7,-193.0,39.0,nan,0.205,0.0808,14,press_to_launch_ms=29.9 slot_empty_ms=66.5 press_to_reload_ms=96.4 pred_land=nan hit=1 obs 13->14
+103.669,throw,227.8,-195.8,39.3,,0.205,0.1561,14,sched fast pred=nan
+104.149,round_dead,,,,,,0.0,0,slot stayed empty; state released
+104.254,throw,218.4,-165.7,29.5,,0.205,0.1504,15,sched fast pred=nan
+104.499,round_dead,,,,,,0.1561,0,slot stayed empty; state released
+104.531,throw,222.1,-159.9,50.1,9.2,0.205,0.1561,15,now fast pred=189.4
+104.6,round_dead,,,,,,0.1922,0,slot stayed empty; state released
+106.373,throw,205.3,-189.4,61.7,10.8,0.205,0.159,7,now fast pred=166.4
+106.405,round_dead,,,,,,0.1609,0,slot stayed empty; state released
+106.706,throw,226.3,-193.0,46.4,9.9,0.205,0.1169,7,now fast pred=186.7
+107.166,round_dead,,,,,,0.0456,0,slot stayed empty; state released
+107.318,throw,233.6,-198.8,62.0,11.6,0.205,0.1561,9,now fast pred=192.8
+107.55,round_dead,,,,,,0.1561,0,slot stayed empty; state released
+107.801,throw,212.3,-180.2,73.3,25.5,0.205,0.1561,10,now fast pred=175.4
+107.886,round_dead,,,,,,0.1561,0,slot stayed empty; state released
+108.09,throw,230.6,-183.8,61.5,11.3,0.205,0.159,10,now fast pred=192.9
+108.122,round_dead,,,,,,0.159,0,slot stayed empty; state released
+108.171,throw,214.2,-194.8,61.5,18.5,0.205,0.1556,10,now fast pred=174.3
+108.648,round_dead,,,,,,0.1561,0,slot stayed empty; state released
+108.947,throw,227.6,-192.2,27.7,,0.205,0.1609,11,sched fast pred=nan
+108.995,round_dead,,,,,,0.1622,0,slot stayed empty; state released
+109.167,throw,224.8,-193.2,39.3,,0.205,0.1622,11,sched fast pred=nan
+109.399,round_dead,,,,,,0.0965,0,slot stayed empty; state released
+109.599,throw,224.8,-171.8,73.1,20.5,0.205,0.1561,12,now fast pred=189.6
+109.731,round_dead,,,,,,0.1561,0,slot stayed empty; state released
+110.008,throw,222.4,-192.2,50.1,15.6,0.205,0.1609,12,now fast pred=183.0
+110.399,round_dead,,,,,,1.0,0,slot stayed empty; state released
+111.847,throw,139.1,193.8,62.0,23.3,0.205,0.1609,7,now fast pred=178.9
+111.965,round_dead,,,,,,0.1622,0,slot stayed empty; state released
+112.07,throw,129.2,196.7,37.5,,0.205,0.1622,7,sched fast pred=nan
+112.149,round_dead,,,,,,0.1622,0,slot stayed empty; state released
+112.434,throw,128.7,198.4,24.9,,0.205,0.1556,7,sched fast pred=nan
+112.497,round_dead,,,,,,0.0,0,slot stayed empty; state released
+112.649,throw,131.2,187.6,25.4,,0.205,0.1561,7,sched fast pred=nan
+112.913,round_dead,,,,,,0.1556,0,slot stayed empty; state released
+112.934,throw,131.2,187.6,73.3,19.8,0.205,0.1556,7,now fast pred=169.6
+113.235,round_dead,,,,,,0.159,0,slot stayed empty; state released
+113.294,throw,129.2,195.9,61.7,13.7,0.205,0.159,7,now fast pred=169.3
+113.483,landed,129.2,197.6,61.7,13.7,0.205,0.1,8,press_to_launch_ms=97.3 slot_empty_ms=65.1 press_to_reload_ms=162.5 pred_land=169.3 hit=1 obs 7->8
+113.634,throw,126.8,195.0,62.0,11.2,0.205,0.1561,8,now fast pred=166.8
+113.878,round_dead,,,,,,0.159,0,slot stayed empty; state released
+113.954,throw,129.9,195.8,50.6,8.9,0.205,0.1881,8,now fast pred=170.1
+114.183,round_dead,,,,,,0.1561,0,slot stayed empty; state released
+114.483,throw,129.7,192.4,28.0,,0.205,0.1561,10,sched fast pred=nan
+114.746,round_dead,,,,,,0.159,0,slot stayed empty; state released
+114.781,throw,131.9,192.8,73.3,21.6,0.205,0.159,10,now fast pred=171.5
+114.807,round_dead,,,,,,0.1556,0,slot stayed empty; state released
+114.831,throw,141.9,195.3,73.6,28.3,0.205,0.1953,10,now fast pred=181.9
+114.922,landed,141.9,193.5,73.6,28.3,0.205,0.1047,11,press_to_launch_ms=11.8 slot_empty_ms=58.6 press_to_reload_ms=70.4 pred_land=181.9 hit=1 obs 10->11
+115.168,throw,130.9,198.5,50.6,10.4,0.205,0.0456,12,now fast pred=171.6
+115.168,relocate,,,,,,0.0456,12,"(960,406,r126)"
+115.385,round_dead,,,,,,0.1716,0,slot stayed empty; state released
+116.636,throw,135.0,199.3,52.1,15.4,0.205,0.1774,13,now fast pred=175.8
+116.671,round_dead,,,,,,0.1774,0,slot stayed empty; state released
+116.701,throw,148.4,200.6,52.4,10.1,0.205,0.1774,13,now fast pred=189.6
+116.898,round_dead,,,,,,0.1762,0,slot stayed empty; state released
+116.998,throw,129.7,190.4,40.1,,0.205,0.1744,13,sched fast pred=nan
+117.231,round_dead,,,,,,0.1185,0,slot stayed empty; state released
+117.335,throw,136.2,203.5,51.6,17.3,0.205,0.1716,14,now fast pred=178.0
+117.335,relocate,,,,,,0.1716,14,"(960,401,r127)"
+117.527,round_dead,,,,,,0.1598,0,slot stayed empty; state released
+119.9,throw,125.8,195.7,62.0,10.4,0.205,0.1657,7,now fast pred=165.9
+120.203,round_dead,,,,,,0.0,0,slot stayed empty; state released
+120.235,throw,126.5,204.8,62.0,13.0,0.205,0.0482,8,now fast pred=168.5
+120.417,round_dead,,,,,,0.1598,0,slot stayed empty; state released
+120.467,throw,169.4,134.4,62.0,7.6,0.205,0.1598,8,now slow pred=196.9
+120.616,round_dead,,,,,,0.0,0,slot stayed empty; state released
+120.752,throw,132.6,181.7,29.7,,0.205,0.1598,9,sched fast pred=nan
+121.249,round_dead,,,,,,0.1594,0,slot stayed empty; state released
+121.337,throw,136.2,181.7,44.1,9.0,0.205,0.1598,10,now fast pred=173.5
+121.603,round_dead,,,,,,0.1628,0,slot stayed empty; state released
+121.752,throw,141.4,195.4,38.8,11.4,0.205,0.0019,10,now fast pred=181.4
+121.828,landed,141.4,193.1,38.8,11.4,0.205,0.1068,11,press_to_launch_ms=15.4 slot_empty_ms=27.7 press_to_reload_ms=43.0 pred_land=181.4 hit=1 obs 10->11
+122.094,throw,133.2,191.1,50.6,11.2,0.205,0.1315,11,now fast pred=172.4
+122.192,landed,133.2,198.6,50.6,11.2,0.205,0.1329,12,press_to_launch_ms=5.3 slot_empty_ms=70.8 press_to_reload_ms=76.0 pred_land=172.4 hit=1 obs 11->12
+122.403,throw,136.2,172.1,32.5,,0.205,0.1598,12,sched fast pred=nan
+122.822,round_dead,,,,,,0.1598,0,slot stayed empty; state released
+122.901,throw,134.7,184.6,50.6,11.4,0.205,0.1598,13,now fast pred=172.5
+123.074,round_dead,,,,,,0.1628,0,slot stayed empty; state released
+123.187,throw,136.9,195.6,43.8,12.4,0.205,0.1645,13,now fast pred=177.0
+123.223,round_dead,,,,,,0.1645,0,slot stayed empty; state released
+123.602,throw,142.1,188.5,38.8,12.1,0.205,0.1598,14,now fast pred=180.8
+123.849,round_dead,,,,,,0.1628,0,slot stayed empty; state released
+123.936,throw,133.8,193.8,50.9,12.5,0.205,0.1645,14,now fast pred=173.6
+124.318,round_dead,,,,,,0.1598,0,slot stayed empty; state released
+124.451,throw,134.2,197.6,30.0,,0.205,0.1598,15,sched fast pred=nan
+124.701,round_dead,,,,,,0.1645,0,slot stayed empty; state released
+124.737,throw,132.2,193.2,50.6,10.6,0.205,0.1645,15,now fast pred=171.8
+124.926,round_dead,,,,,,0.0713,0,slot stayed empty; state released
+125.019,throw,128.7,204.7,32.5,,0.205,0.1594,16,sched fast pred=nan
+125.07,round_dead,,,,,,0.1598,0,slot stayed empty; state released
+127.707,throw,133.5,198.1,73.8,24.5,0.205,0.1657,7,now fast pred=174.1
+128.37,round_dead,,,,,,0.1598,0,slot stayed empty; state released
+128.437,throw,135.9,167.0,62.0,14.6,0.205,0.1598,8,now fast pred=170.1
+128.768,round_dead,,,,,,0.1645,0,slot stayed empty; state released
+128.808,throw,134.3,201.7,73.6,25.9,0.205,0.1657,8,now fast pred=175.7
+128.973,round_dead,,,,,,0.0739,0,slot stayed empty; state released
+129.278,throw,165.5,121.4,36.0,1.2,0.205,0.1598,9,now slow pred=190.3
+129.451,round_dead,,,,,,0.1628,0,slot stayed empty; state released
+129.488,throw,126.8,202.3,62.5,13.0,0.205,0.1628,9,now fast pred=168.3
+129.488,relocate,,,,,,0.1628,9,"(960,398,r122)"
+129.868,round_dead,,,,,,0.1273,0,slot stayed empty; state released
+131.037,throw,150.2,127.3,35.3,7.4,0.205,0.1323,10,now slow pred=176.3
+131.3,round_dead,,,,,,0.1273,0,slot stayed empty; state released
+131.385,throw,132.2,191.8,50.1,10.1,0.205,0.0259,11,now fast pred=171.5
+131.427,round_dead,,,,,,0.0733,0,slot stayed empty; state released
+132.118,throw,134.7,153.2,61.2,10.2,0.205,0.1273,12,now fast pred=166.1
+132.155,round_dead,,,,,,0.1273,0,slot stayed empty; state released
+132.2,throw,147.7,190.0,61.0,17.3,0.205,0.1303,12,now fast pred=186.6
+132.45,round_dead,,,,,,0.0,0,slot stayed empty; state released
+132.967,throw,137.5,187.3,38.5,8.6,0.205,0.1303,13,now fast pred=175.9
+132.99,round_dead,,,,,,0.1303,0,slot stayed empty; state released
+133.151,throw,114.8,262.4,41.1,,0.205,0.1323,13,sched fast pred=nan
+133.305,round_dead,,,,,,0.046,0,slot stayed empty; state released
+134.349,throw,145.8,154.2,38.5,10.2,0.205,0.1337,13,now fast pred=177.4
+134.417,round_dead,,,,,,0.1337,0,slot stayed empty; state released
+134.931,throw,168.3,126.2,49.9,4.2,0.205,0.1273,14,now slow pred=194.2
+135.285,round_dead,,,,,,0.0541,0,slot stayed empty; state released
+135.878,throw,134.2,180.0,38.5,,0.205,0.1323,15,sched fast pred=nan
+135.982,round_dead,,,,,,0.1323,0,slot stayed empty; state released
+136.134,throw,141.1,196.5,38.8,11.5,0.205,0.1337,15,now fast pred=181.4
+136.203,round_dead,,,,,,0.1337,0,slot stayed empty; state released
+137.283,throw,137.1,191.8,38.8,9.3,0.205,0.0,15,now fast pred=176.4
+137.308,round_dead,,,,,,0.0409,0,slot stayed empty; state released
+138.139,throw,223.6,-155.7,61.2,12.4,0.205,0.1273,8,now fast pred=191.7
+138.139,relocate,,,,,,0.1273,8,"(960,401,r126)"
+138.313,round_dead,,,,,,0.1549,0,slot stayed empty; state released
+139.338,throw,219.0,-192.9,53.9,19.9,0.205,0.1611,9,now fast pred=179.4
+139.419,round_dead,,,,,,0.1611,0,slot stayed empty; state released
+140.671,throw,184.3,-129.9,62.2,2.3,0.205,0.1549,5,now slow pred=157.7
+140.714,round_dead,,,,,,0.1549,0,slot stayed empty; state released
+140.824,throw,212.1,-131.9,40.1,8.5,0.205,0.1549,7,now slow pred=185.0
+140.899,round_dead,,,,,,0.1549,0,slot stayed empty; state released
+140.967,throw,225.0,-193.3,21.7,,0.205,0.1579,7,sched fast pred=nan
+141.335,round_dead,,,,,,0.0,0,slot stayed empty; state released
+141.502,throw,242.0,-198.5,72.8,8.6,0.205,0.1549,8,now fast pred=201.3
+141.569,round_dead,,,,,,0.1549,0,slot stayed empty; state released
+141.63,throw,219.2,-192.6,73.1,29.8,0.205,0.1549,8,now fast pred=179.8
+141.741,round_dead,,,,,,0.1549,0,slot stayed empty; state released
+141.899,throw,229.1,-196.1,40.3,,0.205,0.0738,9,sched fast pred=nan
+142.099,round_dead,,,,,,0.1549,0,slot stayed empty; state released
+142.292,throw,228.3,-191.5,60.5,14.7,0.205,0.073,9,now fast pred=189.1
+142.292,relocate,,,,,,0.073,9,"(959,408,r126)"
+142.704,round_dead,,,,,,0.0877,0,slot stayed empty; state released
+143.751,throw,226.5,-202.0,40.3,8.5,0.205,0.1799,10,now fast pred=185.1
+143.922,round_dead,,,,,,0.1799,0,slot stayed empty; state released
+144.1,throw,231.3,-201.5,51.9,9.4,0.205,0.1738,10,now fast pred=190.0
+144.139,round_dead,,,,,,0.0956,0,slot stayed empty; state released
+144.167,throw,217.7,-206.0,52.4,15.2,0.205,0.0,11,now fast pred=175.5
+144.324,round_dead,,,,,,0.1741,0,slot stayed empty; state released
+144.434,throw,229.6,-199.4,43.3,,0.205,0.1741,11,sched fast pred=nan
+144.434,relocate,,,,,,0.1741,11,"(960,401,r126)"
+144.648,round_dead,,,,,,0.0471,0,slot stayed empty; state released
+145.956,throw,228.9,-195.4,50.1,9.7,0.205,0.1636,12,now fast pred=188.9
+146.016,round_dead,,,,,,0.1636,0,slot stayed empty; state released
+146.034,throw,212.4,-198.1,50.4,10.5,0.205,0.1636,12,now fast pred=171.8
+146.185,round_dead,,,,,,0.1617,0,slot stayed empty; state released
+146.318,throw,225.4,-194.9,29.0,,0.205,0.0471,13,sched fast pred=nan
+146.401,round_dead,,,,,,0.1583,0,slot stayed empty; state released
+146.553,throw,216.1,-144.1,21.9,,0.205,0.1587,13,sched fast pred=nan
+146.815,round_dead,,,,,,0.0,0,slot stayed empty; state released
+147.965,throw,214.1,-132.5,61.7,17.4,0.205,0.1587,7,now slow pred=186.9
+148.417,round_dead,,,,,,0.1649,0,slot stayed empty; state released
+148.62,throw,228.9,-186.6,60.7,13.2,0.205,0.1476,8,now fast pred=190.7
+148.771,round_dead,,,,,,0.1587,0,slot stayed empty; state released
+149.036,throw,227.8,-194.6,36.3,,0.205,0.1532,9,sched fast pred=nan
+149.181,round_dead,,,,,,0.1587,0,slot stayed empty; state released
+149.298,throw,241.3,-196.9,73.3,9.2,0.205,0.1587,9,now fast pred=200.9
+149.505,round_dead,,,,,,0.1617,0,slot stayed empty; state released
+149.717,throw,233.1,-188.8,61.5,9.8,0.205,0.1649,9,now fast pred=194.4
+149.829,round_dead,,,,,,1.0,0,slot stayed empty; state released
+150.25,throw,224.4,-172.7,27.5,,0.205,0.0,9,sched fast pred=nan
+150.617,round_dead,,,,,,0.0471,0,slot stayed empty; state released
+150.925,throw,214.5,-121.5,62.0,14.9,0.205,0.1587,7,now slow pred=189.5
+150.994,round_dead,,,,,,0.1587,0,slot stayed empty; state released
+151.193,throw,235.6,-193.8,72.6,13.9,0.205,0.1636,7,now fast pred=195.9
+151.383,round_dead,,,,,,0.1649,0,slot stayed empty; state released
+151.551,throw,225.2,-197.8,38.0,,0.205,0.1583,7,sched fast pred=nan
+151.654,landed,225.2,-201.2,38.0,nan,0.205,0.0616,8,press_to_launch_ms=33.1 slot_empty_ms=35.7 press_to_reload_ms=68.9 pred_land=nan hit=1 obs 7->8
+151.95,throw,217.7,-150.0,37.8,,0.205,0.1587,8,sched fast pred=nan
+152.072,round_dead,,,,,,0.1617,0,slot stayed empty; state released
+152.253,throw,241.4,-199.4,73.1,9.5,0.205,0.1583,8,now fast pred=200.5
+152.338,landed,241.4,-196.8,73.1,9.5,0.205,0.0471,8,press_to_launch_ms=33.6 slot_empty_ms=21.1 press_to_reload_ms=54.7 pred_land=200.5 hit=0 obs 8->8
+152.338,throw,225.2,-196.8,73.3,25.3,0.205,0.0471,8,now fast pred=184.8
+152.338,relocate,,,,,,0.0471,8,"(960,406,r126)"
+152.771,round_dead,,,,,,0.116,0,slot stayed empty; state released
+153.775,throw,227.8,-191.6,51.4,10.7,0.205,0.1749,9,now fast pred=188.5
+153.93,round_dead,,,,,,0.1749,0,slot stayed empty; state released
+154.118,throw,233.1,-197.6,63.0,12.4,0.205,0.0534,10,now fast pred=192.6
+154.219,round_dead,,,,,,0.1688,0,slot stayed empty; state released
+154.27,throw,202.7,-173.6,63.7,12.5,0.205,0.1691,10,now fast pred=167.1
+154.334,round_dead,,,,,,0.1691,0,slot stayed empty; state released
+154.607,throw,216.5,-173.1,62.0,23.5,0.205,0.1639,11,now fast pred=181.0
+154.607,relocate,,,,,,0.1639,11,"(959,400,r126)"
+154.971,round_dead,,,,,,0.1848,0,slot stayed empty; state released
+155.948,throw,231.3,-196.1,50.4,,0.205,0.1595,12,sched fast pred=nan
+156.064,round_dead,,,,,,0.1595,0,slot stayed empty; state released
+156.377,throw,229.7,-200.2,60.2,14.9,0.205,0.1234,13,now fast pred=188.7
+156.468,round_dead,,,,,,0.1534,0,slot stayed empty; state released
+156.499,throw,208.5,-200.8,61.7,11.7,0.205,0.1534,13,now fast pred=167.4
+156.523,round_dead,,,,,,0.1534,0,slot stayed empty; state released
+156.767,throw,228.2,-188.2,49.1,8.4,0.205,0.0872,14,now fast pred=189.6
+156.767,relocate,,,,,,0.0872,14,"(959,406,r126)"
+157.167,round_dead,,,,,,0.113,0,slot stayed empty; state released
+158.2,throw,227.6,-191.7,40.3,,0.205,0.1774,15,sched fast pred=nan
+158.248,round_dead,,,,,,0.1774,0,slot stayed empty; state released
+160.302,throw,223.5,-163.5,63.5,15.2,0.205,0.1744,7,now fast pred=190.0
+160.465,round_dead,,,,,,0.1762,0,slot stayed empty; state released
+160.586,throw,241.8,-200.9,74.3,10.0,0.205,0.1713,7,now fast pred=200.6
+160.715,round_dead,,,,,,0.105,0,slot stayed empty; state released
+160.798,throw,201.6,-159.3,75.6,20.2,0.205,0.1713,8,now fast pred=168.9
+160.798,relocate,,,,,,0.1713,8,"(959,400,r126)"
+161.117,round_dead,,,,,,0.1895,0,slot stayed empty; state released
+162.099,throw,229.3,-196.2,50.4,9.6,0.205,0.1595,9,now fast pred=189.1
+162.326,round_dead,,,,,,0.1595,0,slot stayed empty; state released
+162.45,throw,236.4,-197.0,73.1,14.0,0.205,0.1102,9,now fast pred=196.0
+162.529,round_dead,,,,,,1.0,0,slot stayed empty; state released
+163.171,throw,242.8,-201.5,73.3,8.6,0.205,0.0,9,now fast pred=201.5
+163.301,round_dead,,,,,,0.044,0,slot stayed empty; state released
+163.538,throw,212.8,-121.7,40.1,5.6,0.205,0.1534,7,now slow pred=187.9
+163.538,relocate,,,,,,0.1534,7,"(960,399,r122)"
+164.066,round_dead,,,,,,0.135,0,slot stayed empty; state released
+164.95,throw,237.6,-189.3,72.6,10.9,0.205,0.135,8,now fast pred=198.8
+165.176,round_dead,,,,,,0.135,0,slot stayed empty; state released
+165.284,throw,228.8,-200.2,33.8,,0.205,0.0271,9,sched fast pred=nan
+165.499,round_dead,,,,,,0.1286,0,slot stayed empty; state released
+166.047,throw,237.0,-190.4,72.8,11.9,0.205,0.1286,9,now fast pred=198.0
+166.069,round_dead,,,,,,0.1316,0,slot stayed empty; state released
+166.183,throw,210.9,-191.7,72.6,21.4,0.205,0.1316,9,now fast pred=171.6
+166.183,relocate,,,,,,0.1316,9,"(959,400,r126)"
+166.381,round_dead,,,,,,0.0,0,slot stayed empty; state released
+167.847,throw,228.9,-190.9,39.0,,0.205,0.1609,11,sched fast pred=nan
+167.933,round_dead,,,,,,0.159,0,slot stayed empty; state released
+168.034,throw,229.3,-198.8,27.7,,0.205,0.1561,11,sched fast pred=nan
+168.096,round_dead,,,,,,0.1561,0,slot stayed empty; state released
+168.283,throw,234.5,-191.7,61.7,9.2,0.205,0.0,12,now fast pred=195.2
+168.334,round_dead,,,,,,0.1215,0,slot stayed empty; state released
+168.43,throw,204.9,-176.6,61.5,12.9,0.205,0.1561,12,now fast pred=168.7
+168.667,landed,204.9,-169.4,61.5,12.9,0.205,0.072,13,press_to_launch_ms=168.0 slot_empty_ms=50.6 press_to_reload_ms=218.6 pred_land=168.7 hit=1 obs 12->13
+168.997,throw,224.1,-183.6,27.5,,0.205,0.1561,13,sched fast pred=nan
+169.068,round_dead,,,,,,0.159,0,slot stayed empty; state released
+169.699,throw,228.3,-185.1,38.8,,0.205,0.1561,12,sched fast pred=nan
+169.767,round_dead,,,,,,0.1561,0,slot stayed empty; state released
+170.114,throw,225.5,-193.7,38.8,,0.205,0.1556,13,sched fast pred=nan
+170.167,round_dead,,,,,,0.0,0,slot stayed empty; state released
+170.467,throw,221.6,-162.5,39.0,,0.205,0.1832,14,sched fast pred=nan
+170.682,round_dead,,,,,,0.1561,0,slot stayed empty; state released
+170.738,throw,234.1,-222.2,27.7,,0.205,0.1561,15,sched fast pred=nan
+170.849,round_dead,,,,,,0.0,0,slot stayed empty; state released
+172.755,throw,133.7,197.2,72.3,23.8,0.205,0.1622,7,now fast pred=174.1
+173.077,round_dead,,,,,,0.1788,0,slot stayed empty; state released
+173.105,throw,128.9,195.5,61.7,13.4,0.205,0.0,8,now fast pred=169.0
+173.465,round_dead,,,,,,0.0,0,slot stayed empty; state released
+173.484,throw,130.4,173.1,72.8,15.8,0.205,0.0456,9,now fast pred=165.9
+173.825,round_dead,,,,,,0.0,0,slot stayed empty; state released
+173.862,throw,140.4,173.1,38.8,8.8,0.205,0.0647,10,now fast pred=175.9
+173.923,round_dead,,,,,,0.1504,0,slot stayed empty; state released
+174.284,throw,133.6,195.1,32.8,,0.205,0.1237,9,sched fast pred=nan
+174.521,round_dead,,,,,,0.1561,0,slot stayed empty; state released
+174.549,throw,126.9,193.4,61.2,10.7,0.205,0.1561,11,now fast pred=166.6
+174.577,round_dead,,,,,,0.1561,0,slot stayed empty; state released
+174.6,throw,136.9,192.7,61.0,20.3,0.205,0.1561,11,now fast pred=176.4
+174.854,round_dead,,,,,,0.1561,0,slot stayed empty; state released
+174.935,throw,132.1,200.9,50.4,11.9,0.205,0.1561,11,now fast pred=173.3
+175.203,round_dead,,,,,,0.159,0,slot stayed empty; state released
+175.273,throw,129.4,195.7,50.6,8.3,0.205,0.1609,11,now fast pred=169.5
+175.303,round_dead,,,,,,0.1609,0,slot stayed empty; state released
+175.35,throw,142.4,190.2,50.4,17.3,0.205,0.1609,11,now fast pred=181.4
+175.464,landed,142.4,191.7,50.4,17.3,0.205,0.0456,12,press_to_launch_ms=48.8 slot_empty_ms=43.6 press_to_reload_ms=92.4 pred_land=181.4 hit=1 obs 11->12
+175.718,throw,138.4,153.6,50.4,8.5,0.205,0.1561,12,now fast pred=169.9
+176.001,round_dead,,,,,,0.1609,0,slot stayed empty; state released
+176.117,throw,129.7,205.6,34.5,,0.205,0.1556,12,sched fast pred=nan
+176.203,landed,129.7,195.3,34.5,nan,0.205,0.0456,13,press_to_launch_ms=26.3 slot_empty_ms=19.6 press_to_reload_ms=45.9 pred_land=nan hit=1 obs 12->13
+176.45,throw,131.8,195.0,49.9,10.2,0.205,0.1561,13,now fast pred=171.8
+176.622,landed,131.8,191.7,49.9,10.2,0.205,0.0699,14,press_to_launch_ms=103.8 slot_empty_ms=52.8 press_to_reload_ms=156.7 pred_land=171.8 hit=1 obs 13->14
+176.834,throw,142.7,191.6,50.4,16.7,0.205,0.1561,14,now fast pred=181.9
+177.037,round_dead,,,,,,0.159,0,slot stayed empty; state released
+177.191,throw,137.5,196.5,39.6,11.0,0.205,0.1609,14,now fast pred=177.8
+177.456,round_dead,,,,,,0.1556,0,slot stayed empty; state released
+177.588,throw,142.3,160.3,50.6,13.9,0.205,0.1561,15,now fast pred=175.1
+177.631,round_dead,,,,,,0.1561,0,slot stayed empty; state released
+178.39,throw,146.6,134.0,38.5,6.8,0.205,0.0,15,now slow pred=174.0
+178.537,round_dead,,,,,,0.0,0,slot stayed empty; state released
+179.652,throw,131.8,198.5,54.9,13.5,0.205,0.1622,7,now fast pred=172.5
+179.695,round_dead,,,,,,0.1622,0,slot stayed empty; state released
+179.717,throw,141.6,192.8,54.9,19.8,0.205,0.1622,7,now fast pred=181.2
+180.001,round_dead,,,,,,0.1622,0,slot stayed empty; state released
+180.88,click_go,,,,,,0.9783,0,"(1337, 941)"
+182.842,throw,149.6,146.9,23.4,,0.205,0.1561,8,sched fast pred=nan
+183.217,round_dead,,,,,,0.0456,0,slot stayed empty; state released
+183.256,throw,136.9,188.0,71.0,24.4,0.205,0.0913,9,now fast pred=175.4
+183.55,round_dead,,,,,,0.1561,0,slot stayed empty; state released
+183.601,throw,130.6,192.1,61.5,14.2,0.205,0.1561,9,now fast pred=169.9
+183.77,landed,130.6,198.6,61.5,14.2,0.205,0.0725,10,press_to_launch_ms=85.2 slot_empty_ms=52.8 press_to_reload_ms=138.0 pred_land=169.9 hit=1 obs 9->10
+183.917,throw,128.0,198.1,54.9,9.6,0.205,0.1561,10,now fast pred=168.7
+184.315,round_dead,,,,,,0.0,0,slot stayed empty; state released
+184.434,throw,134.5,189.3,39.0,,0.205,0.1556,10,sched fast pred=nan
+184.476,round_dead,,,,,,0.1561,0,slot stayed empty; state released
+184.617,throw,133.1,193.0,23.2,,0.205,0.1561,11,sched fast pred=nan
+184.661,round_dead,,,,,,0.1561,0,slot stayed empty; state released
+185.181,throw,141.3,146.1,58.7,14.0,0.205,0.0011,10,now fast pred=171.2
+185.4,round_dead,,,,,,0.0,0,slot stayed empty; state released
+185.615,throw,153.6,125.6,50.1,17.9,0.205,0.0,10,now slow pred=179.4
+185.822,round_dead,,,,,,0.0,0,slot stayed empty; state released
+185.855,throw,146.1,199.9,50.1,11.5,0.205,0.0,10,now fast pred=187.0
+185.926,round_dead,,,,,,0.0784,0,slot stayed empty; state released
+187.15,throw,235.4,-195.0,61.5,8.8,0.205,0.1609,8,now fast pred=195.4
+187.246,round_dead,,,,,,0.1622,0,slot stayed empty; state released
+187.284,throw,205.9,-196.1,61.5,9.9,0.205,0.1622,8,now fast pred=165.7
+187.37,round_dead,,,,,,0.1622,0,slot stayed empty; state released
+187.5,throw,240.1,-192.0,73.1,9.2,0.205,0.1556,8,now fast pred=200.8
+187.916,landed,240.1,-189.6,73.1,9.2,0.205,0.0456,10,press_to_launch_ms=365.4 slot_empty_ms=34.1 press_to_reload_ms=399.5 pred_land=200.8 hit=1 obs 8->10
+187.916,throw,226.3,-189.6,50.4,11.3,0.205,0.0456,10,now fast pred=187.4
+188.03,round_dead,,,,,,0.1561,0,slot stayed empty; state released
+188.237,throw,226.9,-180.5,47.1,,0.205,0.1561,10,sched fast pred=nan
+188.335,round_dead,,,,,,0.1556,0,slot stayed empty; state released
+188.734,throw,231.3,-204.1,30.7,,0.205,0.1561,11,sched fast pred=nan
+188.822,round_dead,,,,,,0.1561,0,slot stayed empty; state released
+188.997,throw,228.9,-193.1,50.6,9.5,0.205,0.1609,11,now fast pred=189.3
+189.239,round_dead,,,,,,0.1378,0,slot stayed empty; state released
+189.417,throw,211.6,-197.4,50.1,9.6,0.205,0.1561,12,now fast pred=171.1
+189.576,round_dead,,,,,,0.1561,0,slot stayed empty; state released
+189.736,throw,228.8,-196.0,50.4,10.1,0.205,0.1556,12,now fast pred=188.6
+189.846,landed,228.8,-194.4,50.4,10.1,0.205,0.0666,13,press_to_launch_ms=17.5 slot_empty_ms=46.7 press_to_reload_ms=64.2 pred_land=188.6 hit=1 obs 12->13
+190.165,throw,218.9,-150.4,35.5,,0.205,0.1561,13,sched fast pred=nan
+190.279,round_dead,,,,,,0.1953,0,slot stayed empty; state released
+190.633,throw,224.0,-190.6,30.7,,0.205,0.1561,14,sched fast pred=nan
+190.94,round_dead,,,,,,0.1609,0,slot stayed empty; state released
+191.169,throw,229.6,-204.6,49.4,10.5,0.205,0.1534,15,now fast pred=187.6
+191.208,round_dead,,,,,,0.1561,0,slot stayed empty; state released
+191.27,throw,210.9,-200.4,50.4,8.5,0.205,0.1561,15,now fast pred=169.8
+191.42,round_dead,,,,,,0.1561,0,slot stayed empty; state released
+191.599,throw,228.1,-188.2,50.4,9.2,0.205,0.159,15,now fast pred=189.5
+191.684,round_dead,,,,,,0.1556,0,slot stayed empty; state released
+192.073,throw,210.7,-138.8,24.2,3.4,0.205,0.1561,16,now slow pred=182.2
+192.449,round_dead,,,,,,0.1556,0,slot stayed empty; state released
+192.485,throw,220.0,-194.7,30.7,8.8,0.205,0.0,17,now fast pred=180.1
+192.578,round_dead,,,,,,0.0,0,slot stayed empty; state released
+194.297,throw,132.4,189.3,24.9,,0.205,0.1609,7,sched fast pred=nan
+194.348,round_dead,,,,,,0.1609,0,slot stayed empty; state released
+194.467,throw,131.3,197.9,24.7,,0.205,0.1622,7,sched fast pred=nan
+194.706,round_dead,,,,,,0.0748,0,slot stayed empty; state released
+194.74,throw,130.4,196.6,70.8,19.6,0.205,0.1287,7,now fast pred=170.7
+195.084,round_dead,,,,,,0.1922,0,slot stayed empty; state released
+195.12,throw,130.7,196.6,61.7,15.3,0.205,0.0,8,now fast pred=171.0
+195.172,round_dead,,,,,,0.0699,0,slot stayed empty; state released
+195.2,throw,148.1,196.6,59.2,14.7,0.205,0.1287,9,now fast pred=188.4
+195.477,round_dead,,,,,,0.0,0,slot stayed empty; state released
+195.567,throw,135.3,178.6,48.4,9.6,0.205,0.144,10,now fast pred=172.0
+195.817,round_dead,,,,,,0.1561,0,slot stayed empty; state released
+195.857,throw,127.2,178.8,61.7,8.2,0.205,0.1561,10,now fast pred=163.8
+196.158,round_dead,,,,,,0.1561,0,slot stayed empty; state released
+196.185,throw,143.0,178.8,24.9,,0.205,0.1561,11,sched fast pred=nan
+196.517,round_dead,,,,,,0.1722,0,slot stayed empty; state released
+196.555,throw,128.8,196.7,61.5,13.3,0.205,0.0,12,now fast pred=169.1
+196.595,round_dead,,,,,,0.0456,0,slot stayed empty; state released
+196.622,throw,143.0,192.5,59.7,20.8,0.205,0.0965,12,now fast pred=182.5
+196.865,round_dead,,,,,,0.1556,0,slot stayed empty; state released
+196.966,throw,134.6,191.8,49.4,12.1,0.205,0.066,13,now fast pred=173.9
+196.966,relocate,,,,,,0.066,13,"(958,407,r124)"
+197.383,round_dead,,,,,,0.1935,0,slot stayed empty; state released
+198.454,throw,143.5,197.7,51.6,15.2,0.205,0.1735,13,now fast pred=184.1
+198.721,round_dead,,,,,,0.1735,0,slot stayed empty; state released
+198.816,throw,132.7,199.0,51.6,12.8,0.205,0.1722,13,now fast pred=173.5
+198.842,round_dead,,,,,,0.1722,0,slot stayed empty; state released
+198.875,throw,146.3,198.6,52.1,12.5,0.205,0.1668,13,now fast pred=187.0
+199.0,landed,146.3,197.8,52.1,12.5,0.205,0.1505,14,press_to_launch_ms=4.7 slot_empty_ms=88.8 press_to_reload_ms=93.6 pred_land=187.0 hit=1 obs 13->14
+199.202,throw,126.0,206.6,63.0,13.3,0.205,0.1673,13,now fast pred=168.4
+199.202,relocate,,,,,,0.1673,13,"(959,400,r126)"
+199.508,round_dead,,,,,,0.1561,0,slot stayed empty; state released
+200.695,throw,136.1,194.7,38.8,8.9,0.205,0.1609,15,now fast pred=176.0
+200.732,round_dead,,,,,,0.1609,0,slot stayed empty; state released
+201.115,throw,132.8,190.2,50.4,10.5,0.205,0.1561,15,now fast pred=171.8
+201.433,round_dead,,,,,,0.0,0,slot stayed empty; state released
+203.191,throw,241.9,-196.1,73.6,8.6,0.205,0.1622,7,now fast pred=201.7
+203.419,round_dead,,,,,,0.1622,0,slot stayed empty; state released
+203.622,throw,228.7,-178.8,60.2,11.6,0.205,0.1449,8,now fast pred=192.0
+203.622,relocate,,,,,,0.1449,8,"(959,398,r122)"
+204.183,round_dead,,,,,,0.1273,0,slot stayed empty; state released
+205.22,throw,227.3,-193.5,27.7,,0.205,0.1337,9,sched fast pred=nan
+205.284,round_dead,,,,,,0.1337,0,slot stayed empty; state released
+205.434,throw,230.1,-200.7,49.9,9.5,0.205,0.1323,9,now fast pred=188.9
+205.646,round_dead,,,,,,0.0259,0,slot stayed empty; state released
+205.8,throw,212.3,-124.4,22.4,,0.205,0.1273,10,sched slow pred=nan
+205.86,round_dead,,,,,,0.1273,0,slot stayed empty; state released
+206.699,throw,217.7,-170.0,36.3,8.8,0.205,0.1303,11,now fast pred=182.9
+207.139,round_dead,,,,,,0.1337,0,slot stayed empty; state released
+208.237,throw,204.1,-187.5,61.5,9.9,0.205,0.1273,5,now fast pred=165.7
+208.3,round_dead,,,,,,0.1273,0,slot stayed empty; state released
+208.338,throw,249.7,-327.0,56.4,19.0,0.205,0.1273,7,now fast pred=182.7
+208.65,round_dead,,,,,,0.1323,0,slot stayed empty; state released
+208.822,throw,233.7,-197.5,61.2,10.9,0.205,0.0,7,now fast pred=193.2
+208.884,landed,233.7,-193.8,61.2,10.9,0.205,0.0857,7,press_to_launch_ms=9.2 slot_empty_ms=19.0 press_to_reload_ms=28.1 pred_land=193.2 hit=0 obs 7->7
+208.884,throw,219.6,-193.8,58.2,22.5,0.205,0.0857,7,now fast pred=179.9
+208.884,relocate,,,,,,0.0857,7,"(959,402,r126)"
+209.273,round_dead,,,,,,0.0,0,slot stayed empty; state released
+210.854,throw,132.8,193.0,24.2,,0.205,0.1665,7,sched fast pred=nan
+210.898,round_dead,,,,,,0.1665,0,slot stayed empty; state released
+211.05,throw,135.5,197.9,25.9,,0.205,0.1665,7,sched fast pred=nan
+211.234,round_dead,,,,,,0.1665,0,slot stayed empty; state released
+211.335,throw,130.4,190.5,40.6,,0.205,0.1665,7,sched fast pred=nan
+211.533,landed,130.4,196.9,40.6,nan,0.205,0.0913,7,press_to_launch_ms=61.7 slot_empty_ms=80.8 press_to_reload_ms=142.5 pred_land=nan hit=0 obs 7->7
+211.672,throw,133.2,192.4,73.3,22.8,0.205,0.1603,7,now fast pred=172.6
+212.216,landed,133.2,192.4,73.3,22.8,0.205,0.0995,8,press_to_launch_ms=445.0 slot_empty_ms=65.6 press_to_reload_ms=510.6 pred_land=172.6 hit=1 obs 7->8
+212.438,throw,136.4,151.5,74.1,17.9,0.205,0.1603,8,now fast pred=167.4
+212.534,round_dead,,,,,,0.1603,0,slot stayed empty; state released
+212.7,throw,130.4,192.7,23.9,,0.205,0.1633,8,sched fast pred=nan
+212.858,round_dead,,,,,,0.1327,0,slot stayed empty; state released
+212.89,throw,133.3,198.6,24.2,,0.205,0.1576,9,sched fast pred=nan
+213.087,round_dead,,,,,,0.0,0,slot stayed empty; state released
+213.211,throw,134.0,180.3,39.0,,0.205,0.1598,10,sched fast pred=nan
+213.543,round_dead,,,,,,0.1598,0,slot stayed empty; state released
+213.572,throw,143.8,180.3,73.3,29.4,0.205,0.1213,10,now fast pred=180.7
+213.65,landed,143.8,180.3,73.3,29.4,0.205,0.0854,11,press_to_launch_ms=30.6 slot_empty_ms=19.1 press_to_reload_ms=49.6 pred_land=180.7 hit=1 obs 10->11
+213.65,throw,155.4,180.3,60.2,11.3,0.205,0.0854,11,now fast pred=192.3
+213.848,round_dead,,,,,,0.1603,0,slot stayed empty; state released
+213.907,throw,129.8,198.3,50.9,9.4,0.205,0.1603,11,now fast pred=170.5
+214.117,landed,129.8,193.3,50.9,9.4,0.205,0.1016,12,press_to_launch_ms=131.3 slot_empty_ms=49.8 press_to_reload_ms=181.1 pred_land=170.5 hit=1 obs 11->12
+214.275,throw,139.6,149.8,62.5,15.1,0.205,0.1603,12,now fast pred=170.3
+214.577,round_dead,,,,,,0.1633,0,slot stayed empty; state released
+220.928,click_go,,,,,,0.9781,0,"(1337, 941)"
+233.729,click_go,,,,,,0.9781,0,"(1337, 941)"
+235.562,click_go,,,,,,0.9714,0,"(1337, 941)"
+237.394,click_go,,,,,,0.9737,0,"(1337, 941)"
+239.225,click_go,,,,,,0.9737,0,"(1337, 941)"
