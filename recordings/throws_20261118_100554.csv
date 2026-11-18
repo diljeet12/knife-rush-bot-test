@@ -1,0 +1,8 @@
+t,event,aim_deg,omega,gap_w,slack,t_total,slot,n_obs,detail,mult
+1.037,throw,231.5,-254.8,62.2,23.8,0.205,0.1583,7,now fast pred=179.2,x1.01
+1.918,mult_unknown,,,,,,0.0311,6,no_text(0 blobs),
+1.94,landed,231.5,-282.7,62.2,23.8,0.205,0.198,7,press_to_launch_ms=671.1 slot_empty_ms=197.6 press_to_reload_ms=868.6 pred_land=179.2 hit=0 obs 7->7,x1.01
+2.222,throw,199.2,-127.1,61.7,17.5,0.205,0.0,7,now slow pred=173.2,x1.01
+2.67,landed,199.2,-342.1,61.7,17.5,0.205,0.1529,7,press_to_launch_ms=75.8 slot_empty_ms=344.4 press_to_reload_ms=420.3 pred_land=173.2 hit=0 obs 7->7,x1.01
+3.125,throw,231.5,-194.2,61.7,12.7,0.205,0.1583,7,now fast pred=191.6,x1.01
+3.723,CASHOUT,,,,,,0.0707,8,held x1.01 (log printed x1.03),x1.03

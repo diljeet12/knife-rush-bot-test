@@ -1,0 +1,4 @@
+round,start_s,end_s,outcome,cashout_held,peak_log,throws,hits
+1,1.749,4.268,lost,,1.01,4,1
+2,4.329,8.849,won,1.24,1.24,8,5
+3,11.603,16.386,won,1.24,1.24,8,2

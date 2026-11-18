@@ -1,0 +1,4 @@
+t,event,aim_deg,omega,gap_w,slack,t_total,slot,n_obs,detail,mult
+1.021,throw,228.3,-190.1,73.1,20.7,0.205,0.1584,7,now fast pred=189.3,x1.01
+1.674,landed,228.3,-182.1,73.1,20.7,0.205,0.1013,8,press_to_launch_ms=514.8 slot_empty_ms=96.1 press_to_reload_ms=610.9 pred_land=189.3 hit=1 obs 7->8,x1.01
+1.837,CASHOUT,,,,,,0.1521,8,"held x1.01 (log printed x1.03) clicked (986, 942)",x1.03

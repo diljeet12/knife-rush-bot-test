@@ -1,0 +1,170 @@
+t,event,aim_deg,omega,gap_w,slack,t_total,slot,n_obs,detail,mult
+0.0,mult_unknown,,,,,,0.1569,8,glyphs=10,
+0.914,mult_unknown,,,,,,0.1548,8,glyphs=11,
+1.174,mult_unknown,,,,,,0.1516,8,glyphs=10,
+1.218,throw,234.6,-190.9,61.5,8.7,0.205,0.1516,8,now fast pred=195.5,
+1.61,landed,234.6,-190.1,61.5,8.7,0.205,0.0818,9,press_to_launch_ms=310.0 slot_empty_ms=63.9 press_to_reload_ms=373.9 pred_land=195.5 hit=1 obs 8->9,
+1.643,mult_unknown,,,,,,0.1403,9,glyphs=11,
+1.859,mult_unknown,,,,,,0.1516,9,glyphs=10,
+2.64,throw,242.0,-196.2,72.8,8.1,0.205,0.1582,9,now fast pred=201.8,
+2.793,mult_unknown,,,,,,0.1582,9,glyphs=11,
+3.042,mult_unknown,,,,,,0.0847,10,glyphs=10,
+3.789,no_launch_seen,242.0,-197.7,72.8,8.1,0.205,0.1582,10,hit=1 obs 9->10 slot_base=0.15693548387096773,
+3.789,throw,231.5,-197.7,72.8,19.0,0.205,0.1582,10,now fast pred=190.9,
+4.22,landed,231.5,-195.0,72.8,19.0,0.205,0.0795,11,press_to_launch_ms=350.6 slot_empty_ms=43.8 press_to_reload_ms=394.5 pred_land=190.9 hit=1 obs 10->11,
+4.243,throw,226.9,-180.5,37.0,,0.205,0.1392,11,sched fast pred=nan,
+4.387,mult_unknown,,,,,,0.1516,11,glyphs=11,
+4.766,landed,226.9,-218.6,37.0,nan,0.205,0.146,12,press_to_launch_ms=363.1 slot_empty_ms=104.7 press_to_reload_ms=467.8 pred_land=nan hit=1 obs 11->12,
+4.83,mult_unknown,,,,,,0.1516,12,glyphs=10,
+4.83,throw,226.7,-225.5,39.0,12.6,0.205,0.1516,12,now fast pred=180.4,
+5.254,mult_unknown,,,,,,0.0987,13,glyphs=11,
+5.254,landed,226.7,-325.5,39.0,12.6,0.205,0.0987,13,press_to_launch_ms=366.4 slot_empty_ms=19.7 press_to_reload_ms=386.1 pred_land=180.4 hit=1 obs 12->13,
+5.491,mult_unknown,,,,,,0.1516,12,glyphs=10,
+5.491,throw,246.9,-324.5,38.3,12.2,0.205,0.1516,12,now fast pred=180.4,
+5.94,mult_unknown,,,,,,0.146,13,glyphs=11,
+5.94,landed,246.9,-341.1,38.3,12.2,0.205,0.146,13,press_to_launch_ms=341.6 slot_empty_ms=65.2 press_to_reload_ms=406.8 pred_land=180.4 hit=1 obs 12->13,
+6.091,throw,261.7,-336.4,39.0,,0.205,0.1516,13,sched fast pred=nan,
+6.155,mult_unknown,,,,,,0.1516,13,glyphs=10,
+6.56,mult_unknown,,,,,,0.1511,14,glyphs=12,
+6.56,landed,261.7,-328.0,39.0,nan,0.205,0.1511,14,press_to_launch_ms=309.0 slot_empty_ms=122.6 press_to_reload_ms=431.6 pred_land=nan hit=1 obs 13->14,
+6.56,throw,253.5,-328.0,37.8,,0.205,0.1511,14,sched fast pred=nan,
+6.774,mult_unknown,,,,,,0.1516,14,glyphs=10,
+7.007,landed,253.5,-328.8,37.8,nan,0.205,0.0818,15,press_to_launch_ms=352.5 slot_empty_ms=53.5 press_to_reload_ms=406.0 pred_land=nan hit=1 obs 14->15,
+7.263,throw,242.4,-238.9,39.3,,0.205,0.1516,15,sched fast pred=nan,
+7.92,mult_unknown,,,,,,0.0,7,glyphs=12,
+8.305,mult_unknown,,,,,,0.0,3,glyphs=3,
+8.405,landed,242.4,33.6,39.3,nan,0.205,0.2111,3,press_to_launch_ms=570.4 slot_empty_ms=515.3 press_to_reload_ms=1085.7 pred_land=nan hit=0 obs 15->3,
+8.722,mult_unknown,,,,,,0.0,5,glyphs=0,
+9.386,mult_unknown,,,,,,0.1516,7,layout,
+9.756,throw,231.1,-194.2,62.0,13.2,0.205,0.1582,7,now fast pred=191.3,
+10.142,landed,231.1,-191.0,62.0,13.2,0.205,0.09,8,press_to_launch_ms=292.2 slot_empty_ms=64.4 press_to_reload_ms=356.6 pred_land=191.3 hit=1 obs 7->8,x2.96
+10.208,mult_unknown,,,,,,0.1511,8,layout,
+10.304,throw,217.9,-147.8,38.0,,0.205,0.1516,8,sched fast pred=nan,x2.96
+10.726,landed,217.9,-194.8,38.0,nan,0.205,0.1226,9,press_to_launch_ms=298.4 slot_empty_ms=73.0 press_to_reload_ms=371.5 pred_land=nan hit=1 obs 8->9,x3.28
+11.006,throw,197.2,-121.1,54.2,12.9,0.205,0.1516,9,now slow pred=172.4,x3.70
+11.456,landed,197.2,-190.1,54.2,12.9,0.205,0.0865,10,press_to_launch_ms=351.0 slot_empty_ms=66.0 press_to_reload_ms=417.1 pred_land=172.4 hit=1 obs 9->10,x3.70
+11.534,mult_unknown,,,,,,0.1511,10,layout,
+11.691,throw,202.5,-124.3,39.0,10.0,0.205,0.1516,10,now slow pred=177.0,x3.70
+12.107,landed,202.5,-197.3,39.0,10.0,0.205,1.0,10,press_to_launch_ms=331.6 slot_empty_ms=56.4 press_to_reload_ms=387.9 pred_land=177.0 hit=0 obs 10->10,x4.11
+12.217,mult_unknown,,,,,,0.0,10,glyphs=0,
+12.572,throw,193.5,-135.9,49.9,4.1,0.205,0.0,10,now slow pred=165.7,x4.11
+12.986,new_round,,,,,,0.1511,7,reached x4.11 -> reset x1.01,x1.01
+12.986,landed,193.5,-118.2,49.9,4.1,0.205,0.1511,7,press_to_launch_ms=5.0 slot_empty_ms=375.8 press_to_reload_ms=380.9 pred_land=165.7 hit=0 obs 10->7,x1.01
+13.171,throw,204.6,-128.3,39.8,11.7,0.205,0.1516,7,now slow pred=178.3,x1.01
+13.84,landed,204.6,-188.9,39.8,11.7,0.205,0.1392,8,press_to_launch_ms=554.1 slot_empty_ms=96.1 press_to_reload_ms=650.2 pred_land=178.3 hit=1 obs 7->8,x1.01
+13.938,mult_unknown,,,,,,0.1516,8,layout,
+14.165,throw,234.7,-197.6,61.7,10.1,0.205,0.1516,8,now fast pred=194.2,x1.03
+14.56,landed,234.7,-193.1,61.7,10.1,0.205,0.09,9,press_to_launch_ms=312.3 slot_empty_ms=42.9 press_to_reload_ms=355.2 pred_land=194.2 hit=1 obs 8->9,x1.03
+14.56,throw,228.3,-193.1,71.0,20.3,0.205,0.09,9,now fast pred=188.7,x1.03
+14.653,mult_unknown,,,,,,0.1516,9,layout,
+14.958,landed,228.3,-196.9,71.0,20.3,0.205,0.0847,10,press_to_launch_ms=311.3 slot_empty_ms=55.1 press_to_reload_ms=366.4 pred_land=188.7 hit=1 obs 9->10,x1.06
+15.068,mult_unknown,,,,,,0.1516,10,layout,
+15.258,throw,222.3,-171.1,38.8,,0.205,0.1516,10,sched fast pred=nan,x1.06
+15.707,landed,222.3,-194.2,38.8,nan,0.205,0.0847,11,press_to_launch_ms=338.8 slot_empty_ms=69.0 press_to_reload_ms=407.7 pred_land=nan hit=1 obs 10->11,x1.10
+15.787,mult_unknown,,,,,,0.1511,11,layout,
+15.989,throw,225.9,-197.5,39.0,,0.205,0.1516,11,sched fast pred=nan,x1.15
+16.505,landed,225.9,-199.8,39.0,nan,0.205,0.1489,12,press_to_launch_ms=383.1 slot_empty_ms=99.3 press_to_reload_ms=482.4 pred_land=nan hit=1 obs 11->12,x1.15
+16.741,throw,225.7,-193.0,39.0,,0.205,0.1516,12,sched fast pred=nan,x1.19
+17.172,landed,225.7,-179.8,39.0,nan,0.205,0.1215,12,press_to_launch_ms=331.7 slot_empty_ms=65.0 press_to_reload_ms=396.7 pred_land=nan hit=0 obs 12->12,x1.19
+17.503,throw,222.1,-167.7,32.0,,0.205,0.1516,12,sched fast pred=nan,x1.24
+17.955,landed,222.1,-202.5,32.0,nan,0.205,0.146,12,press_to_launch_ms=307.1 slot_empty_ms=98.3 press_to_reload_ms=405.4 pred_land=nan hit=0 obs 12->12,x1.24
+18.014,mult_unknown,,,,,,0.1516,12,layout,
+18.216,throw,226.9,-194.2,50.1,11.4,0.205,0.1516,11,now fast pred=187.1,x1.30
+18.607,landed,226.9,-194.8,50.1,11.4,0.205,0.1226,13,press_to_launch_ms=280.4 slot_empty_ms=85.9 press_to_reload_ms=366.3 pred_land=187.1 hit=1 obs 11->13,x1.30
+18.607,throw,220.1,-194.8,37.5,12.1,0.205,0.1226,13,now fast pred=180.2,x1.30
+19.056,landed,220.1,-194.5,37.5,12.1,0.205,0.09,14,press_to_launch_ms=399.6 slot_empty_ms=19.2 press_to_reload_ms=418.9 pred_land=180.2 hit=1 obs 13->14,x1.35
+19.17,mult_unknown,,,,,,0.1516,14,layout,
+19.369,throw,221.8,-164.6,39.3,,0.205,0.1516,14,sched fast pred=nan,x1.35
+19.937,mult_unknown,,,,,,0.0,4,glyphs=1,
+20.386,mult_unknown,,,,,,0.4089,5,glyphs=0,
+20.386,landed,221.8,18.6,39.3,nan,0.205,0.4089,5,press_to_launch_ms=385.0 slot_empty_ms=582.5 press_to_reload_ms=967.6 pred_land=nan hit=0 obs 14->5,x1.42
+21.054,mult_unknown,,,,,,0.1511,5,glyphs=4,
+21.279,mult_unknown,,,,,,0.1516,7,glyphs=9,
+21.507,mult_unknown,,,,,,0.1548,7,glyphs=11,
+21.606,throw,226.9,-199.9,39.6,,0.205,0.1569,7,sched fast pred=nan,x1.42
+21.707,mult_unknown,,,,,,0.1582,7,glyphs=10,
+22.142,landed,226.9,-76.2,39.6,nan,0.205,0.1511,8,press_to_launch_ms=370.7 slot_empty_ms=132.0 press_to_reload_ms=502.7 pred_land=nan hit=1 obs 7->8,x1.42
+23.029,throw,232.1,-195.8,62.0,12.5,0.205,0.1582,8,now fast pred=191.9,x1.42
+23.414,landed,232.1,-194.8,62.0,12.5,0.205,0.0818,9,press_to_launch_ms=296.3 slot_empty_ms=61.5 press_to_reload_ms=357.8 pred_land=191.9 hit=1 obs 8->9,x1.42
+23.514,throw,216.2,-154.0,39.3,8.5,0.205,0.1516,9,now fast pred=184.6,x1.42
+24.016,landed,216.2,-191.8,39.3,8.5,0.205,0.1226,10,press_to_launch_ms=419.8 slot_empty_ms=58.8 press_to_reload_ms=478.6 pred_land=184.6 hit=1 obs 9->10,x1.42
+24.124,throw,231.5,-197.8,61.2,13.2,0.205,0.1516,10,now fast pred=190.9,x1.42
+24.575,landed,231.5,-193.6,61.2,13.2,0.205,0.1511,11,press_to_launch_ms=315.0 slot_empty_ms=105.1 press_to_reload_ms=420.1 pred_land=190.9 hit=1 obs 10->11,x1.42
+24.575,throw,216.3,-193.6,72.8,26.5,0.205,0.1511,11,now fast pred=176.7,x1.42
+24.983,mult_unknown,,,,,,0.0818,12,glyphs=11,
+24.983,landed,216.3,-197.0,72.8,26.5,0.205,0.0818,12,press_to_launch_ms=332.0 slot_empty_ms=43.8 press_to_reload_ms=375.8 pred_land=176.7 hit=1 obs 11->12,x1.42
+25.324,throw,222.3,-181.1,39.3,8.0,0.205,0.1516,12,now fast pred=185.1,x1.42
+25.481,mult_unknown,,,,,,0.1548,12,glyphs=10,
+25.945,mult_unknown,,,,,,0.1489,13,glyphs=9,
+25.945,landed,222.3,-194.5,39.3,8.0,0.205,0.1489,13,press_to_launch_ms=472.4 slot_empty_ms=119.8 press_to_reload_ms=592.2 pred_land=185.1 hit=1 obs 12->13,x1.42
+25.945,throw,225.0,-194.5,38.3,,0.205,0.1489,13,sched fast pred=nan,x1.42
+26.156,mult_unknown,,,,,,0.1516,13,glyphs=10,
+26.442,mult_unknown,,,,,,0.1371,14,glyphs=12,
+26.674,mult_unknown,,,,,,0.1516,14,glyphs=10,
+26.905,mult_unknown,,,,,,0.1548,14,glyphs=11,
+27.104,no_launch_seen,225.0,-196.7,38.3,nan,0.205,0.1582,14,hit=1 obs 13->14 slot_base=0.15693548387096773,x1.42
+27.124,mult_unknown,,,,,,0.1582,14,glyphs=10,
+27.124,throw,231.3,-197.0,39.3,,0.205,0.1582,14,sched fast pred=nan,x1.42
+27.809,landed,231.3,-191.7,39.3,nan,0.205,0.1242,15,press_to_launch_ms=607.3 slot_empty_ms=22.5 press_to_reload_ms=629.7 pred_land=nan hit=1 obs 14->15,x1.42
+27.809,throw,220.2,-191.7,37.8,11.4,0.205,0.1242,15,now fast pred=180.9,x1.42
+28.421,landed,220.2,-194.5,37.8,11.4,0.205,0.1371,15,press_to_launch_ms=474.0 slot_empty_ms=98.3 press_to_reload_ms=572.4 pred_land=180.9 hit=0 obs 15->15,x1.42
+28.44,mult_unknown,,,,,,0.1511,15,glyphs=12,
+28.516,throw,231.3,-201.8,39.3,,0.205,0.1516,15,sched fast pred=nan,x1.42
+28.653,mult_unknown,,,,,,0.1516,15,glyphs=10,
+28.854,mult_unknown,,,,,,0.1548,15,glyphs=11,
+29.171,mult_unknown,,,,,,0.0,15,layout,
+29.388,mult_unknown,,,,,,0.0,15,glyphs=4,
+29.971,new_round,,,,,,0.1511,7,reached x1.42 -> reset x1.01,x1.01
+29.971,landed,231.3,-123.1,39.3,nan,0.205,0.1511,7,press_to_launch_ms=439.7 slot_empty_ms=965.9 press_to_reload_ms=1405.6 pred_land=nan hit=0 obs 15->7,x1.01
+29.971,throw,214.7,-123.1,61.5,14.8,0.205,0.1511,7,now slow pred=189.5,x1.01
+30.615,landed,214.7,-199.3,61.5,14.8,0.205,0.09,8,press_to_launch_ms=565.0 slot_empty_ms=58.0 press_to_reload_ms=623.1 pred_land=189.5 hit=1 obs 7->8,x1.03
+30.615,throw,232.6,-199.3,60.5,12.0,0.205,0.09,8,now fast pred=191.7,x1.03
+30.821,mult_unknown,,,,,,0.1516,8,glyphs=4,
+31.048,landed,232.6,-189.9,60.5,12.0,0.205,0.1403,9,press_to_launch_ms=318.0 slot_empty_ms=93.0 press_to_reload_ms=411.0 pred_land=191.7 hit=1 obs 8->9,x1.06
+31.048,throw,215.8,-189.9,59.7,20.3,0.205,0.1403,9,now fast pred=176.9,x1.06
+31.535,landed,215.8,-198.2,59.7,20.3,0.205,0.0818,10,press_to_launch_ms=384.3 slot_empty_ms=66.3 press_to_reload_ms=450.6 pred_land=176.9 hit=1 obs 9->10,x1.06
+31.739,throw,227.0,-175.0,61.5,13.0,0.205,0.1516,9,now fast pred=191.2,x1.10
+32.239,mult_unknown,,,,,,0.0126,9,glyphs=0,
+33.102,mult_unknown,,,,,,0.1511,5,glyphs=4,
+33.102,landed,227.0,-124.0,61.5,13.0,0.205,0.1511,5,press_to_launch_ms=468.7 slot_empty_ms=862.3 press_to_reload_ms=1330.9 pred_land=191.2 hit=0 obs 9->5,x1.10
+33.305,new_round,,,,,,0.1516,7,reached x1.10 -> reset x1.01,x1.01
+33.342,throw,215.2,-172.5,38.8,12.7,0.205,0.1516,7,now fast pred=179.8,x1.01
+34.004,landed,215.2,-189.0,38.8,12.7,0.205,0.0929,8,press_to_launch_ms=557.4 slot_empty_ms=66.9 press_to_reload_ms=624.3 pred_land=179.8 hit=1 obs 7->8,x1.01
+34.004,throw,222.0,-189.0,60.0,20.2,0.205,0.0929,8,now fast pred=183.3,x1.01
+34.455,landed,222.0,-188.6,60.0,20.2,0.205,1.0,7,press_to_launch_ms=363.7 slot_empty_ms=67.7 press_to_reload_ms=431.4 pred_land=183.3 hit=0 obs 8->7,x1.03
+34.605,mult_unknown,,,,,,0.0,8,glyphs=0,
+34.605,throw,242.5,-370.3,73.3,16.8,0.205,0.0,8,now fast pred=166.6,x1.03
+35.353,landed,242.5,-123.0,73.3,16.8,0.205,0.1511,7,press_to_launch_ms=5.5 slot_empty_ms=710.4 press_to_reload_ms=715.9 pred_land=166.6 hit=0 obs 8->7,x1.01
+35.353,throw,218.2,-123.0,42.3,1.6,0.205,0.1511,7,now slow pred=193.0,x1.01
+36.205,landed,218.2,-186.4,42.3,1.6,0.205,0.1489,8,press_to_launch_ms=690.7 slot_empty_ms=133.0 press_to_reload_ms=823.7 pred_land=193.0 hit=1 obs 7->8,x1.01
+36.205,throw,206.8,-186.4,60.2,12.2,0.205,0.1489,8,now fast pred=168.6,x1.01
+36.271,mult_unknown,,,,,,0.1516,8,layout,
+36.637,landed,206.8,-197.5,60.2,12.2,0.205,0.0847,9,press_to_launch_ms=376.0 slot_empty_ms=23.5 press_to_reload_ms=399.5 pred_land=168.6 hit=1 obs 8->9,x1.03
+36.836,throw,217.7,-142.4,34.3,,0.205,0.1516,9,sched fast pred=nan,x1.06
+37.273,landed,217.7,-192.1,34.3,nan,0.205,0.1066,10,press_to_launch_ms=316.8 slot_empty_ms=59.0 press_to_reload_ms=375.7 pred_land=nan hit=1 obs 9->10,x1.06
+37.508,throw,232.8,-198.6,62.0,12.3,0.205,0.1516,10,now fast pred=192.1,x1.10
+37.89,landed,232.8,-200.1,62.0,12.3,0.205,0.09,11,press_to_launch_ms=279.6 slot_empty_ms=67.3 press_to_reload_ms=346.9 pred_land=192.1 hit=1 obs 10->11,x1.10
+37.89,throw,235.4,-200.1,60.5,9.4,0.205,0.09,11,now fast pred=194.3,x1.10
+38.354,landed,235.4,-198.8,60.5,9.4,0.205,0.1347,12,press_to_launch_ms=331.1 slot_empty_ms=100.5 press_to_reload_ms=431.6 pred_land=194.3 hit=1 obs 11->12,x1.15
+38.354,throw,226.3,-198.8,59.5,17.7,0.205,0.1347,12,now fast pred=185.5,x1.15
+38.759,landed,226.3,-199.6,59.5,17.7,0.205,0.0847,13,press_to_launch_ms=319.5 slot_empty_ms=67.9 press_to_reload_ms=387.3 pred_land=185.5 hit=1 obs 12->13,x1.19
+39.039,throw,216.2,-132.1,41.8,5.3,0.205,0.1516,13,now slow pred=189.1,x1.24
+39.505,landed,216.2,-195.0,41.8,5.3,0.205,0.146,13,press_to_launch_ms=337.2 slot_empty_ms=96.2 press_to_reload_ms=433.5 pred_land=189.1 hit=0 obs 13->13,x1.30
+39.706,throw,231.5,-200.3,38.5,,0.205,0.1516,13,sched fast pred=nan,x1.30
+40.212,landed,231.5,-193.8,38.5,nan,0.205,0.09,14,press_to_launch_ms=420.3 slot_empty_ms=34.5 press_to_reload_ms=454.8 pred_land=nan hit=1 obs 13->14,x1.35
+40.212,throw,216.7,-193.8,48.4,14.7,0.205,0.09,14,now fast pred=177.0,x1.35
+40.723,landed,216.7,-198.8,48.4,14.7,0.205,0.0865,15,press_to_launch_ms=463.5 slot_empty_ms=18.5 press_to_reload_ms=482.0 pred_land=177.0 hit=1 obs 14->15,x1.35
+40.852,throw,229.6,-191.4,50.4,8.3,0.205,0.1516,15,now fast pred=190.3,x1.35
+41.438,mult_unknown,,,,,,0.0,3,glyphs=1,
+41.654,mult_unknown,,,,,,0.0,5,glyphs=3,
+41.972,landed,229.6,5.9,50.4,8.3,0.205,0.1298,5,press_to_launch_ms=288.4 slot_empty_ms=800.1 press_to_reload_ms=1088.5 pred_land=190.3 hit=0 obs 15->5,x1.42
+42.085,mult_unknown,,,,,,0.149,2,glyphs=0,
+42.504,mult_unknown,,,,,,0.1511,7,glyphs=4,
+42.805,mult_unknown,,,,,,0.1548,7,glyphs=12,
+43.006,mult_unknown,,,,,,0.1569,7,glyphs=11,
+43.22,mult_unknown,,,,,,0.1582,7,glyphs=10,
+43.289,throw,130.7,196.3,61.7,15.3,0.205,0.1582,7,now fast pred=170.9,x1.42
+43.885,mult_unknown,,,,,,0.0,7,glyphs=7,
+44.09,mult_unknown,,,,,,0.0,7,glyphs=4,
+44.671,landed,130.7,92.5,61.7,15.3,0.205,0.1511,7,press_to_launch_ms=483.7 slot_empty_ms=868.7 press_to_reload_ms=1352.4 pred_land=170.9 hit=0 obs 7->7,x1.42
+44.756,new_round,,,,,,0.1516,5,reached x1.42 -> reset x1.01,x1.01
