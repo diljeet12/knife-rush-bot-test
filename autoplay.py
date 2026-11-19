@@ -57,6 +57,7 @@ import ctypes
 import csv
 import math
 import os
+import random
 import time
 
 import cv2
@@ -159,6 +160,39 @@ def foreground_root() -> int:
     return (ctypes.windll.user32.GetAncestor(hwnd, GA_ROOT) or hwnd) if hwnd else 0
 
 
+def focus_window(hwnd: int) -> bool:
+    """Bring the game window to the foreground. Returns True if it worked.
+
+    Without this the bot freezes the instant anything else is clicked -- which
+    includes the chat window it was started from. Windows normally refuses
+    SetForegroundWindow from a background process; attaching to the current
+    foreground thread's input queue lifts that restriction. Space is still only
+    sent after a confirmed focus change, so a failure here costs a pause, never
+    a stray keystroke in another app.
+    """
+    u = ctypes.windll.user32
+    k = ctypes.windll.kernel32
+    if not hwnd:
+        return False
+    if u.IsIconic(hwnd):
+        u.ShowWindow(hwnd, 9)                      # SW_RESTORE
+    if u.GetForegroundWindow() == hwnd:
+        return True
+    fg = u.GetForegroundWindow()
+    t_fg = u.GetWindowThreadProcessId(fg, None) if fg else 0
+    t_me = k.GetCurrentThreadId()
+    try:
+        if t_fg and t_fg != t_me:
+            u.AttachThreadInput(t_me, t_fg, True)
+            u.SetForegroundWindow(hwnd)
+            u.AttachThreadInput(t_me, t_fg, False)
+        else:
+            u.SetForegroundWindow(hwnd)
+    except Exception:                                              # noqa: BLE001
+        return False
+    return u.GetForegroundWindow() == hwnd
+
+
 # --------------------------------------------------------------- measuring --- #
 class Tracker:
     """Per-frame measurement, copied faithfully from live_track.main().
@@ -179,6 +213,7 @@ class Tracker:
         self.warm = False
         self.warm_since = None
         self.omega = 0.0
+        self.alpha = 0.0
         self.omega_hist = collections.deque(maxlen=200)
 
     def step(self, frame, t_now):
@@ -230,6 +265,32 @@ class Tracker:
                     pass
         self.omega_hist.append((t_now, self.omega))
 
+        # ---- the log does not spin at a constant speed ----------------- #
+        # Measured live (temp\omega_live.py): it holds ~195 deg/s for a couple
+        # of seconds, ramps to ~330 deg/s over about 0.5 s, holds that, then
+        # ramps back down. Aiming with one omega held fixed across the 205 ms
+        # flight is therefore wrong twice over: the least-squares omega lags
+        # the true speed by ~50 deg/s during a ramp (worth ~10 deg of aim), and
+        # the curvature adds 0.5*alpha*t^2 (another ~6 deg). Together that is
+        # the ~14 deg of scatter measured on real throws.
+        #
+        # So estimate the slope of omega and carry omega forward to NOW, which
+        # removes the lag. The curvature term is handled in the aim.
+        self.alpha = 0.0
+        if len(self.omega_hist) >= 8:
+            tw = np.fromiter((x[0] for x in self.omega_hist), float)
+            ww = np.fromiter((x[1] for x in self.omega_hist), float)
+            keep = tw >= tw[-1] - 0.45
+            tw, ww = tw[keep], ww[keep]
+            if len(tw) >= 6 and ww.std() >= 0.5:
+                A = np.c_[tw - tw.mean(), np.ones(len(tw))]
+                try:
+                    sol, *_ = np.linalg.lstsq(A, ww, rcond=None)
+                    self.alpha = float(sol[0])
+                    self.omega = float(sol[0] * (t_now - tw.mean()) + sol[1])
+                except Exception:                          # noqa: BLE001
+                    pass
+
         b_ch, _, r_ch = cv2.split(frame)
         sky_u8 = ((cv2.subtract(b_ch, r_ch) > 25) & (b_ch > 90)).astype(np.uint8)
         p_sky = cv2.remap(sky_u8, self.mx_pro, self.my_pro,
@@ -242,7 +303,7 @@ class Tracker:
                                  # aim stops matching what the observer reports.
         return {
             "conf_tex": conf_tex, "conf_pro": conf_pro,
-            "angle": self.angle, "omega": self.omega,
+            "angle": self.angle, "omega": self.omega, "alpha": self.alpha,
             "obs": lt.runs_of(occ, lt.MIN_RUN_DEG, lt.MAX_OBJ_DEG),
             "gaps": lt.gaps_of(occ, lt.MIN_RUN_DEG),
             "good": (good and self.warm
@@ -360,9 +421,32 @@ def main() -> int:
                          "where omega is small and changing sign")
     ap.add_argument("--stability", type=float, default=0.45,
                     help="omega must have kept one sign for this many seconds")
+    ap.add_argument("--sweep", default=None,
+                    help="comma-separated t_total values (seconds). One is "
+                         "picked at random per throw and written to the CSV, "
+                         "so hit rate can be compared across leads in a "
+                         "single run instead of one run per value")
+    ap.add_argument("--trace", default=None,
+                    help="write one row per frame (angle, omega, slot) to this "
+                         "CSV, to see what the log does across a throw")
+    ap.add_argument("--max-alpha", type=float, default=50.0,
+                    help="do not throw while the log's spin rate is changing "
+                         "faster than this (deg/s^2). The log ramps between "
+                         "~195 and ~335 deg/s over about 0.5 s, and a "
+                         "fixed-omega prediction made during a ramp is wrong "
+                         "by ~16 deg -- the entire measured aim error. "
+                         "0 disables the gate.")
     ap.add_argument("--slow-omega", type=float, default=SLOW_OMEGA)
-    ap.add_argument("--patience", type=float, default=6.0,
-                    help="after this long with no throw, stop waiting for slow")
+    ap.add_argument("--min-slack", type=float, default=16.0,
+                    help="refuse any throw whose predicted margin at impact is "
+                         "below this. Measured on the 30-round log: 34%% of all "
+                         "throws cleared 16 deg, and that band was 10/10 hits. "
+                         "The observed maximum is 28.8 deg, so do NOT raise this "
+                         "past ~25 or the bot will never throw.")
+    ap.add_argument("--patience", type=float, default=600.0,
+                    help="after this long with no throw, relax the omega floor. "
+                         "Default 600 s = effectively never: waiting costs "
+                         "nothing, a reversal throw costs the whole round.")
     ap.add_argument("--max-throws", type=int, default=600)
     ap.add_argument("--dry-run", action="store_true",
                     help="measure and log but never press anything")
@@ -378,6 +462,10 @@ def main() -> int:
                     help="during drift recovery, reject a target this far away")
     ap.add_argument("--no-focus-check", action="store_true",
                     help="send space even when the game window is not focused")
+    ap.add_argument("--no-auto-focus", action="store_true",
+                    help="do not take the focus back for the game window. By "
+                         "default the bot re-focuses it, otherwise it freezes "
+                         "the moment any other window is touched.")
     ap.add_argument("--rounds", type=int, default=0,
                     help="stop after this many completed rounds (0 = run until "
                          "--duration expires). A round ends either by cash-out "
@@ -394,11 +482,23 @@ def main() -> int:
                     help="click the cash-out button once the HELD multiplier "
                          "(log value one rung behind) reaches this. 0 disables. "
                          "Remember the log prints the NEXT rung, not the held one.")
+    ap.add_argument("--round-timeout", type=float, default=110.0,
+                    help="hard per-round budget in seconds. When it expires the "
+                         "bot cashes out at whatever is already HELD (as long as "
+                         "that is above x1.00, which is still a profit) instead "
+                         "of gambling or overrunning. 0 disables. This is what "
+                         "keeps a match near the two-minute brief.")
     ap.add_argument("--dump-mult", default=None,
                     help="save the log-centre crop whenever the read changes, "
                          "so every logged value can be audited against pixels")
     ap.add_argument("--outdir", default="recordings")
     args = ap.parse_args()
+
+    sweep_values = []
+    if args.sweep:
+        sweep_values = [float(x) for x in args.sweep.split(",") if x.strip()]
+        print(f"[auto] lead sweep over {len(sweep_values)} values: "
+              f"{', '.join(f'{v*1000:.0f} ms' for v in sweep_values)}")
 
     sct = mss.MSS()
     mon = sct.monitors[1]
@@ -441,6 +541,28 @@ def main() -> int:
     # has been seen to latch onto a decorative circle (r=24) while the real log
     # sat in plain sight. Rejecting a bad radius without retrying turned that
     # flake into "no target on screen", so retry briefly instead of giving up.
+    # The game must be VISIBLE to be located. If the user is typing in another
+    # window the game sits behind it, locate() sees a desktop and the bot gives
+    # up before it ever throws. Bring the game forward first.
+    try:
+        _found = []
+
+        def _enum_cb(hwnd, _param):
+            if ctypes.windll.user32.IsWindowVisible(hwnd):
+                if "Knife" in window_title(hwnd):
+                    _found.append(hwnd)
+            return True
+
+        _cb = ctypes.WINFUNCTYPE(ctypes.c_bool, wintypes.HWND,
+                                 wintypes.LPARAM)(_enum_cb)
+        ctypes.windll.user32.EnumWindows(_cb, 0)
+        if _found:
+            print(f"[auto] bringing the game window forward (0x{_found[0]:X})")
+            focus_window(_found[0])
+            time.sleep(0.4)
+    except Exception as exc:                                  # noqa: BLE001
+        print(f"[auto] could not raise the game window: {exc}")
+
     L = None
     for attempt in range(8):
         L = locate(verbose=(attempt == 0))
@@ -480,6 +602,26 @@ def main() -> int:
     go_pt = ((args.go_x, args.go_y)
              if (args.go_x is not None and args.go_y is not None)
              else find_go_button(L["shot"], cx, cy, r))
+
+    # ---- fast UI strip ------------------------------------------------ #
+    # The GO disc and the yellow CASHOUT bar both live in one short strip under
+    # the log. Scanning the whole 1920x1080 screen cost a measured 50 ms per
+    # call, because three 2.07 M-pixel planes get converted to int16 first. The
+    # strip is ~11x smaller and gives the same answer. This matters twice a
+    # second in the liveness check, and it matters most at the instant of a
+    # cash-out, where 45 ms of extra latency is 45 ms of multiplier given away.
+    def ui_roi(cx_, cy_, r_):
+        x0_ = max(0, int(cx_ - 2.0 * r_))
+        y0_ = max(0, int(cy_ + 3.0 * r_))
+        x1_ = min(sw, int(cx_ + 4.3 * r_))
+        y1_ = min(sh, int(cy_ + 5.8 * r_))
+        return {"left": x0_, "top": y0_,
+                "width": max(1, x1_ - x0_), "height": max(1, y1_ - y0_)}
+
+    def grab_ui(cx_, cy_, r_):
+        roi_ = ui_roi(cx_, cy_, r_)
+        return (np.array(sct.grab(roi_))[:, :, :3],
+                roi_["left"], roi_["top"])
 
     def check_pt(pt, label):
         x, y = pt
@@ -567,6 +709,10 @@ def main() -> int:
               " -- space is sent only while this window is focused")
     print(f"[auto] impact {args.impact_deg:.0f} deg  t_total {args.t_total*1000:.0f} ms"
           f"  slow<{args.slow_omega:.0f} deg/s  min gap {args.min_gap:.0f} deg")
+    print(f"[auto] min slack {args.min_slack:.0f} deg  min omega "
+          f"{args.min_omega:.0f} deg/s  stability {args.stability:.2f} s  "
+          f"max alpha {args.max_alpha:.0f} deg/s2  "
+          f"round cap {args.round_timeout:.0f} s  target x{args.cashout_at:.2f}")
     print(f"[auto] {'DRY RUN -- nothing is pressed' if args.dry_run else 'ARMED'}"
           f"  F10 stops  log {csv_path}")
 
@@ -580,13 +726,19 @@ def main() -> int:
     aim_slack = float("nan")
     aim_pred = float("nan")
     obs_at_click = -1
+    aim_obs0 = []
+    aim_t_frame = None
+    aim_omega0 = 0.0
+    aim_centre0 = None
     t_launch = None
     t_reload = None
     slot_base = None
     throws = 0
+    tw = None
     hits = 0
     t_last_throw = t_start
     warned_focus = False
+    last_focus_try = 0.0
     last_go_t = 0.0
     slot_low_since = None
     last_log = 0.0
@@ -601,6 +753,13 @@ def main() -> int:
     cashed = []              # held multiplier of every completed round
     last_live_t = 0.0        # last time the yellow CASHOUT panel was checked
     not_live_n = 0           # consecutive checks that found no live round
+    # ---- round-start patience ------------------------------------------------ #
+    round_start_rotations = 2
+    rotations_seen = 0.0
+    last_omega_sign = 0
+    sign_stable_since = 0.0
+    last_rot_t = None
+    last_unstable_t = 0.0    # last frame the vision looked unsettled
 
     try:
         while True:
@@ -644,21 +803,41 @@ def main() -> int:
             if n_obs == 0:
                 continue
 
-            # ---- round boundary ------------------------------------- #
-            # A finished round swaps the log for a fresh one, which drops the
-            # obstacle count by several at once (measured 15->8, 12->8, 10->7).
-            # The multiplier reset is the other signal, but it can be missed
-            # when the number is occluded, so both are used. close_round is a
-            # no-op when the round was already closed by a cash-out.
-            if (round_open and prev_obs is not None
-                    and prev_obs - n_obs >= 4):
-                peak = mreader.current_from_log(peak_round) if peak_round else 0.0
-                close_round("lost", t_now)
-                print(f"[auto] round {round_no} LOST before target "
-                      f"(held peaked x{peak:.2f}, {round_hits} hits)")
-                state = "WAIT"
-                t_launch = t_reload = None
+            # ---- vision instability tracker (NOT a round over) --------- #
+            # A finished round used to be detected here as "the obstacle count
+            # dropped by 4 or more". That is wrong, and it cost six rounds at
+            # exactly x1.35: that is where the ladder finishes its second row,
+            # and the game wipes the stuck knives and blanks the number while it
+            # scrolls to the next row. Measured on the 30-round log: n_obs fell
+            # 14 -> 4 and the reader returned nothing for ~1.4 s, yet the round
+            # was still alive (the log printed x1.48 afterwards, not x1.01).
+            # A collapse now means exactly one thing: do not throw until the
+            # picture settles. The only round-over signal is the log printing
+            # x1.01 again, handled where the multiplier is read.
+            if prev_obs is not None and (prev_obs - n_obs) >= 4:
+                last_unstable_t = t_now
+                wr.writerow([round(t_now - t_start, 3), "redraw", "", "",
+                             "", "", "", round(sf, 4), n_obs,
+                             f"n_obs {prev_obs}->{n_obs}; vision settling",
+                             mult_str])
             prev_obs = n_obs
+
+            # ---- rotation sign stability & round-start patience ---------- #
+            # The aim needs a rotation sign that will still be that sign when
+            # the knife lands ~205 ms from now, and the round-start gate wants
+            # two clean turns before trusting the first throw. The accumulator
+            # is keyed off last_rot_t, NOT off t_state: t_state is only set by
+            # a throw, so keying off it deadlocked the first throw of every
+            # round at zero rotations (observed: 0 throws in 12 s).
+            omega_t = m["omega"]
+            if omega_t != 0.0:
+                sgn_t = 1 if omega_t > 0 else -1
+                if last_omega_sign != sgn_t:
+                    last_omega_sign = sgn_t
+                    sign_stable_since = t_now
+                if last_rot_t is not None:
+                    rotations_seen += abs(omega_t) * (t_now - last_rot_t) / 360.0
+            last_rot_t = t_now
 
             # ---- read the multiplier printed on the log ------------------- #
             # Throttled to ~5 Hz: the number only changes when a knife lands.
@@ -671,6 +850,9 @@ def main() -> int:
                 v, why = mreader_.read(frame, lcx, lcy, r)
 
                 if v is None:
+                    # The number is unreadable: whatever we think the log is
+                    # doing may already be stale. Block throws briefly.
+                    last_unstable_t = t_now
                     if why != last_reject_why:
                         last_reject_why = why
                         wr.writerow([
@@ -696,8 +878,21 @@ def main() -> int:
                             f"x{v:.2f}"])
                         print(f"[auto] round ended at x{reached:.2f}"
                               f" -- new round at x{v:.2f}")
+                        # A trusted read falling back to the first rung is the
+                        # ONLY proof that a round is over. If we never cashed
+                        # out, that is a real loss and it must be counted here,
+                        # or --rounds would never terminate.
+                        if round_open and not cashed_out:
+                            held_peak = mreader.current_from_log(reached)
+                            close_round("lost", t_now)
+                            hp = f"x{held_peak:.2f}" if held_peak else "?"
+                            print(f"[auto] round {round_no} LOST before target "
+                                  f"(held peaked {hp}, {round_hits} hits)")
+                            state = "WAIT"
+                            t_launch = t_reload = None
                         peak_round = None
                         cashed_out = False
+                        last_unstable_t = t_now
                     mult_val = v
                     mult_str = f"x{v:.2f}"
                     if peak_round is None or v > peak_round:
@@ -716,17 +911,32 @@ def main() -> int:
                     # behind it. Cash out on the held value, never on `v`, or
                     # the bot would give back a rung on every round.
                     held = mreader.current_from_log(v)
-                    if (args.cashout_at and not cashed_out and go_pt is not None
-                            and held is not None
-                            and held >= args.cashout_at - 1e-9
-                            and (last_cash_t is None
-                                 or t_now - last_cash_t > 3.0)):
+                    # ---- hard per-round time cap ------------------------ #
+                    # The brief is "finish a match in about two minutes". If the
+                    # strict margin gate has not produced a cash-out by then,
+                    # bank what is already held instead of gambling or running
+                    # long. Cashing out above x1.00 is a profit, never a loss,
+                    # so the cap can only cost upside -- never the stake.
+                    timed_out = (args.round_timeout > 0 and round_open
+                                 and (t_now - round_t0) > args.round_timeout)
+                    if ((args.cashout_at and not cashed_out and go_pt is not None
+                         and held is not None
+                         and held >= args.cashout_at - 1e-9
+                         and (last_cash_t is None
+                              or t_now - last_cash_t > 3.0))
+                            or (timed_out and not cashed_out
+                                and go_pt is not None and held is not None
+                                and held > 1.0
+                                and (last_cash_t is None
+                                     or t_now - last_cash_t > 3.0))):
                         # Locate the yellow panel on a fresh full grab; the
                         # cropped frame does not contain the whole bar.
                         box = None
                         try:
-                            full = np.array(sct.grab(mon))[:, :, :3]
-                            box = find_cashout_box(full, cx, cy, r)
+                            sub, ox, oy = grab_ui(cx, cy, r)
+                            got = find_cashout_box(sub, cx - ox, cy - oy, r)
+                            if got is not None:
+                                box = (got[0] + ox, got[1] + oy)
                         except Exception:
                             box = None
                         if box is None:
@@ -743,9 +953,11 @@ def main() -> int:
                             round(t_now - t_start, 3), "CASHOUT", "", "", "", "",
                             "", round(sf, 4), n_obs,
                             f"held x{held:.2f} (log printed x{v:.2f}) "
-                            f"clicked {cash_pt}", mult_str])
+                            f"clicked {cash_pt}"
+                            f"{' TIMEOUT' if timed_out else ''}", mult_str])
                         print(f"[auto] *** CASHED OUT at x{held:.2f} "
-                              f"(log read x{v:.2f}) ***")
+                              f"(log read x{v:.2f})"
+                              f"{' ON TIME CAP' if timed_out else ''} ***")
                         state = "CASHED"
                         t_state = t_now
                         if args.one_round:
@@ -767,6 +979,10 @@ def main() -> int:
                         cashed_out = False
                         t_cashout = None
                         print("[auto] next round -> throwing again")
+                        # reset rotation tracking for the new round
+                        rotations_seen = 0.0
+                        last_omega_sign = 0
+                        sign_stable_since = 0.0
 
             # ---- is a round actually running? ----------------------------- #
             # slot_frac is not sufficient. After a CASH-OUT the game shows a
@@ -780,8 +996,8 @@ def main() -> int:
                     and (t_now - last_live_t) > 0.6):
                 last_live_t = t_now
                 try:
-                    live = find_cashout_box(
-                        np.array(sct.grab(mon))[:, :, :3], cx, cy, r) is not None
+                    sub, ox, oy = grab_ui(cx, cy, r)
+                    live = find_cashout_box(sub, cx - ox, cy - oy, r) is not None
                 except Exception:                                # noqa: BLE001
                     live = True                     # fail safe: assume live
                 if live:
@@ -790,6 +1006,14 @@ def main() -> int:
                     not_live_n += 1
                     if not_live_n >= 2:
                         round_dead = True
+                        # The round is not running. If we never cashed out, it
+                        # ended by dying, and it must be closed HERE -- otherwise
+                        # the next round's throws get attributed to this one and
+                        # the per-round CSV reports peaks that round never had.
+                        if round_open and not cashed_out and round_throws > 0:
+                            close_round("lost", t_now)
+                            print(f"[auto] round {round_no} ended with no live "
+                                  f"panel -- counted as a loss")
                         # Do NOT clear cashed_out here. Doing so let the next
                         # 5 Hz read fire the cash-out click again on a stale
                         # number: one round produced FIVE cash-out clicks.
@@ -798,6 +1022,10 @@ def main() -> int:
                             state = "WAIT"
                             t_launch = t_reload = None
 
+                        # reset rotation tracking for the new round
+                        rotations_seen = 0.0
+                        last_omega_sign = 0
+                        sign_stable_since = 0.0
             # ---- round genuinely not running -> press GO ------------------ #
             # A live throw empties the slot for ~67 ms (n=44). 1.5 s of empty
             # slot means there is no round. This -- not n_obs==0 -- is what a
@@ -813,8 +1041,12 @@ def main() -> int:
                 if (not args.dry_run and not args.no_auto_go
                         and (t_now - last_go_t) > 1.5):
                     if go_pt is None:
-                        go_pt = find_go_button(np.array(sct.grab(mon))[:, :, :3],
-                                               cx, cy, r)
+                        # No throw gates belong here. Pressing GO is how a
+                        # finished round is restarted; blocking it would stall
+                        # the whole run. The gates belong on the throw.
+                        sub, ox, oy = grab_ui(cx, cy, r)
+                        g = find_go_button(sub, cx - ox, cy - oy, r)
+                        go_pt = None if g is None else (g[0] + ox, g[1] + oy)
                     if go_pt is None:
                         print("[auto] no round running and no GO button -- idling")
                     else:
@@ -829,14 +1061,48 @@ def main() -> int:
 
             # ---- flight bookkeeping -------------------------------------- #
             if state == "FLYING":
-                if sf < 0.5 * (slot_base or 0.15):
-                    if t_launch is None:
-                        t_launch = t_now
-                elif t_launch is not None and t_reload is None:
+                low = sf < 0.5 * (slot_base or 0.15)
+                if low and t_launch is None:
+                    t_launch = t_now
+                elif (not low) and t_launch is not None and t_reload is None:
                     t_reload = t_now
                     hit = n_obs > obs_at_click
                     hits += int(hit)
                     round_hits += int(hit)
+                    # ---- TRUE landing angle ------------------------------- #
+                    # The first version measured "the knife nearest the impact
+                    # line". That is whichever knife happens to sit there, so it
+                    # could never differ from 180 by more than the spacing
+                    # between knives, and its standard deviation described the
+                    # picture rather than the aim. It was worthless.
+                    #
+                    # This version finds the knife that is actually NEW: take
+                    # every knife we saw at press time, rotate each one by the
+                    # measured spin over the elapsed time, and the survivor that
+                    # matches none of them is the one that just landed. Rewinding
+                    # it to press time puts it in the same frame of reference as
+                    # the gap centre we aimed at, so the difference IS the aim
+                    # error in degrees.
+                    #
+                    # It deliberately does not require a hit. Requiring one would
+                    # censor the sample to "errors inside the gap" and hide the
+                    # very misses we are trying to explain.
+                    land_txt = ""
+                    if aim_obs0 and aim_t_frame is not None and aim_centre0 is not None:
+                        dt_l = t_reload - aim_t_frame
+                        olds = [((c + aim_omega0 * dt_l) % 360.0) for c in aim_obs0]
+                        cands = [(min(abs(ang_diff(lt.polar_to_game(s + wi / 2.0), o))
+                                      for o in olds),
+                                  lt.polar_to_game(s + wi / 2.0))
+                                 for s, wi in m["obs"]]
+                        if cands:
+                            match, c_new = max(cands)
+                            if match >= 4.0:      # clearly not a pre-existing knife
+                                land_press = (c_new - aim_omega0 * dt_l) % 360.0
+                                err_true = ang_diff(land_press, aim_centre0)
+                                land_txt = (f"aimerr={err_true:+6.1f} "
+                                            f"sep={match:4.1f} "
+                                            f"lag={dt_l:5.3f} ")
                     wr.writerow([
                         round(t_now - t_start, 3), "landed", round(aim_deg, 1),
                         round(m["omega"], 1), round(aim_gap_w, 1),
@@ -846,26 +1112,48 @@ def main() -> int:
                         f"slot_empty_ms={(t_reload-t_launch)*1000:.1f} "
                         f"press_to_reload_ms={(t_reload-t_click)*1000:.1f} "
                         f"pred_land={aim_pred:.1f} hit={int(hit)} "
-                        f"obs {obs_at_click}->{n_obs}", mult_str])
+                        f"{land_txt}obs {obs_at_click}->{n_obs}", mult_str])
                     state = "WAIT"
                     t_launch = t_reload = None
-                elif t_now - t_state > 1.10:
-                    # Never saw the slot empty: the key did not register, or the
-                    # reload was faster than one frame.
-                    hit = n_obs > obs_at_click
-                    hits += int(hit)
-                    round_hits += int(hit)
-                    wr.writerow([
-                        round(t_now - t_start, 3), "no_launch_seen",
-                        round(aim_deg, 1), round(m["omega"], 1),
-                        round(aim_gap_w, 1), round(aim_slack, 1),
-                        round(args.t_total, 4), round(sf, 4), n_obs,
-                        f"hit={int(hit)} obs {obs_at_click}->{n_obs} "
-                        f"slot_base={slot_base}", mult_str])
-                    print("[auto] WARNING: no launch seen in 1.1 s -- the "
-                          f"{args.trigger} trigger may not reach the game")
-                    state = "WAIT"
-                    t_launch = t_reload = None
+                # ---- watchdogs ------------------------------------------- #
+                # These are deliberately NOT part of the chain above. When they
+                # were `elif`s, a slot that read low and never recovered skipped
+                # every timeout and left the bot frozen in FLYING forever --
+                # observed live: one throw, then 46 s of nothing, while the game
+                # sat there perfectly playable.
+                if state == "FLYING":
+                    if t_launch is None and (t_now - t_state) > 1.10:
+                        # Never saw the slot empty: the key did not register, or
+                        # the reload was faster than one frame.
+                        hit = n_obs > obs_at_click
+                        hits += int(hit)
+                        round_hits += int(hit)
+                        wr.writerow([
+                            round(t_now - t_start, 3), "no_launch_seen",
+                            round(aim_deg, 1), round(m["omega"], 1),
+                            round(aim_gap_w, 1), round(aim_slack, 1),
+                            round(args.t_total, 4), round(sf, 4), n_obs,
+                            f"hit={int(hit)} obs {obs_at_click}->{n_obs} "
+                            f"slot_base={slot_base}", mult_str])
+                        print("[auto] WARNING: no launch seen in 1.1 s -- the "
+                              f"{args.trigger} trigger may not reach the game")
+                        state = "WAIT"
+                        t_launch = t_reload = None
+                    elif (t_launch is not None and t_reload is None
+                          and (t_now - t_launch) > 1.10):
+                        # The slot emptied and never came back. Recover instead
+                        # of waiting for a frame that may never arrive.
+                        wr.writerow([
+                            round(t_now - t_start, 3), "flight_stalled",
+                            round(aim_deg, 1), round(m["omega"], 1),
+                            round(aim_gap_w, 1), round(aim_slack, 1),
+                            round(args.t_total, 4), round(sf, 4), n_obs,
+                            f"slot_base={slot_base} launch_at={t_launch - t_start:.2f}",
+                            mult_str])
+                        print("[auto] slot emptied and never recovered -- "
+                              "recovering to WAIT")
+                        state = "WAIT"
+                        t_launch = t_reload = None
 
             # ---- aim ------------------------------------------------------ #
             if state == "WAIT" and m["good"] and throws < args.max_throws:
@@ -883,9 +1171,27 @@ def main() -> int:
                 floor = 25.0 if relaxed else args.min_omega
                 omega = (omega_raw if (abs(omega_raw) >= floor
                                        and (stable or relaxed)) else None)
+                # The log ramps between ~195 and ~335 deg/s over about half a
+                # second. Any fixed-omega prediction made during a ramp is
+                # wrong by tens of degrees, so simply do not throw then:
+                # waiting is free, a bad throw costs the round. This gate
+                # removes the measured 14 deg of aim scatter at its source.
+                alpha = m["alpha"]
+                if omega is not None and abs(alpha) > args.max_alpha:
+                    omega = None
                 still = omega is not None and abs(omega) < 30.0
                 # While t_total is still a guess, only take wide gaps.
                 need = args.min_gap if throws >= 3 else max(args.min_gap, 50.0)
+
+                # The lead is the one free parameter that the hit/miss stream
+                # can actually identify: with the log turning at a steady rate,
+                # a wrong lead and a wrong aim are the same number of degrees,
+                # and the landed knife always sits on the impact line, so it
+                # carries no information. Sweeping the lead across a run and
+                # counting hits per value is the only unbiased way to find it.
+                t_lead = args.t_total
+                if sweep_values:
+                    t_lead = random.choice(sweep_values)
 
                 now_opts = []
                 future_opts = []
@@ -893,7 +1199,10 @@ def main() -> int:
                     if w < need:
                         continue
                     centre = lt.polar_to_game(start + w / 2.0)
-                    pred = centre + omega * args.t_total
+                    # Carry the measured acceleration through the flight: the
+                    # rotation is w*t + alpha*t^2/2, not w*t.
+                    pred = (centre + omega * t_lead
+                            + 0.5 * alpha * t_lead ** 2)
                     err = ang_diff(pred, args.impact_deg)
                     slack = w / 2.0 - KNIFE_FULL_DEG / 2.0 - SAFETY_DEG - abs(err)
                     now_opts.append((slack, centre, w, pred, err))
@@ -906,43 +1215,100 @@ def main() -> int:
                         t_reach = ang_diff(args.impact_deg, centre) / omega
                         if t_reach < 0.0:
                             t_reach += 360.0 / abs(omega)
-                        t_ideal = t_now + t_reach - args.t_total
+                        t_ideal = t_now + t_reach - t_lead
                         if t_ideal >= t_now - 0.005:
                             future_opts.append((t_ideal, centre, w))
 
                 now_opts.sort(reverse=True)
                 chosen = None
+                # The margin floor is shared by BOTH selection paths. It steps
+                # down after a long wait, because gaps shrink as knives
+                # accumulate and a fixed floor can deadlock late in a round; it
+                # never steps below a positive margin.
+                waited = t_now - t_last_throw
+                if waited > 20.0:
+                    floor_slack = max(6.0, args.min_slack - 8.0)
+                elif waited > 12.0:
+                    floor_slack = max(9.0, args.min_slack - 4.0)
+                else:
+                    floor_slack = args.min_slack
                 if now_opts:
                     slack, centre, w, pred, _err = now_opts[0]
-                    # Patience only ever LOWERS the bar to zero; it never
-                    # authorises negative slack, because negative slack is a
-                    # knife in the log, not a throw.
                     fast = abs(omega) > args.slow_omega
                     gate = 0.0 if (relaxed or not fast) else SLACK_HIGH_OMEGA
+                    gate = max(gate, floor_slack)
                     if slack >= gate:
                         chosen = (t_now, centre, w, pred, slack, "now")
                 if chosen is None and future_opts:
                     t_ideal, centre, w = min(future_opts)
-                    if (t_ideal - t_now) <= LEAD_S:
-                        chosen = (t_ideal, centre, w, float("nan"), float("nan"),
-                                  "sched")
+                    # The scheduled path has NO measured prediction error: it
+                    # fires on the assumption that the centre arrives exactly on
+                    # the line. Its entire margin is the gap itself, so the gap
+                    # must clear the same floor. Without this the gate was
+                    # bypassed on 5 of 13 throws, which is how a "strict" run
+                    # still threw 13 knives in 23 seconds.
+                    sched_slack = w / 2.0 - KNIFE_FULL_DEG / 2.0 - SAFETY_DEG
+                    if ((t_ideal - t_now) <= LEAD_S
+                            and sched_slack >= floor_slack):
+                        chosen = (t_ideal, centre, w, float("nan"),
+                                  sched_slack, "sched")
 
                 if chosen is not None:
                     t_target, centre, w, pred, slack, how = chosen
                     t_target = max(t_target, t_now)
                     aim_deg, aim_gap_w, aim_slack, aim_pred = centre, w, slack, pred
                     obs_at_click = n_obs
+                    # Snapshot for the landing-angle measurement, which the
+                    # reload branch below needs. `angle` is stored in GAME
+                    # coordinates on purpose: the gap centre we aim at is also
+                    # game coordinates, so the difference between the two is a
+                    # real aim error and not a coordinate offset.
+                    aim_obs0 = [lt.polar_to_game(s + wi / 2.0)
+                                for s, wi in m["obs"]]
+                    aim_t_frame = t_now
+                    aim_omega0 = omega
+                    aim_centre0 = centre
                     if not args.dry_run:
                         if (args.trigger == "space" and not args.no_focus_check
                                 and game_root
                                 and foreground_root() != game_root):
-                            if not warned_focus:
-                                print("[auto] HOLDING: the game window is not "
-                                      f"focused (foreground 0x{foreground_root():X},"
-                                      f" game 0x{game_root:X}) -- space not sent")
-                                warned_focus = True
-                            continue
+                            # Take the focus back instead of stalling. Without
+                            # this the bot freezes the moment any other window
+                            # is touched, including the chat window. Rate
+                            # limited, because SetForegroundWindow is expensive
+                            # and Windows throttles repeated calls.
+                            if (not args.no_auto_focus
+                                    and (t_now - last_focus_try) > 0.5):
+                                last_focus_try = t_now
+                                silently_focused = focus_window(game_root)
+                                if silently_focused:
+                                    print("[auto] took the focus back for the game")
+                            if foreground_root() != game_root:
+                                if not warned_focus:
+                                    print("[auto] HOLDING: the game window is not "
+                                          f"focused (foreground 0x{foreground_root():X},"
+                                          f" game 0x{game_root:X}) -- space not sent")
+                                    warned_focus = True
+                                continue
                         warned_focus = False
+                        # ---- throw gates ---------------------------------------
+                        # 1) wait two full rotations after the round starts: the
+                        #    opening throws are the ones with least evidence
+                        #    about which way the log is actually turning.
+                        if rotations_seen < round_start_rotations:
+                            continue
+                        # 2) the rotation sign must have held for at least
+                        #    --stability, which covers the ~205 ms flight.
+                        if t_now - sign_stable_since < args.stability:
+                            continue
+                        # 3) never throw into a redraw. At x1.35 the game wipes
+                        #    the knives and blanks the log; the picture we would
+                        #    aim with is already gone by the time the knife lands.
+                        if t_now - last_unstable_t < 0.60:
+                            continue
+                        # The --min-slack margin gate is enforced during
+                        # candidate selection, where the step-down lives.
+                        # --------------------------------------------------------
                         sleep_until(t_target)
                         if args.trigger == "space":
                             t_click = press_space()
@@ -961,9 +1327,10 @@ def main() -> int:
                         round(t_now - t_start, 3), "throw", round(centre, 1),
                         round(omega_raw, 1), round(w, 1),
                         round(slack, 1) if slack == slack else "",
-                        round(args.t_total, 4), round(sf, 4), n_obs,
+                        round(t_lead, 4), round(sf, 4), n_obs,
                         f"{how} {'slow' if abs(omega) <= args.slow_omega else 'fast'}"
-                        f" pred={pred:.1f}" + (" dry" if args.dry_run else ""), mult_str])
+                        f" pred={pred:.1f} a={m['alpha']:+.0f}"
+                        + (" dry" if args.dry_run else ""), mult_str])
 
             # ---- periodic re-locate, in case space scrolled the page ----- #
             if (args.drift_check and throws and throws % args.drift_check == 0
@@ -1003,12 +1370,27 @@ def main() -> int:
                                      "", "", "", "", round(sf, 4), n_obs,
                                      f"({cx:.0f},{cy:.0f},r{r:.0f})", mult_str])
 
+            if args.trace:
+                if tw is None:
+                    tw = csv.writer(open(args.trace, "w", newline="",
+                                         encoding="utf-8"))
+                    tw.writerow(["t", "angle", "omega", "slot", "n_obs",
+                                 "state", "d_throw", "d_click"])
+                tw.writerow([
+                    round(t_now - t_start, 3), round(m.get("angle", 0.0), 2),
+                    round(m["omega"], 1), round(sf, 4), n_obs, state,
+                    round(t_now - t_last_throw, 3) if t_last_throw else "",
+                    round(t_now - t_click, 3) if t_click else ""])
+
             if t_now - last_log > 2.0:
                 last_log = t_now
                 print(f"[auto] {t_now-t_start:6.1f}s  w {m['omega']:7.1f}  "
                       f"obs {n_obs:2d}  gaps {len(m['gaps']):2d}  slot {sf:.3f}"
                       f"  throws {throws}  hits {hits}  {mult_str or 'x??':>5}"
                       f"  best {('x%.2f' % best_ever) if best_ever else 'x??':>5}"
+                      f"  fl={'L' if t_launch is not None else '-'}"
+                      f"{'R' if t_reload is not None else '-'}"
+                      f" age {t_now - t_state:5.1f}s"
                       f"  {state}")
     finally:
         ctypes.windll.user32.SetCursorPos(int(orig_cursor[0]), int(orig_cursor[1]))

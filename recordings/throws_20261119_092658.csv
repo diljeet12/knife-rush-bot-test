@@ -1,0 +1,177 @@
+t,event,aim_deg,omega,gap_w,slack,t_total,slot,n_obs,detail,mult
+0.617,click_go,,,,,,0.1549,7,"(1337, 941)",x1.01
+3.806,throw,128.3,195.2,54.4,20.7,0.205,0.1611,8,sched fast pred=nan a=+3,x1.03
+4.36,landed,128.3,188.3,54.4,20.7,0.205,0.1202,9,press_to_launch_ms=405.2 slot_empty_ms=89.5 press_to_reload_ms=494.7 pred_land=nan hit=1 aimerr= -45.3 sep=14.9 lag=0.555 obs 8->9,x1.06
+5.675,throw,135.3,194.5,53.9,20.4,0.205,0.1598,9,sched fast pred=nan a=+4,x1.06
+6.201,landed,135.3,194.9,53.9,20.4,0.205,0.0933,10,press_to_launch_ms=448.5 slot_empty_ms=52.2 press_to_reload_ms=500.7 pred_land=nan hit=1 aimerr= -50.2 sep= 8.7 lag=0.526 obs 9->10,x1.06
+6.351,throw,132.1,189.7,73.6,20.8,0.205,0.1549,10,now fast pred=170.6 a=-18,x1.10
+6.801,landed,132.1,195.6,73.6,20.8,0.205,0.1246,11,press_to_launch_ms=341.0 slot_empty_ms=75.3 press_to_reload_ms=416.3 pred_land=170.6 hit=1 aimerr= -25.3 sep=14.1 lag=0.450 obs 10->11,x1.10
+10.49,throw,139.1,192.6,62.0,22.8,0.205,0.1549,11,now fast pred=178.4 a=-11,x1.15
+11.038,landed,139.1,196.2,62.0,22.8,0.205,0.1224,12,press_to_launch_ms=490.0 slot_empty_ms=34.6 press_to_reload_ms=524.5 pred_land=178.4 hit=1 aimerr= -54.7 sep= 9.0 lag=0.548 obs 11->12,x1.19
+11.65,throw,134.1,195.5,53.9,20.4,0.205,0.1598,12,sched fast pred=nan a=-2,x1.19
+12.28,landed,134.1,195.5,53.9,20.4,0.205,0.1437,13,press_to_launch_ms=494.9 slot_empty_ms=105.4 press_to_reload_ms=600.3 pred_land=nan hit=1 aimerr= -62.8 sep=12.8 lag=0.630 obs 12->13,x1.19
+12.33,throw,136.6,193.3,62.0,20.7,0.205,0.1549,13,now fast pred=176.2 a=-2,x1.19
+12.733,landed,136.6,194.8,62.0,20.7,0.205,0.1224,14,press_to_launch_ms=332.0 slot_empty_ms=50.5 press_to_reload_ms=382.5 pred_land=176.2 hit=1 aimerr= -22.5 sep=11.7 lag=0.403 obs 13->14,x1.24
+12.733,throw,131.7,194.8,49.1,18.0,0.205,0.1224,14,sched fast pred=nan a=+2,x1.24
+13.217,landed,131.7,200.6,49.1,18.0,0.205,0.0968,15,press_to_launch_ms=379.5 slot_empty_ms=61.9 press_to_reload_ms=441.4 pred_land=nan hit=1 aimerr= -37.7 sep= 9.8 lag=0.484 obs 14->15,x1.30
+14.117,throw,133.2,197.2,50.6,18.8,0.205,0.1611,15,sched fast pred=nan a=+13,x1.35
+14.785,landed,133.2,192.9,50.6,18.8,0.205,0.1289,16,press_to_launch_ms=567.0 slot_empty_ms=67.6 press_to_reload_ms=634.6 pred_land=nan hit=1 aimerr= -74.5 sep=14.5 lag=0.667 obs 15->16,x1.35
+15.33,throw,132.4,195.0,54.2,20.6,0.205,0.1598,16,sched fast pred=nan a=-10,x1.42
+15.768,landed,132.4,199.4,54.2,20.6,0.205,1.0,16,press_to_launch_ms=332.0 slot_empty_ms=67.7 press_to_reload_ms=399.7 pred_land=nan hit=0 aimerr= -24.4 sep= 5.8 lag=0.439 obs 16->16,x1.42
+15.866,mult_unknown,,,,,,0.0,16,no_text(0 blobs),
+16.42,click_go,,,,,,0.0,16,"(1337, 941)",x1.42
+17.298,redraw,,,,,,0.0935,7,n_obs 16->7; vision settling,x1.42
+17.298,new_round,,,,,,0.0935,7,reached x1.42 -> reset x1.01,x1.01
+21.299,throw,130.6,192.7,61.5,24.2,0.205,0.1549,8,sched fast pred=nan a=-10,x1.03
+21.721,landed,130.6,195.7,61.5,24.2,0.205,0.1175,9,press_to_launch_ms=335.8 slot_empty_ms=34.7 press_to_reload_ms=370.5 pred_land=nan hit=1 aimerr= -19.2 sep=14.8 lag=0.422 obs 8->9,x1.03
+22.068,throw,134.1,197.0,55.9,16.3,0.205,0.1549,9,now fast pred=174.9 a=+21,x1.06
+22.452,landed,134.1,197.5,55.9,16.3,0.205,0.0997,10,press_to_launch_ms=317.1 slot_empty_ms=30.9 press_to_reload_ms=348.0 pred_land=174.9 hit=1 aimerr= -20.2 sep=10.9 lag=0.384 obs 9->10,x1.06
+22.452,throw,145.4,197.5,60.0,17.5,0.205,0.0997,10,now fast pred=186.0 a=+4,x1.06
+22.969,landed,145.4,189.0,60.0,17.5,0.205,0.0913,11,press_to_launch_ms=418.0 slot_empty_ms=52.9 press_to_reload_ms=471.0 pred_land=186.0 hit=1 aimerr= -69.2 sep= 5.6 lag=0.516 obs 10->11,x1.10
+24.271,throw,138.6,191.9,62.0,22.3,0.205,0.1598,11,now fast pred=177.8 a=-6,x1.15
+24.871,landed,138.6,232.0,62.0,22.3,0.205,0.149,12,press_to_launch_ms=467.6 slot_empty_ms=103.4 press_to_reload_ms=571.0 pred_land=177.8 hit=1 aimerr=+133.2 sep=19.5 lag=0.600 obs 11->12,x1.15
+27.639,throw,145.7,188.3,62.0,21.2,0.205,0.1611,11,now fast pred=183.3 a=-46,x1.19
+28.088,landed,145.7,198.6,62.0,21.2,0.205,0.1144,12,press_to_launch_ms=352.1 slot_empty_ms=66.4 press_to_reload_ms=418.6 pred_land=183.3 hit=1 aimerr= -41.7 sep= 7.4 lag=0.449 obs 11->12,x1.19
+29.042,throw,131.3,193.1,50.4,18.7,0.205,0.1611,11,sched fast pred=nan a=-8,x1.24
+29.59,landed,131.3,193.5,50.4,18.7,0.205,0.0968,12,press_to_launch_ms=440.2 slot_empty_ms=61.6 press_to_reload_ms=501.8 pred_land=nan hit=1 aimerr= -48.8 sep=10.0 lag=0.549 obs 11->12,x1.24
+29.784,throw,131.4,192.2,50.6,18.8,0.205,0.1549,12,sched fast pred=nan a=-7,x1.30
+30.334,landed,131.4,192.3,50.6,18.8,0.205,0.0968,13,press_to_launch_ms=483.7 slot_empty_ms=18.6 press_to_reload_ms=502.3 pred_land=nan hit=1 aimerr= -48.7 sep= 9.7 lag=0.550 obs 12->13,x1.30
+30.948,throw,141.9,195.6,50.4,16.6,0.205,0.1598,13,now fast pred=182.0 a=+2,x1.35
+31.504,landed,141.9,196.4,50.4,16.6,0.205,0.1246,14,press_to_launch_ms=454.3 slot_empty_ms=86.7 press_to_reload_ms=541.0 pred_land=182.0 hit=1 aimerr= -59.8 sep=10.1 lag=0.556 obs 13->14,x1.35
+31.647,throw,132.2,195.3,50.6,18.8,0.205,0.1549,14,sched fast pred=nan a=-1,x1.42
+32.219,redraw,,,,,,0.0,9,n_obs 15->9; vision settling,x1.42
+32.282,mult_unknown,,,,,,0.0,8,no_text(5 blobs),
+32.499,mult_unknown,,,,,,0.0,7,no_text(0 blobs),
+32.716,mult_unknown,,,,,,0.0054,5,no_text(3 blobs),
+32.865,click_go,,,,,,0.019,2,"(1337, 941)",x1.42
+33.708,mult_unknown,,,,,,0.1549,7,no_text(10 blobs),
+37.173,throw,134.6,190.5,62.0,17.8,0.205,0.1549,7,now fast pred=173.4 a=-13,x1.48
+37.554,landed,134.6,193.5,62.0,17.8,0.205,0.0933,8,press_to_launch_ms=284.4 slot_empty_ms=70.3 press_to_reload_ms=354.7 pred_land=173.4 hit=1 aimerr= -20.2 sep=14.1 lag=0.381 obs 7->8,x1.56
+37.554,throw,137.5,193.5,71.3,26.1,0.205,0.0933,8,now fast pred=176.9 a=-11,x1.56
+37.984,landed,137.5,191.9,71.3,26.1,0.205,0.1224,9,press_to_launch_ms=315.6 slot_empty_ms=83.3 press_to_reload_ms=399.0 pred_land=176.9 hit=1 aimerr= -28.0 sep=10.8 lag=0.430 obs 8->9,x1.56
+38.629,throw,130.3,188.5,73.6,18.7,0.205,0.1598,9,now fast pred=168.5 a=-24,x1.65
+39.015,landed,130.3,197.6,73.6,18.7,0.205,0.0968,10,press_to_launch_ms=338.7 slot_empty_ms=28.8 press_to_reload_ms=367.4 pred_land=168.5 hit=1 aimerr= -14.6 sep=23.9 lag=0.386 obs 9->10,x1.65
+39.015,throw,139.0,197.6,49.1,17.7,0.205,0.0968,10,now fast pred=179.7 a=+9,x1.65
+39.534,landed,139.0,194.1,49.1,17.7,0.205,0.1224,11,press_to_launch_ms=431.2 slot_empty_ms=70.1 press_to_reload_ms=501.3 pred_land=179.7 hit=1 aimerr= -50.5 sep=11.5 lag=0.519 obs 10->11,x1.75
+40.414,throw,129.3,195.4,50.9,18.9,0.205,0.1611,11,sched fast pred=nan a=+5,x1.85
+40.909,landed,129.3,191.7,50.9,18.9,0.205,0.0968,12,press_to_launch_ms=376.8 slot_empty_ms=63.4 press_to_reload_ms=440.2 pred_land=nan hit=1 aimerr= -38.5 sep= 9.9 lag=0.495 obs 11->12,x1.98
+44.562,throw,131.7,196.1,50.6,18.8,0.205,0.1549,12,sched fast pred=nan a=+2,x1.98
+45.136,mult_unknown,,,,,,0.0,12,no_text(5 blobs),
+45.382,mult_unknown,,,,,,0.0,12,no_text(4 blobs),
+45.432,click_go,,,,,,0.0,12,"(1337, 941)",x1.98
+46.29,redraw,,,,,,0.1579,7,n_obs 12->7; vision settling,x1.98
+46.29,new_round,,,,,,0.1579,7,reached x1.98 -> reset x1.01,x1.01
+47.514,click_go,,,,,,0.1549,7,"(1337, 941)",x1.01
+48.35,mult_unknown,,,,,,0.1549,8,no_text(4 blobs),
+51.281,throw,131.6,194.0,62.0,24.5,0.205,0.1598,8,sched fast pred=nan a=+0,x1.03
+51.696,landed,131.6,193.8,62.0,24.5,0.205,0.1016,9,press_to_launch_ms=335.6 slot_empty_ms=35.2 press_to_reload_ms=370.8 pred_land=nan hit=1 aimerr= -21.6 sep=12.6 lag=0.416 obs 8->9,x1.03
+51.728,throw,136.4,191.0,48.9,17.9,0.205,0.1406,9,sched fast pred=nan a=-15,x1.03
+52.193,landed,136.4,197.4,48.9,17.9,0.205,0.0968,10,press_to_launch_ms=380.8 slot_empty_ms=61.0 press_to_reload_ms=441.8 pred_land=nan hit=1 aimerr= -38.2 sep=10.5 lag=0.465 obs 9->10,x1.06
+55.849,throw,132.8,190.2,50.4,18.7,0.205,0.1549,10,sched fast pred=nan a=-21,x1.10
+56.399,landed,132.8,187.5,50.4,18.7,0.205,0.1054,11,press_to_launch_ms=439.8 slot_empty_ms=67.9 press_to_reload_ms=507.7 pred_land=nan hit=1 aimerr= -47.8 sep= 8.1 lag=0.551 obs 10->11,x1.10
+57.23,throw,132.7,196.3,50.6,18.8,0.205,0.1611,11,sched fast pred=nan a=+5,x1.15
+57.767,landed,132.7,197.5,50.6,18.8,0.205,0.0933,12,press_to_launch_ms=467.3 slot_empty_ms=33.4 press_to_reload_ms=500.6 pred_land=nan hit=1 aimerr= -48.6 sep= 8.8 lag=0.537 obs 11->12,x1.15
+59.083,throw,133.5,194.5,50.6,18.8,0.205,0.1598,12,sched fast pred=nan a=-4,x1.19
+59.736,landed,133.5,195.4,50.6,18.8,0.205,0.1246,13,press_to_launch_ms=538.0 slot_empty_ms=80.4 press_to_reload_ms=618.4 pred_land=nan hit=1 aimerr= -70.2 sep=10.2 lag=0.653 obs 12->13,x1.19
+60.912,throw,130.9,195.4,50.6,18.8,0.205,0.1611,13,sched fast pred=nan a=+7,x1.24
+61.663,landed,130.9,190.9,50.6,18.8,0.205,0.1202,14,press_to_launch_ms=615.3 slot_empty_ms=90.2 press_to_reload_ms=705.5 pred_land=nan hit=1 aimerr= -85.0 sep=13.5 lag=0.752 obs 13->14,x1.24
+62.761,throw,131.7,192.6,50.6,18.8,0.205,0.1611,14,sched fast pred=nan a=-9,x1.30
+63.537,landed,131.7,194.0,50.6,18.8,0.205,0.0968,15,press_to_launch_ms=708.4 slot_empty_ms=21.1 press_to_reload_ms=729.5 pred_land=nan hit=1 aimerr= -91.9 sep= 9.3 lag=0.775 obs 14->15,x1.30
+66.898,throw,133.0,194.2,50.6,18.8,0.205,0.1579,15,sched fast pred=nan a=-6,x1.35
+67.718,landed,133.0,196.1,50.6,18.8,0.205,0.1054,16,press_to_launch_ms=716.0 slot_empty_ms=66.7 press_to_reload_ms=782.8 pred_land=nan hit=1 aimerr=-103.6 sep= 9.6 lag=0.820 obs 15->16,x1.42
+68.733,throw,133.7,195.7,50.6,18.8,0.205,0.1611,16,sched fast pred=nan a=-0,x1.42
+69.085,redraw,,,,,,0.0,9,n_obs 16->9; vision settling,x1.42
+69.17,redraw,,,,,,0.0,5,n_obs 9->5; vision settling,x1.48
+69.381,mult_unknown,,,,,,0.0,2,no_text(5 blobs),
+69.514,landed,133.7,13.7,50.6,18.8,0.205,0.1051,8,press_to_launch_ms=319.9 slot_empty_ms=429.2 press_to_reload_ms=749.1 pred_land=nan hit=0 aimerr= +77.4 sep=19.5 lag=0.781 obs 16->8,x1.48
+69.781,mult_unknown,,,,,,0.1371,5,no_text(0 blobs),
+69.897,click_go,,,,,,0.0873,4,"(1337, 941)",x1.48
+74.412,throw,130.8,197.4,55.9,21.4,0.205,0.1579,7,sched fast pred=nan a=+7,x1.48
+74.817,landed,130.8,195.3,55.9,21.4,0.205,0.1054,7,press_to_launch_ms=298.2 slot_empty_ms=62.4 press_to_reload_ms=360.5 pred_land=nan hit=0 aimerr= -23.8 sep=10.3 lag=0.405 obs 7->7,x1.48
+74.817,throw,131.8,195.3,60.0,23.5,0.205,0.1054,7,sched fast pred=nan a=+0,x1.48
+75.236,landed,131.8,188.9,60.0,23.5,0.205,0.0933,8,press_to_launch_ms=321.2 slot_empty_ms=55.9 press_to_reload_ms=377.2 pred_land=nan hit=1 aimerr= -24.2 sep= 8.9 lag=0.419 obs 7->8,x1.56
+75.236,throw,145.3,188.9,59.7,20.0,0.205,0.0933,8,now fast pred=183.3 a=-34,x1.56
+75.713,landed,145.3,191.8,59.7,20.0,0.205,0.1224,9,press_to_launch_ms=366.0 slot_empty_ms=82.5 press_to_reload_ms=448.5 pred_land=183.3 hit=1 aimerr= -45.0 sep=12.0 lag=0.477 obs 8->9,x1.65
+76.249,throw,130.9,191.8,50.6,18.8,0.205,0.1598,9,sched fast pred=nan a=-5,x1.75
+76.752,landed,130.9,199.8,50.6,18.8,0.205,0.1224,10,press_to_launch_ms=382.4 slot_empty_ms=70.1 press_to_reload_ms=452.5 pred_land=nan hit=1 aimerr=-177.5 sep= 6.9 lag=0.503 obs 9->10,x1.85
+77.062,throw,138.6,188.1,62.0,21.0,0.205,0.1549,10,now fast pred=176.6 a=-30,x1.85
+77.562,landed,138.6,282.3,62.0,21.0,0.205,0.1549,11,press_to_launch_ms=331.5 slot_empty_ms=148.3 press_to_reload_ms=479.8 pred_land=176.6 hit=1 aimerr=  -0.5 sep=33.8 lag=0.500 obs 10->11,x1.98
+80.329,throw,133.5,195.9,50.6,18.8,0.205,0.1611,11,sched fast pred=nan a=+4,x1.98
+80.945,landed,133.5,202.6,50.6,18.8,0.205,0.1202,12,press_to_launch_ms=505.1 slot_empty_ms=78.0 press_to_reload_ms=583.1 pred_land=nan hit=1 aimerr= -62.2 sep=13.6 lag=0.616 obs 11->12,x1.98
+81.182,throw,147.6,188.6,62.2,19.1,0.205,0.1549,12,now fast pred=185.5 a=-34,x2.12
+81.582,landed,147.6,197.8,62.2,19.1,0.205,1.0,11,press_to_launch_ms=303.3 slot_empty_ms=82.4 press_to_reload_ms=385.7 pred_land=185.5 hit=0 aimerr=-156.3 sep= 7.4 lag=0.400 obs 12->11,x2.12
+81.757,mult_unknown,,,,,,0.0,12,no_text(5 blobs),
+81.979,mult_unknown,,,,,,0.0,12,no_text(4 blobs),
+82.463,redraw,,,,,,0.1544,7,n_obs 12->7; vision settling,x2.12
+82.463,new_round,,,,,,0.1544,7,reached x2.12 -> reset x1.01,x1.01
+82.579,click_go,,,,,,0.1549,7,"(1337, 941)",x1.01
+87.163,throw,229.6,-191.0,73.1,19.3,0.205,0.1579,8,now fast pred=190.8 a=+17,x1.03
+87.6,landed,229.6,-287.8,73.1,19.3,0.205,0.1224,9,press_to_launch_ms=337.2 slot_empty_ms=83.8 press_to_reload_ms=421.0 pred_land=190.8 hit=1 aimerr=  +0.3 sep=39.4 lag=0.437 obs 8->9,x1.03
+88.213,throw,267.9,-338.0,72.6,29.8,0.205,0.1598,9,sched fast pred=nan a=-44,x1.06
+88.704,landed,267.9,-323.9,72.6,29.8,0.205,0.0913,10,press_to_launch_ms=380.4 slot_empty_ms=55.7 press_to_reload_ms=436.2 pred_land=nan hit=1 aimerr= +80.3 sep=16.0 lag=0.491 obs 9->10,x1.06
+88.704,throw,246.7,-323.9,71.5,28.3,0.205,0.0913,10,now fast pred=181.0 a=+32,x1.06
+89.118,landed,246.7,-331.3,71.5,28.3,0.205,0.0933,10,press_to_launch_ms=328.2 slot_empty_ms=54.8 press_to_reload_ms=383.0 pred_land=181.0 hit=0 aimerr=+126.3 sep=11.4 lag=0.415 obs 10->10,x1.10
+89.831,throw,251.5,-321.4,72.6,25.1,0.205,0.1611,10,now fast pred=184.6 a=-46,x1.15
+90.201,landed,251.5,-185.4,72.6,25.1,0.205,0.0913,11,press_to_launch_ms=337.1 slot_empty_ms=18.1 press_to_reload_ms=355.3 pred_land=184.6 hit=1 aimerr=-144.0 sep=36.1 lag=0.370 obs 10->11,x1.15
+91.014,throw,232.0,-197.0,72.8,18.8,0.205,0.1611,11,now fast pred=191.1 a=-23,x1.19
+91.429,landed,232.0,-197.0,72.8,18.8,0.205,0.0997,12,press_to_launch_ms=331.2 slot_empty_ms=65.2 press_to_reload_ms=396.4 pred_land=191.1 hit=1 aimerr= +17.6 sep=22.0 lag=0.415 obs 11->12,x1.19
+92.813,throw,229.8,-194.1,50.4,18.7,0.205,0.1598,12,sched fast pred=nan a=+4,x1.24
+93.319,landed,229.8,-198.1,50.4,18.7,0.205,0.1054,13,press_to_launch_ms=400.7 slot_empty_ms=52.9 press_to_reload_ms=453.6 pred_land=nan hit=1 aimerr= +36.6 sep= 8.3 lag=0.505 obs 12->13,x1.30
+95.547,throw,267.2,-330.6,50.1,18.6,0.205,0.1579,13,sched fast pred=nan a=-1,x1.30
+96.105,landed,267.2,-319.6,50.1,18.6,0.205,0.0997,14,press_to_launch_ms=441.3 slot_empty_ms=58.0 press_to_reload_ms=499.3 pred_land=nan hit=1 aimerr= +81.1 sep= 7.8 lag=0.558 obs 13->14,x1.35
+96.652,throw,261.4,-330.3,50.1,18.6,0.205,0.1598,14,sched fast pred=nan a=-0,x1.35
+97.08,landed,261.4,-201.5,50.1,18.6,0.205,0.1224,15,press_to_launch_ms=339.3 slot_empty_ms=46.8 press_to_reload_ms=386.1 pred_land=nan hit=1 aimerr= -53.4 sep=18.3 lag=0.428 obs 14->15,x1.35
+109.981,throw,264.3,-334.3,38.8,12.9,0.205,0.1549,15,sched fast pred=nan a=-26,x1.42
+110.484,redraw,,,,,,0.0,6,n_obs 13->6; vision settling,x1.42
+110.484,mult_unknown,,,,,,0.0,6,no_text(5 blobs),
+110.833,mult_unknown,,,,,,0.1105,5,no_text(2 blobs),
+110.833,landed,264.3,126.8,38.8,12.9,0.205,0.1105,5,press_to_launch_ms=334.9 slot_empty_ms=469.9 press_to_reload_ms=804.8 pred_land=nan hit=0 aimerr=+140.6 sep=17.6 lag=0.852 obs 15->5,x1.42
+111.046,mult_unknown,,,,,,0.6841,4,no_text(1 blobs),
+111.128,click_go,,,,,,0.1451,5,"(1337, 941)",x1.42
+113.979,throw,231.2,-197.5,47.1,17.0,0.205,0.1598,7,sched fast pred=nan a=-9,x1.48
+114.403,landed,231.2,-196.2,47.1,17.0,0.205,0.1224,7,press_to_launch_ms=266.7 slot_empty_ms=103.0 press_to_reload_ms=369.7 pred_land=nan hit=0 aimerr=-108.2 sep= 5.8 lag=0.424 obs 7->7,x1.56
+114.403,throw,230.8,-196.2,59.5,23.2,0.205,0.1224,7,sched fast pred=nan a=-2,x1.56
+114.918,landed,230.8,-188.4,59.5,23.2,0.205,0.1544,9,press_to_launch_ms=375.9 slot_empty_ms=85.5 press_to_reload_ms=461.4 pred_land=nan hit=1 aimerr= +23.9 sep= 8.9 lag=0.515 obs 7->9,x1.65
+115.115,throw,225.7,-196.1,50.6,18.8,0.205,0.1549,9,sched fast pred=nan a=-10,x1.65
+115.609,landed,225.7,-193.1,50.6,18.8,0.205,0.0913,8,press_to_launch_ms=402.4 slot_empty_ms=63.9 press_to_reload_ms=466.3 pred_land=nan hit=0 aimerr= +43.0 sep= 7.6 lag=0.494 obs 9->8,x1.65
+116.615,throw,228.4,-194.6,61.7,24.3,0.205,0.1611,9,sched fast pred=nan a=+9,x1.75
+117.026,landed,228.4,-313.8,61.7,24.3,0.205,0.1016,10,press_to_launch_ms=325.1 slot_empty_ms=41.7 press_to_reload_ms=366.8 pred_land=nan hit=1 aimerr= +65.2 sep=31.3 lag=0.411 obs 9->10,x1.85
+118.081,throw,261.1,-330.9,61.5,24.2,0.205,0.1611,10,sched fast pred=nan a=-9,x1.85
+118.517,landed,261.1,-337.5,61.5,24.2,0.205,0.1246,11,press_to_launch_ms=318.8 slot_empty_ms=77.4 press_to_reload_ms=396.3 pred_land=nan hit=1 aimerr=+161.4 sep= 8.1 lag=0.436 obs 10->11,x1.98
+118.517,throw,250.2,-337.5,49.4,17.4,0.205,0.1246,11,now fast pred=180.7 a=-13,x1.98
+118.967,landed,250.2,-311.1,49.4,17.4,0.205,0.1224,12,press_to_launch_ms=365.9 slot_empty_ms=52.5 press_to_reload_ms=418.4 pred_land=180.7 hit=1 aimerr= +60.6 sep=21.5 lag=0.450 obs 11->12,x2.12
+120.132,throw,231.7,-197.5,50.1,18.6,0.205,0.1611,12,sched fast pred=nan a=-10,x2.12
+120.567,landed,231.7,-196.8,50.1,18.6,0.205,0.1406,13,press_to_launch_ms=294.2 slot_empty_ms=83.7 press_to_reload_ms=377.9 pred_land=nan hit=1 aimerr= +15.1 sep=13.2 lag=0.435 obs 12->13,x2.12
+120.567,throw,221.3,-196.8,48.9,17.1,0.205,0.1406,13,now fast pred=180.8 a=-6,x2.12
+120.749,CASHOUT,,,,,,0.1549,13,"held x2.12 (log printed x2.28) clicked (986, 941)",x2.28
+121.88,click_go,,,,,,0.1611,14,"(1337, 941)",x2.47
+127.046,CASHOUT,,,,,,0.1611,15,"held x2.47 (log printed x2.70) clicked (986, 941)",x2.70
+127.438,redraw,,,,,,0.1579,10,n_obs 15->10; vision settling,x2.70
+128.33,click_go,,,,,,0.1598,9,"(1337, 941)",x2.70
+129.164,redraw,,,,,,0.1549,5,n_obs 9->5; vision settling,x2.70
+129.164,new_round,,,,,,0.1549,5,reached x2.70 -> reset x1.01,x1.01
+130.41,click_go,,,,,,0.1598,7,"(1337, 941)",x1.01
+131.247,mult_unknown,,,,,,0.0062,7,no_text(0 blobs),
+131.971,click_go,,,,,,0.1544,7,"(1337, 941)",x1.01
+135.783,throw,231.6,-195.1,61.5,12.6,0.205,0.1598,8,now fast pred=191.6 a=+1,x1.03
+136.178,landed,231.6,-192.8,61.5,12.6,0.205,0.1097,9,press_to_launch_ms=301.3 slot_empty_ms=61.7 press_to_reload_ms=363.0 pred_land=191.6 hit=1 aimerr= +13.2 sep=20.5 lag=0.395 obs 8->9,x1.03
+136.565,throw,228.4,-186.4,61.7,24.3,0.205,0.1579,9,sched fast pred=nan a=-16,x1.06
+136.983,landed,228.4,-194.8,61.7,24.3,0.205,0.1348,10,press_to_launch_ms=296.9 slot_empty_ms=66.3 press_to_reload_ms=363.3 pred_land=nan hit=1 aimerr= +16.1 sep=17.9 lag=0.418 obs 9->10,x1.10
+137.328,throw,230.6,-192.4,50.4,18.7,0.205,0.1549,10,sched fast pred=nan a=+9,x1.10
+137.849,landed,230.6,-195.3,50.4,18.7,0.205,0.0933,11,press_to_launch_ms=394.0 slot_empty_ms=68.4 press_to_reload_ms=462.4 pred_land=nan hit=1 aimerr= +38.5 sep=10.2 lag=0.520 obs 10->11,x1.15
+138.781,throw,223.8,-191.9,61.5,19.6,0.205,0.1611,11,now fast pred=184.7 a=+10,x1.15
+139.172,landed,223.8,-195.3,61.5,19.6,0.205,0.0997,12,press_to_launch_ms=308.1 slot_empty_ms=67.0 press_to_reload_ms=375.0 pred_land=184.7 hit=1 aimerr= +19.5 sep=14.3 lag=0.391 obs 11->12,x1.15
+139.172,throw,228.3,-195.3,48.9,17.9,0.205,0.0997,12,sched fast pred=nan a=+2,x1.15
+139.656,landed,228.3,-240.2,48.9,17.9,0.205,0.1224,13,press_to_launch_ms=367.7 slot_empty_ms=73.9 press_to_reload_ms=441.6 pred_land=nan hit=1 aimerr= -86.1 sep=26.0 lag=0.484 obs 12->13,x1.19
+140.879,throw,267.5,-334.0,50.1,18.6,0.205,0.1611,13,sched fast pred=nan a=-2,x1.24
+141.367,landed,267.5,-337.6,50.1,18.6,0.205,0.1363,14,press_to_launch_ms=344.5 slot_empty_ms=85.7 press_to_reload_ms=430.2 pred_land=nan hit=1 aimerr= +47.7 sep= 8.3 lag=0.487 obs 13->14,x1.30
+141.367,throw,256.5,-337.6,49.9,18.4,0.205,0.1363,14,sched fast pred=nan a=-25,x1.30
+141.89,landed,256.5,-280.3,49.9,18.4,0.205,0.0933,15,press_to_launch_ms=468.1 slot_empty_ms=24.4 press_to_reload_ms=492.5 pred_land=nan hit=1 aimerr=  -3.0 sep=28.5 lag=0.523 obs 14->15,x1.35
+143.063,throw,229.7,-196.3,50.1,18.6,0.205,0.1611,15,sched fast pred=nan a=-8,x1.35
+143.452,landed,229.7,-196.4,50.1,18.6,0.205,0.0913,16,press_to_launch_ms=278.0 slot_empty_ms=62.8 press_to_reload_ms=340.7 pred_land=nan hit=1 aimerr= +15.4 sep=12.8 lag=0.389 obs 15->16,x1.35
+145.978,throw,223.8,-197.7,50.4,18.7,0.205,0.1611,16,sched fast pred=nan a=-7,x1.42
+146.365,redraw,,,,,,0.0,12,n_obs 16->12; vision settling,x1.42
+146.365,mult_unknown,,,,,,0.0,12,no_text(5 blobs),
+146.763,mult_unknown,,,,,,0.0041,2,no_text(7 blobs),
+147.013,mult_unknown,,,,,,0.0608,1,no_text(0 blobs),
+147.013,click_go,,,,,,0.0608,1,"(1337, 941)",x1.42
