@@ -510,6 +510,11 @@ def main() -> int:
     ap.add_argument("--trace", default=None,
                     help="write one row per frame (angle, omega, slot) to this "
                          "CSV, to see what the log does across a throw")
+    ap.add_argument("--dump-miss", action="store_true",
+                    help="keep the last 0.7 s of log frames in memory and write "
+                         "them to temp/miss/ when a round is lost. A miss that "
+                         "cannot be replayed cannot be diagnosed; this is the "
+                         "only way to see what the knife actually did")
     ap.add_argument("--max-alpha", type=float, default=50.0,
                     help="do not throw while the log's spin rate is changing "
                          "faster than this (deg/s^2). The log ramps between "
@@ -518,17 +523,16 @@ def main() -> int:
                          "by ~16 deg -- the entire measured aim error. "
                          "0 disables the gate.")
     ap.add_argument("--slow-omega", type=float, default=SLOW_OMEGA)
-    ap.add_argument("--min-slack", type=float, default=22.0,
+    ap.add_argument("--min-slack", type=float, default=18.0,
                     help="refuse any throw whose predicted margin at impact is "
-                         "below this. Measured on 267 real throws under the "
-                         "current code (2026-11-20): slack 18-20 hits 97.2%%, "
-                         "20-22 hits 97.4%%, 22-25 hits 99.1%%; 4 of the 5 "
-                         "misses in 267 throws sat at 18.3-20.7. At 16 rungs "
-                         "1.9 points of per-throw accuracy is 44 -> 87 %% round "
-                         "wins, so the floor is worth the lost opportunities. "
-                         "The step-down after 12 s / 20 s without a throw keeps "
-                         "a late round from deadlocking. Do NOT raise past ~25: "
-                         "the observed maximum slack is 28.8 deg.")
+                         "below this. The floor was raised to 22 on 2026-11-20 "
+                         "on the theory that the worst throws sat at slack "
+                         "18-21, then tested on a full run: accuracy fell from "
+                         "98.1%% to 96.5%% and all three misses landed at slack "
+                         "24.1-28.8, i.e. the widest margins in the run. The "
+                         "correlation was small-sample noise, and the higher "
+                         "floor only halved the throw rate. Reverted to 18. Do "
+                         "NOT raise past ~25: the observed maximum is 28.8.")
     ap.add_argument("--patience", type=float, default=600.0,
                     help="after this long with no throw, relax the omega floor. "
                          "Default 600 s = effectively never: waiting costs "
@@ -692,6 +696,14 @@ def main() -> int:
     # type into whatever app took focus.
     game_root = window_at(cx, cy)
 
+    # ---- miss recorder ----------------------------------------------------- #
+    # A lost round is the only evidence that matters and it is gone the moment
+    # it happens. Keep the last 0.7 s of the log's own neighbourhood (full
+    # resolution, ~70 frames) and write it out on a loss, so a miss can be
+    # replayed instead of theorised about. 0.7 s at 195 deg/s is 136 deg, which
+    # covers the 205 ms flight plus the frames on either side of the press.
+    miss_ring = collections.deque(maxlen=70) if args.dump_miss else None
+
     # ---- throw / GO points ------------------------------------------------ #
     throw_pt = (
         args.click_x if args.click_x is not None else int(round(cx - 3.00 * r)),
@@ -808,6 +820,20 @@ def main() -> int:
                       f"{peak_held:.2f}" if peak_held is not None else "",
                       round_throws, round_hits])
         rfh.flush()
+        if outcome != "won" and miss_ring:
+            # Only on a loss: the last 0.7 s of frames, written once. This is
+            # what turns "it missed" into "it missed because ...".
+            try:
+                outdir = os.path.join("temp", "miss")
+                os.makedirs(outdir, exist_ok=True)
+                tag = f"r{round_no:02d}_{round(round_t0 - t_start, 1):07.1f}s"
+                for i, (_tt, _img) in enumerate(miss_ring):
+                    cv2.imwrite(os.path.join(outdir, f"{tag}_{i:03d}.png"), _img)
+                print(f"[auto] miss frames -> {outdir}\\{tag}_*.png "
+                      f"({len(miss_ring)} frames)")
+            except Exception as exc:                            # noqa: BLE001
+                print(f"[auto] could not write miss frames: {exc}")
+            miss_ring.clear()
         if outcome == "won" and held is not None:
             wins += 1
             pnl += args.bet * held - args.bet
@@ -906,6 +932,20 @@ def main() -> int:
             # 4-channel buffer twice and halved the loop rate to 50 fps at
             # 2560x1440; this holds the full 100 Hz budget.
             frame = cv2.cvtColor(np.asarray(raw), cv2.COLOR_BGRA2BGR)
+            if (miss_ring is not None and t_click
+                    and 0.0 <= (t_now - t_click) < 0.55):
+                # Record ONLY the flight window, not every frame. A round is not
+                # scored lost until 1.5 s after the slot empties, so a rolling
+                # 0.7 s buffer had already forgotten the knife by the time the
+                # loss was written: the first four replays showed an empty log
+                # and no throw. Anchoring the buffer to the press fixes that and
+                # costs a copy on ~10 % of frames instead of all of them.
+                _h = int(1.30 * r)
+                _y0 = max(0, int(L["cyl"]) - _h)
+                _y1 = min(frame.shape[0], int(L["cyl"]) + _h)
+                _x0 = max(0, int(L["cxl"]) - _h)
+                _x1 = min(frame.shape[1], int(L["cxl"]) + _h)
+                miss_ring.append((t_now - t_click, frame[_y0:_y1, _x0:_x1].copy()))
             m = trk.step(frame, t_now)
             sf = slot_frac(frame, L["cyl"], r, L["cxl"], L["bh"], L["bw"])
             n_obs = len(m["obs"])
@@ -1702,12 +1742,27 @@ def main() -> int:
                     tw = csv.writer(open(args.trace, "w", newline="",
                                          encoding="utf-8"))
                     tw.writerow(["t", "angle", "omega", "slot", "n_obs",
-                                 "state", "d_throw", "d_click"])
+                                 "state", "d_throw", "d_click", "impact_off"])
+                # TRUE aim error, measured every frame: how far the centre of
+                # the gap that straddles the impact line is from the impact
+                # line itself. The knife always sticks AT the impact line, so
+                # its final position says nothing about the aim. The gap centre
+                # does. On the frame the knife lands, this number IS the error
+                # that made it hit or miss, with no rewinding, no omega
+                # integration and no guessing which knife is new.
+                off = None
+                for _s, _w in m["gaps"]:
+                    _c = lt.polar_to_game(_s + _w / 2.0)
+                    _d = ang_diff(_c, args.impact_deg)
+                    if abs(_d) <= _w / 2.0:
+                        off = _d
+                        break
                 tw.writerow([
                     round(t_now - t_start, 3), round(m.get("angle", 0.0), 2),
                     round(m["omega"], 1), round(sf, 4), n_obs, state,
                     round(t_now - t_last_throw, 3) if t_last_throw else "",
-                    round(t_now - t_click, 3) if t_click else ""])
+                    round(t_now - t_click, 3) if t_click else "",
+                    round(off, 1) if off is not None else ""])
 
             if t_now - last_log > 2.0:
                 last_log = t_now
