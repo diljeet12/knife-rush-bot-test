@@ -118,13 +118,17 @@ def segment(crop):
     return out
 
 
-def describe(glyphs):
-    """Human-readable structure check, independent of classification."""
+def describe(glyphs, r=125.6):
+    """Human-readable structure check, independent of classification.
+
+    Default r is the laptop's, so old callers keep their old meaning; pass the
+    real radius to get correct labels on other resolutions.
+    """
     kind = []
     for g in glyphs:
-        if g["h"] < 14:
+        if g["h"] < 0.11 * r:
             kind.append("dot")
-        elif g["h"] < 32:
+        elif g["h"] < 0.25 * r:
             kind.append("x")
         else:
             kind.append("digit")
@@ -199,7 +203,7 @@ def holes(mask):
     return interior
 
 
-def find_text(glyphs):
+def find_text(glyphs, r):
     """Pick the 5 components that actually form 'xN.NN'.
 
     Necessary because the log RESKINS into a red/white ringed target at higher
@@ -209,29 +213,44 @@ def find_text(glyphs):
 
     So the structure is built up from its most reliable part -- the three
     digits, which share a top edge and a height -- and the dot and 'x' are then
-    located relative to them. All tests are ratios and offsets, never absolute
-    sizes, because the label's rendered size drifts +-10 % as the log wobbles.
+    located relative to them. All tests are ratios of the log radius `r` and
+    offsets, never absolute pixels, because the label's rendered size drifts
+    +-10 % as the log wobbles AND scales with the screen.
+
+    `r` is not optional on purpose. This function used to carry laptop pixels
+    (digit height 26-50 px) while its docstring claimed to be scale-free. On a
+    2560x1440 screen the log is r=184 and the digits are 53-54 px, so all three
+    digits failed the 'h <= 50' cap, find_text returned None for a perfectly
+    clear 'x1.03', the multiplier stayed x?? and the throw gate never opened.
+    Measured digit height/r: 0.279 at 1080p, 0.289 at 1440p.
     """
+    if r <= 0:
+        return None
     if len(glyphs) < 5:
         return None
 
-    # 1) digits: tall, solid, and sharing a top edge
+    # 1) digits: tall, solid, and sharing a top edge.
+    #    h/r is 0.28-0.29 on live frames; the band leaves room for +/-10 % drift
+    #    and for the reskinned, slightly squatter numerals.
     tall = [g for g in glyphs
-            if 26 <= g["h"] <= 50 and g["w"] <= 34
+            if 0.22 * r <= g["h"] <= 0.38 * r
+            and g["w"] <= 0.26 * r
             and g["area"] / float(g["w"] * g["h"]) >= 0.55]
     if len(tall) < 3:
         return None
 
+    y_tol = max(2.0, 0.03 * r)
+    h_tol = max(3.0, 0.05 * r)
     best = None
     for grp in tall:
         same = sorted([g for g in tall
-                       if abs(g["y"] - grp["y"]) <= 4
-                       and abs(g["h"] - grp["h"]) <= 6],
+                       if abs(g["y"] - grp["y"]) <= y_tol
+                       and abs(g["h"] - grp["h"]) <= h_tol],
                       key=lambda g: g["x"])
         for i in range(len(same) - 2):
             trip = same[i:i + 3]
             span = trip[2]["x"] - trip[0]["x"]
-            if span > 95:
+            if span > 0.80 * r:          # 95 px at the laptop's r=125.6
                 continue
             score = (abs(trip[0]["h"] - trip[1]["h"])
                      + abs(trip[1]["h"] - trip[2]["h"]) + span * 0.02)
@@ -243,7 +262,7 @@ def find_text(glyphs):
 
     # 2) dot: small, sitting between the first two digits, lower than their tops
     dots = [g for g in glyphs
-            if 5 <= g["h"] <= 16 and g["w"] <= 18
+            if 0.035 * r <= g["h"] <= 0.135 * r and g["w"] <= 0.15 * r
             and d1["x"] < g["x"] < d2["x"]
             and g["y"] > min(d1["y"], d2["y"])]
     if not dots:
@@ -252,8 +271,8 @@ def find_text(glyphs):
 
     # 3) 'x': shorter than the digits, to the left of the first digit
     xs = [g for g in glyphs
-          if g["x"] + g["w"] <= d1["x"] + 3
-          and 15 <= g["h"] <= 34 and g["w"] >= 13]
+          if g["x"] + g["w"] <= d1["x"] + max(3.0, 0.025 * r)
+          and 0.12 * r <= g["h"] <= 0.27 * r and g["w"] >= 0.10 * r]
     if not xs:
         return None
     xg = max(xs, key=lambda g: g["area"])
@@ -299,7 +318,7 @@ class Reader:
         """Return (value, reason). value is None when the read is not trusted."""
         crop = centre_crop(frame, cx, cy, r)
         glyphs = segment(crop)
-        text = find_text(glyphs)
+        text = find_text(glyphs, r)
         if text is None:
             return None, f"no_text({len(glyphs)} blobs)"
         digits = []
@@ -329,6 +348,6 @@ if __name__ == "__main__":
     glyphs = segment(crop)
     print(f"{src}: log at ({cx:.1f},{cy:.1f}) r={r:.1f}")
     print(f"  glyphs: {len(glyphs)}")
-    print(f"  layout: {describe(glyphs)}")
+    print(f"  layout: {describe(glyphs, r)}")
     for i, g in enumerate(glyphs):
         print(f"    p{i}: x={g['x']:3d} y={g['y']:3d} {g['w']:2d}x{g['h']:2d} area={g['area']}")

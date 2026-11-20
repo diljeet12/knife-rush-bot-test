@@ -83,6 +83,30 @@ SLOW_OMEGA = 140.0             # below this we call it "slow" and trust it more
 LEAD_S = 0.060                 # fire when the ideal press instant is this near
 
 
+def rung_index(v):
+    """Nearest ladder index for a printed multiplier, or None if off-ladder.
+
+    Used to label a throw as a hit from whether the ladder actually advanced,
+    instead of trusting the knife-count counter, which undercounts.
+    """
+    if v is None:
+        return None
+    best, bd = None, 1e9
+    for i, val in enumerate(mreader.LADDER):
+        d = abs(val - v)
+        if d < bd:
+            best, bd = i, d
+    return best if bd <= 0.02 else None
+
+
+def next_rung(v):
+    """Smallest ladder rung strictly above `v` (None at the top of the ladder)."""
+    if v is None:
+        return None
+    above = [x for x in mreader.LADDER if x > v + 1e-9]
+    return min(above) if above else None
+
+
 # ------------------------------------------------------------------- input --- #
 def cursor_pos():
     p = wintypes.POINT()
@@ -172,24 +196,59 @@ def focus_window(hwnd: int) -> bool:
     """
     u = ctypes.windll.user32
     k = ctypes.windll.kernel32
-    if not hwnd:
+    if not hwnd or not u.IsWindow(hwnd):
         return False
     if u.IsIconic(hwnd):
         u.ShowWindow(hwnd, 9)                      # SW_RESTORE
     if u.GetForegroundWindow() == hwnd:
         return True
+
+    # Measured on this PC 2026-11-20: the old single AttachThreadInput attempt
+    # returned False in 0 ms and never moved the foreground at all, so the bot
+    # could not start while VS Code owned the screen. A thread with no message
+    # queue cannot attach to another thread's input queue -- AttachThreadInput
+    # fails and SetForegroundWindow then fails silently. Force a queue first,
+    # then try three independent ways of stealing the foreground. Each step is
+    # checked, so a failure costs milliseconds, never a stray keystroke.
+    msg = wintypes.MSG()
+    u.PeekMessageW(ctypes.byref(msg), None, 0, 0, 0)   # PM_NOREMOVE
+
     fg = u.GetForegroundWindow()
     t_fg = u.GetWindowThreadProcessId(fg, None) if fg else 0
     t_me = k.GetCurrentThreadId()
     try:
         if t_fg and t_fg != t_me:
             u.AttachThreadInput(t_me, t_fg, True)
-            u.SetForegroundWindow(hwnd)
+        u.BringWindowToTop(hwnd)
+        u.SetForegroundWindow(hwnd)
+        u.SetFocus(hwnd)
+        if t_fg and t_fg != t_me:
             u.AttachThreadInput(t_me, t_fg, False)
-        else:
-            u.SetForegroundWindow(hwnd)
     except Exception:                                              # noqa: BLE001
-        return False
+        pass
+    if u.GetForegroundWindow() == hwnd:
+        return True
+
+    # 2) Alt nudge: once the process has synthesised input itself, Windows
+    #    lifts the foreground lock for it. A bare Alt does nothing in-game.
+    VK_MENU, KEYUP = 0x12, 0x0002
+    try:
+        u.keybd_event(VK_MENU, 0, 0, 0)
+        u.SetForegroundWindow(hwnd)
+        u.keybd_event(VK_MENU, 0, KEYUP, 0)
+    except Exception:                                              # noqa: BLE001
+        pass
+    if u.GetForegroundWindow() == hwnd:
+        return True
+
+    # 3) Last resort: a restored window is normally handed the foreground by
+    #    the shell itself.
+    try:
+        u.ShowWindow(hwnd, 6)                      # SW_MINIMIZE
+        time.sleep(0.15)
+        u.ShowWindow(hwnd, 9)                      # SW_RESTORE
+    except Exception:                                              # noqa: BLE001
+        pass
     return u.GetForegroundWindow() == hwnd
 
 
@@ -342,6 +401,12 @@ def find_go_button(frame, cx, cy, r):
     rr = frame[:, :, 2].astype(np.int16)
     mask = ((g > b + 45) & (g > rr + 45) & (g > 110)).astype(np.uint8)
     n, _lab, stats, _cent = cv2.connectedComponentsWithStats(mask, 8)
+    # Position is the real filter. Measured 2026-11-20: the shape/size/fill
+    # tests alone matched a tree canopy at (964, 1098) and the bot spent four
+    # minutes clicking foliage while insisting it had pressed GO. The disc sits
+    # at a fixed place relative to the log -- 2.96 r right, 4.29 r down on this
+    # 2560x1440 layout -- so only accept something within half a radius of it.
+    ex, ey = cx + 2.96 * r, cy + 4.29 * r
     best = None
     for i in range(1, n):
         x, y, w, h, area = stats[i]
@@ -352,10 +417,11 @@ def find_go_button(frame, cx, cy, r):
         if area / float(w * h) < 0.50:
             continue
         xc, yc = x + w / 2.0, y + h / 2.0
-        if abs(xc - cx) > 5.0 * r or yc <= cy:
+        if abs(xc - ex) > 0.50 * r or abs(yc - ey) > 0.45 * r:
             continue
-        if best is None or area > best[0]:
-            best = (area, float(xc), float(yc))
+        d = math.hypot(xc - ex, yc - ey)
+        if best is None or d < best[0]:
+            best = (d, float(xc), float(yc))
     return None if best is None else (int(round(best[1])), int(round(best[2])))
 
 
@@ -374,15 +440,29 @@ def find_cashout_box(frame, cx, cy, r):
     the wide yellow panel that only appears once a round is live.
 
     Filters are measured from live frames, not invented:
+        hue 15-40, sat >= 120, val >= 110
+                              the panel is GOLD; a hue/sat test survives the
+                              brightness swing that a fixed RGB test does not
         area >= 4000          the panel is ~200x60 px of solid yellow
         w/h >= 1.6            a wide bar, unlike the small gold ladder labels
         fill >= 0.55          solid block, not a ring or an icon
         below the log centre  the panel bar sits under the target
+
+    Why HSV and not RGB (measured on this 2560x1440 PC, 2026-11-19)
+    -----------------------------------------------------------------
+    The earlier test was r>170 & g>130 & b<110, tuned on the laptop. Here the
+    live panel frequently renders DARKER -- mean BGR (13,117,147), i.e. r=147 --
+    and only 0.0 % of its pixels passed. The bot then declared "no live panel"
+    and scored a live round as lost. Ten saved frames split perfectly:
+        disabled panel (dark olive)  -> RGB: none,  HSV: none   (correct)
+        live panel, bright           -> RGB: 320x107, HSV: 321x107
+        live panel, dimmed           -> RGB: NONE,    HSV: 320x107  <-- the bug
+    Hue 15-40 / sat 120 keeps the disabled panel rejected (it is desaturated),
+    so this is not a looser test -- it is a test of the right quantity.
     """
-    b = frame[:, :, 0].astype(np.int16)
-    g = frame[:, :, 1].astype(np.int16)
-    rr = frame[:, :, 2].astype(np.int16)
-    mask = ((rr > 170) & (g > 130) & (b < 110)).astype(np.uint8)
+    hsv = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV)
+    mask = ((hsv[:, :, 0] >= 15) & (hsv[:, :, 0] <= 40)
+            & (hsv[:, :, 1] >= 120) & (hsv[:, :, 2] >= 110)).astype(np.uint8)
     n, _lab, stats, _cent = cv2.connectedComponentsWithStats(mask, 8)
     best = None
     for i in range(1, n):
@@ -415,10 +495,11 @@ def main() -> int:
                          "throws showed a +4.1 deg over-lead, i.e. -25 ms)")
     ap.add_argument("--min-gap", type=float, default=20.0,
                     help="refuse gaps narrower than this (knife is 8.03)")
-    ap.add_argument("--min-omega", type=float, default=120.0,
-                    help="do not throw below this |omega|: measured 50%% hit "
-                         "rate under 150 deg/s because that is a reversal, "
-                         "where omega is small and changing sign")
+    ap.add_argument("--min-omega", type=float, default=150.0,
+                    help="do not throw below this |omega|. Measured on 249 real "
+                         "throws (2026-11-19): 0 hits out of 10 below 150 deg/s, "
+                         "91%% at 150-210. The old floor of 120 let the bot into "
+                         "a bucket that never hit.")
     ap.add_argument("--stability", type=float, default=0.45,
                     help="omega must have kept one sign for this many seconds")
     ap.add_argument("--sweep", default=None,
@@ -437,12 +518,17 @@ def main() -> int:
                          "by ~16 deg -- the entire measured aim error. "
                          "0 disables the gate.")
     ap.add_argument("--slow-omega", type=float, default=SLOW_OMEGA)
-    ap.add_argument("--min-slack", type=float, default=16.0,
+    ap.add_argument("--min-slack", type=float, default=22.0,
                     help="refuse any throw whose predicted margin at impact is "
-                         "below this. Measured on the 30-round log: 34%% of all "
-                         "throws cleared 16 deg, and that band was 10/10 hits. "
-                         "The observed maximum is 28.8 deg, so do NOT raise this "
-                         "past ~25 or the bot will never throw.")
+                         "below this. Measured on 267 real throws under the "
+                         "current code (2026-11-20): slack 18-20 hits 97.2%%, "
+                         "20-22 hits 97.4%%, 22-25 hits 99.1%%; 4 of the 5 "
+                         "misses in 267 throws sat at 18.3-20.7. At 16 rungs "
+                         "1.9 points of per-throw accuracy is 44 -> 87 %% round "
+                         "wins, so the floor is worth the lost opportunities. "
+                         "The step-down after 12 s / 20 s without a throw keeps "
+                         "a late round from deadlocking. Do NOT raise past ~25: "
+                         "the observed maximum slack is 28.8 deg.")
     ap.add_argument("--patience", type=float, default=600.0,
                     help="after this long with no throw, relax the omega floor. "
                          "Default 600 s = effectively never: waiting costs "
@@ -505,7 +591,7 @@ def main() -> int:
     sw, sh = mon["width"], mon["height"]
 
     def locate(verbose=True, expect=None):
-        shot = np.array(sct.grab(mon))[:, :, :3]
+        shot = cv2.cvtColor(np.asarray(sct.grab(mon)), cv2.COLOR_BGRA2BGR)
         got = lt.find_target(shot, verbose=verbose)
         if got is None:
             return None
@@ -564,13 +650,25 @@ def main() -> int:
         print(f"[auto] could not raise the game window: {exc}")
 
     L = None
-    for attempt in range(8):
-        L = locate(verbose=(attempt == 0))
+    # Time-based, not attempt-based: a window that is still animating into the
+    # foreground can take a couple of seconds to paint, and 8 grabs (2.8 s) was
+    # measured short on this PC. Keep re-focusing while we wait rather than
+    # giving up on a game that is in fact open.
+    _deadline = time.time() + 20.0
+    _tries = 0
+    while True:
+        L = locate(verbose=(_tries == 0))
         if L is not None:
             break
+        if time.time() > _deadline:
+            break
+        _tries += 1
+        if _tries % 3 == 0 and _found and not args.no_auto_focus:
+            focus_window(_found[0])
         time.sleep(0.35)
     if L is None:
-        print("[auto] no target on screen after 8 tries -- open the game first")
+        print("[auto] no target on screen after 20 s -- open the game first "
+              f"(foreground 0x{foreground_root():X})")
         return 2
 
     cx, cy, r = L["cx"], L["cy"], L["r"]
@@ -620,7 +718,7 @@ def main() -> int:
 
     def grab_ui(cx_, cy_, r_):
         roi_ = ui_roi(cx_, cy_, r_)
-        return (np.array(sct.grab(roi_))[:, :, :3],
+        return (cv2.cvtColor(np.asarray(sct.grab(roi_)), cv2.COLOR_BGRA2BGR),
                 roi_["left"], roi_["top"])
 
     def check_pt(pt, label):
@@ -679,8 +777,26 @@ def main() -> int:
         round_peak = None
 
     def close_round(outcome, t_end, held=None):
-        nonlocal round_open, wins, losses, pnl
+        nonlocal round_open, wins, losses, pnl, round_no
         if not round_open:
+            return
+        # A round that was opened by a throw fired just as the PREVIOUS round
+        # died is not a real round: it holds one throw and lasts a fraction of
+        # a second (observed 0.09-0.18 s, peak 1.00). Counting it as a loss
+        # understates the win rate and burns the --rounds budget, which counts
+        # wins + losses. Log it, but do not score it and do not consume a
+        # round number. A genuine one-throw round cannot happen this fast: the
+        # throw gates alone (two rotations + sign stability) take >2 s.
+        if (outcome == "lost" and round_throws <= 1
+                and (t_end - round_t0) < 1.5):
+            rwr.writerow([round_no, round(round_t0 - t_start, 3),
+                          round(t_end - t_start, 3), "phantom",
+                          "", "", round_throws, round_hits])
+            rfh.flush()
+            round_open = False
+            round_no -= 1
+            print("[auto] phantom round ignored (1 throw, "
+                  f"{t_end - round_t0:.2f}s) -- not scored")
             return
         # peak_round is the highest number the LOG printed this round; the money
         # actually held at that moment is one rung behind it.
@@ -726,6 +842,11 @@ def main() -> int:
     aim_slack = float("nan")
     aim_pred = float("nan")
     obs_at_click = -1
+    mult_at_click = None
+    # Set when the throw in flight is the one that reaches --cashout-at. The
+    # landing branch then cashes out on the PANEL, without waiting for the
+    # reader, because the digits are unreadable exactly while a rung is banked.
+    cash_aim = None
     aim_obs0 = []
     aim_t_frame = None
     aim_omega0 = 0.0
@@ -743,6 +864,7 @@ def main() -> int:
     slot_low_since = None
     last_log = 0.0
     mult_val = None          # last trusted read of the log-centre number
+    last_mult_read_t = 0.0   # when that read actually happened
     mult_str = ""
     peak_round = None        # best multiplier seen in the current round
     best_ever = None         # best of the whole run
@@ -760,6 +882,12 @@ def main() -> int:
     sign_stable_since = 0.0
     last_rot_t = None
     last_unstable_t = 0.0    # last frame the vision looked unsettled
+    # The multiplier must be readable for the watch-and-wait gate to open. If it
+    # never is (bad calibration, reskin, wrong screen scale), the bot sits at
+    # "throws 0" forever with no explanation -- which is exactly what happened
+    # on the first 2560x1440 run. Warn loudly instead of deadlocking in silence.
+    mult_fail_since = None
+    mult_warned = False
 
     try:
         while True:
@@ -774,8 +902,10 @@ def main() -> int:
                 break
 
             raw = sct.grab(bbox)
-            frame = np.frombuffer(raw.bgra, dtype=np.uint8).reshape(
-                raw.height, raw.width, 4)[:, :, :3].copy()
+            # Zero-copy extract (see live_track.py). The old path copied the
+            # 4-channel buffer twice and halved the loop rate to 50 fps at
+            # 2560x1440; this holds the full 100 Hz budget.
+            frame = cv2.cvtColor(np.asarray(raw), cv2.COLOR_BGRA2BGR)
             m = trk.step(frame, t_now)
             sf = slot_frac(frame, L["cyl"], r, L["cxl"], L["bh"], L["bw"])
             n_obs = len(m["obs"])
@@ -853,6 +983,17 @@ def main() -> int:
                     # The number is unreadable: whatever we think the log is
                     # doing may already be stale. Block throws briefly.
                     last_unstable_t = t_now
+                    if mult_fail_since is None:
+                        mult_fail_since = t_now
+                    elif (not mult_warned
+                          and t_now - mult_fail_since > 4.0):
+                        mult_warned = True
+                        print(f"[auto] WARNING: the log-centre multiplier has "
+                              f"been unreadable for {t_now - mult_fail_since:.1f}s "
+                              f"({why}) -- no throw is permitted while it is "
+                              f"unknown. If this persists the bot will never "
+                              f"throw; check the calibration and the digit "
+                              f"templates.")
                     if why != last_reject_why:
                         last_reject_why = why
                         wr.writerow([
@@ -866,6 +1007,8 @@ def main() -> int:
                                 mreader.centre_crop(frame, lcx, lcy, r))
                 else:
                     last_reject_why = None
+                    mult_fail_since = None
+                    mult_warned = False
                     # A trusted read falling back to x1.01 after being above it
                     # is a finished round: the display resets to the first rung,
                     # which is the "landed back on the start" asked for.
@@ -892,8 +1035,10 @@ def main() -> int:
                             t_launch = t_reload = None
                         peak_round = None
                         cashed_out = False
+                        cash_aim = None
                         last_unstable_t = t_now
                     mult_val = v
+                    last_mult_read_t = t_now
                     mult_str = f"x{v:.2f}"
                     if peak_round is None or v > peak_round:
                         peak_round = v
@@ -944,6 +1089,49 @@ def main() -> int:
                                    int(round(cy + 4.33 * r)))
                         click_at(*box)
                         cash_pt = box
+                        # A click can be swallowed (focus switch, compositor
+                        # hiccup). Observed on this PC 2026-11-19: the x2.12
+                        # click did nothing, the bot marked itself cashed out,
+                        # kept playing and re-clicked at x2.47 -- risking the
+                        # stake on a rung it never intended to take.
+                        #
+                        # Verification must allow for the win animation: the
+                        # gold panel lingers ~1 s even on SUCCESS. A 0.36 s
+                        # check re-clicked 3x on all 18 cash-outs, which is 3
+                        # blind clicks on a win screen. So settle for 1.2 s
+                        # before the first retry.
+                        #
+                        # Waiting costs nothing here: after a cash-out the bot
+                        # stops throwing, so a FAILED click leaves the log
+                        # parked on the same rung. The retry still cashes on
+                        # the intended rung -- it cannot drift to a higher one.
+                        clicked_again = 0
+                        if not args.dry_run:
+                            now0 = time.perf_counter()
+                            next_click = now0 + 1.2
+                            while time.perf_counter() < now0 + 3.4:
+                                time.sleep(0.2)
+                                try:
+                                    sub2, ox2, oy2 = grab_ui(cx, cy, r)
+                                    still_gold = find_cashout_box(
+                                        sub2, cx - ox2, cy - oy2, r) is not None
+                                except Exception:            # noqa: BLE001
+                                    still_gold = False
+                                if not still_gold:
+                                    break
+                                now2 = time.perf_counter()
+                                if now2 >= next_click and clicked_again < 2:
+                                    click_at(*box)
+                                    clicked_again += 1
+                                    next_click = now2 + 0.7
+                            if clicked_again:
+                                print(f"[auto] cash-out click did not register "
+                                      f"-- re-clicked {clicked_again}x at "
+                                      f"x{held:.2f}")
+                            if os.environ.get("KN_DUMP_UI"):
+                                print(f"[auto] cash-out panel cleared after "
+                                      f"{time.perf_counter() - now0:.2f}s "
+                                      f"(re-clicks {clicked_again})")
                         cashed_out = True
                         cashed.append(held)
                         t_cashout = t_now
@@ -971,10 +1159,21 @@ def main() -> int:
                     # a fresh x1.01 read (plus a beat for the animation) is
                     # what lets the loop run unattended instead of betting
                     # blind into a live round.
+                    #
+                    # The old test ALSO cleared unconditionally after 6 s, and
+                    # that is how one round got cashed out twice: observed
+                    # 2026-11-19, held x2.12 at 79.9 s then held x2.47 at
+                    # 86.2 s. The win screen keeps printing a big number, the
+                    # latch expired, the next read armed another cash-out.
+                    # Clear on evidence -- the number actually reset -- with a
+                    # long absolute fallback only so it can never deadlock.
+                    reset_seen = (mult_val is not None and mult_val <= 1.5)
                     if (state == "CASHED" and t_cashout is not None
-                            and (t_now - t_cashout > 6.0
-                                 or (t_now - t_cashout > 2.5
-                                     and v <= 1.01 + 1e-9))):
+                            and ((t_now - t_cashout > 2.5
+                                  and mult_val is not None
+                                  and mult_val <= 1.01 + 1e-9)
+                                 or (t_now - t_cashout > 6.0 and reset_seen)
+                                 or (t_now - t_cashout > 25.0))):
                         state = "WAIT"
                         cashed_out = False
                         t_cashout = None
@@ -983,6 +1182,13 @@ def main() -> int:
                         rotations_seen = 0.0
                         last_omega_sign = 0
                         sign_stable_since = 0.0
+                        # The display still shows the rung we banked (x2.28 for a
+                        # 2.12 cash-out) until the next round redraws. Without
+                        # this the NEXT round inherited that number as its peak:
+                        # measured 2026-11-20, round 7 reached only x1.75 but the
+                        # log recorded peak_log x2.12, which silently corrupted
+                        # every peak-based accuracy number.
+                        peak_round = None
 
             # ---- is a round actually running? ----------------------------- #
             # slot_frac is not sufficient. After a CASH-OUT the game shows a
@@ -1003,8 +1209,19 @@ def main() -> int:
                 if live:
                     not_live_n = 0
                 else:
+                    if os.environ.get("KN_DUMP_UI"):
+                        os.makedirs("temp/ui_miss", exist_ok=True)
+                        cv2.imwrite(
+                            os.path.join("temp/ui_miss",
+                                         f"{t_now - t_start:07.2f}"
+                                         f"_nl{not_live_n + 1}.png"), sub)
                     not_live_n += 1
-                    if not_live_n >= 2:
+                    # Three checks at 0.6 s = 1.8 s without a gold panel. Two
+                    # was enough to score a live round as lost whenever the
+                    # panel dimmed on two consecutive samples; one extra sample
+                    # costs 0.6 s of delay on a genuine round end and makes a
+                    # false one much less likely.
+                    if not_live_n >= 3:
                         round_dead = True
                         # The round is not running. If we never cashed out, it
                         # ended by dying, and it must be closed HERE -- otherwise
@@ -1048,7 +1265,15 @@ def main() -> int:
                         g = find_go_button(sub, cx - ox, cy - oy, r)
                         go_pt = None if g is None else (g[0] + ox, g[1] + oy)
                     if go_pt is None:
-                        print("[auto] no round running and no GO button -- idling")
+                        # Blind click, but only here. This branch runs after the
+                        # launcher has been empty for 1.5 s, so no round is live:
+                        # there is no bet to lose and no rung to give away. The
+                        # disc's place relative to the log is measured on this
+                        # layout, so the ratio is a real position, not a guess.
+                        go_pt = (int(round(cx + 2.96 * r)),
+                                 int(round(cy + 4.29 * r)))
+                        print("[auto] GO disc not detectable -- using the "
+                              "measured disc position")
                     else:
                         print(f"[auto] no round running -> GO at {go_pt}")
                         click_at(*go_pt)
@@ -1088,6 +1313,13 @@ def main() -> int:
                     # censor the sample to "errors inside the gap" and hide the
                     # very misses we are trying to explain.
                     land_txt = ""
+                    # Honest hit label: did the ladder advance by one rung from
+                    # press time to landing? This is the signal future tuning
+                    # must use; the knife-count counter is known to undercount.
+                    i0 = rung_index(mult_at_click)
+                    i1 = rung_index(mult_val)
+                    if i0 is not None and i1 is not None:
+                        land_txt += f"mult_step={i1 - i0} "
                     if aim_obs0 and aim_t_frame is not None and aim_centre0 is not None:
                         dt_l = t_reload - aim_t_frame
                         olds = [((c + aim_omega0 * dt_l) % 360.0) for c in aim_obs0]
@@ -1113,6 +1345,65 @@ def main() -> int:
                         f"press_to_reload_ms={(t_reload-t_click)*1000:.1f} "
                         f"pred_land={aim_pred:.1f} hit={int(hit)} "
                         f"{land_txt}obs {obs_at_click}->{n_obs}", mult_str])
+                    # ---- armed cash-out ------------------------------------ #
+                    # The panel is the authority, not the number. If the throw
+                    # that was meant to finish the round put a knife in, the
+                    # CASHOUT panel is gold on this very frame and one click
+                    # banks the rung we aimed at. If it missed, the panel is
+                    # gone and there is nothing to click -- the round-over
+                    # path below scores it, exactly as before.
+                    if cash_aim is not None and not cashed_out:
+                        _aim = cash_aim
+                        cash_aim = None
+                        box = None
+                        try:
+                            sub, ox, oy = grab_ui(cx, cy, r)
+                            got = find_cashout_box(sub, cx - ox, cy - oy, r)
+                            if got is not None:
+                                box = (got[0] + ox, got[1] + oy)
+                        except Exception:                      # noqa: BLE001
+                            box = None
+                        if box is not None:
+                            click_at(*box)
+                            cash_pt = box
+                            cleared = False
+                            reclicks = 0
+                            _v0 = time.perf_counter()
+                            while time.perf_counter() - _v0 < 1.5:
+                                time.sleep(0.1)
+                                try:
+                                    sub2, ox2, oy2 = grab_ui(cx, cy, r)
+                                    still = find_cashout_box(
+                                        sub2, cx - ox2, cy - oy2, r) is not None
+                                except Exception:              # noqa: BLE001
+                                    still = False
+                                if not still:
+                                    cleared = True
+                                    break
+                                # The gold panel lingers ~1 s even on success,
+                                # so only re-click late, and only once.
+                                if reclicks == 0 and time.perf_counter() - _v0 > 1.0:
+                                    click_at(*box)
+                                    reclicks = 1
+                            if cleared:
+                                cashed_out = True
+                                cashed.append(_aim)
+                                t_cashout = t_now
+                                last_cash_t = t_now
+                                close_round("won", t_now, _aim)
+                                wr.writerow([
+                                    round(t_now - t_start, 3), "CASHOUT", "",
+                                    "", "", "", "", round(sf, 4), n_obs,
+                                    f"armed: banked x{_aim:.2f} on the landing "
+                                    f"frame (panel cleared in "
+                                    f"{time.perf_counter() - _v0:.2f}s, "
+                                    f"reclicks {reclicks})", mult_str])
+                                print(f"[auto] *** CASHED OUT at x{_aim:.2f} "
+                                      f"on landing (armed, reader not used) ***")
+                                state = "CASHED"
+                                t_state = t_now
+                                t_launch = t_reload = None
+                                continue
                     state = "WAIT"
                     t_launch = t_reload = None
                 # ---- watchdogs ------------------------------------------- #
@@ -1156,6 +1447,19 @@ def main() -> int:
                         t_launch = t_reload = None
 
             # ---- aim ------------------------------------------------------ #
+            # Hard gate: never throw a knife AFTER we have already reached the
+            # cash-out target. The reader is only 5 Hz, so the log could be at
+            # 1.48 for up to 0.2 s before we see it; if we fired in that window
+            # we would cash out one rung higher than intended. The correct
+            # behavior is: held >= target -> cash out (handled above), otherwise
+            # we should not be in WAIT at all. But as a second line of defence,
+            # refuse to throw if the HELD value is already at target.
+            if (state == "WAIT" and args.cashout_at is not None
+                    and mult_val is not None
+                    and mreader.current_from_log(mult_val) is not None
+                    and mreader.current_from_log(mult_val) >= args.cashout_at - 1e-9):
+                continue
+
             if state == "WAIT" and m["good"] and throws < args.max_throws:
                 omega_raw = m["omega"]
                 relaxed = (t_now - t_last_throw) > args.patience
@@ -1258,6 +1562,29 @@ def main() -> int:
                     t_target = max(t_target, t_now)
                     aim_deg, aim_gap_w, aim_slack, aim_pred = centre, w, slack, pred
                     obs_at_click = n_obs
+                    # The obs counter undercounts hits by ~15 % (it misses a
+                    # hit whenever the knife count is mis-read between throws).
+                    # Record the multiplier at press time as well, so a later
+                    # analysis can decide a hit from the ladder advancing,
+                    # which the verified reader gets right. Logging only.
+                    mult_at_click = mult_val
+                    # ---- arm the cash-out ---------------------------------- #
+                    # Measured 2026-11-20, round 9 of the first 10-round x2.12
+                    # run: the last knife landed at 211.89 with the ladder on
+                    # x2.12, the reader then returned "no_text" for 0.8 s while
+                    # the raised rung animated, and the round had already reset
+                    # before a trusted x2.28 could be read. A round sitting
+                    # exactly on the target was scored as a loss. So the throw
+                    # that is meant to finish the round does not depend on the
+                    # reader at all: we know which rung it becomes, and the
+                    # cash-out target is located on pixels.
+                    cash_aim = None
+                    if args.cashout_at and not args.dry_run:
+                        _h0 = mreader.current_from_log(mult_val)
+                        _after = next_rung(_h0)
+                        if (_after is not None
+                                and _after >= args.cashout_at - 1e-9):
+                            cash_aim = _after
                     # Snapshot for the landing-angle measurement, which the
                     # reload branch below needs. `angle` is stored in GAME
                     # coordinates on purpose: the gap centre we aim at is also

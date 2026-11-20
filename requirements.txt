@@ -1,0 +1,8 @@
+# Runtime dependencies for the Knife Rush bot.
+# Install with:  py -3.13 -m pip install -r requirements.txt
+mss>=10.0
+opencv-python>=4.8
+numpy>=1.24
+Pillow>=9.0
+# Optional: only needed by find_speed.py --plot
+# matplotlib>=3.7

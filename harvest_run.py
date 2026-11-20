@@ -101,7 +101,7 @@ def main() -> int:
             path = os.path.join(args.out, f"state_{idx:03d}.png")
             cv2.imwrite(path, crop)
             order.append({"idx": idx, "first": t, "last": t, "count": 1,
-                          "layout": mr.describe(glyphs), "path": path})
+                          "layout": mr.describe(glyphs, r), "path": path})
         else:
             o = order[seen[sig]]
             o["last"] = t

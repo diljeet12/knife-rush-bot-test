@@ -18,6 +18,6 @@ set "TORCH_HOME=%~dp0.cache\torch"
 if not exist "%~dp0temp" mkdir "%~dp0temp"
 if not exist "%~dp0.cache\matplotlib" mkdir "%~dp0.cache\matplotlib"
 
-python "%~dp0find_speed.py" %*
+py -3.13 "%~dp0find_speed.py" %*
 
 endlocal
